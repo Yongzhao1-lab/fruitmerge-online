@@ -1,37 +1,45 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+const nextFruitCanvas = document.getElementById("nextFruitCanvas");
+const nextCtx = nextFruitCanvas.getContext("2d");
+
 const scoreElement = document.getElementById("score");
 const bestScoreElement = document.getElementById("bestScore");
-const nextFruitElement = document.getElementById("nextFruit");
+const nextFruitNameElement = document.getElementById("nextFruitName");
+
 const restartButton = document.getElementById("restartButton");
 const startButton = document.getElementById("startButton");
 const playAgainButton = document.getElementById("playAgainButton");
+
 const startOverlay = document.getElementById("startOverlay");
 const gameOverOverlay = document.getElementById("gameOverOverlay");
+
 const finalScoreElement = document.getElementById("finalScore");
 const finalBestScoreElement = document.getElementById("finalBestScore");
 
 const fruits = [
-  { name: "Cherry", emoji: "🍒", radius: 16, score: 5 },
-  { name: "Strawberry", emoji: "🍓", radius: 22, score: 10 },
-  { name: "Grape", emoji: "🍇", radius: 28, score: 20 },
-  { name: "Orange", emoji: "🍊", radius: 35, score: 40 },
-  { name: "Apple", emoji: "🍎", radius: 43, score: 80 },
-  { name: "Peach", emoji: "🍑", radius: 52, score: 160 },
-  { name: "Pineapple", emoji: "🍍", radius: 62, score: 320 },
-  { name: "Watermelon", emoji: "🍉", radius: 73, score: 640 },
-  { name: "Coconut", emoji: "🥥", radius: 85, score: 1280 },
-  { name: "Melon", emoji: "🍈", radius: 98, score: 2560 },
-  { name: "Mega Fruit", emoji: "🌟", radius: 112, score: 5120 }
+  { name: "Cherry", radius: 16, score: 5, skin: "#e84545", core: "#ff6b6b", type: "cherry" },
+  { name: "Strawberry", radius: 22, score: 10, skin: "#e83e5a", core: "#ff6b7f", type: "strawberry" },
+  { name: "Grape", radius: 28, score: 20, skin: "#7b4bc7", core: "#a883e8", type: "grape" },
+  { name: "Orange", radius: 35, score: 40, skin: "#ff9a1f", core: "#ffc65c", type: "orange" },
+  { name: "Apple", radius: 43, score: 80, skin: "#e94f64", core: "#ff7b8a", type: "apple" },
+  { name: "Peach", radius: 52, score: 160, skin: "#ff9b6a", core: "#ffc48f", type: "peach" },
+  { name: "Pineapple", radius: 62, score: 320, skin: "#f0b93a", core: "#ffd66b", type: "pineapple" },
+  { name: "Watermelon", radius: 73, score: 640, skin: "#2fbf71", core: "#f2505e", type: "watermelon" },
+  { name: "Coconut", radius: 85, score: 1280, skin: "#8a5a3b", core: "#f7f0df", type: "coconut" },
+  { name: "Melon", radius: 98, score: 2560, skin: "#8bd66b", core: "#c6ef84", type: "melon" },
+  { name: "Dragon Fruit", radius: 112, score: 5120, skin: "#f04e98", core: "#fff4f9", type: "dragonfruit" }
 ];
 
 let balls = [];
 let currentFruit;
 let nextFruitLevel;
+
 let mouseX = canvas.width / 2;
 let score = 0;
 let bestScore = Number(localStorage.getItem("fruitMergeBestScore")) || 0;
+
 let isGameOver = false;
 let isGameStarted = false;
 let canDrop = true;
@@ -63,7 +71,6 @@ function createFruit(x, y, level) {
     vy: 0,
     level,
     radius: fruit.radius,
-    emoji: fruit.emoji,
     dangerFrames: 0,
     age: 0
   };
@@ -79,6 +86,7 @@ function setupRound(showStartScreen = true) {
 
   scoreElement.textContent = score;
   bestScoreElement.textContent = bestScore;
+
   gameOverOverlay.classList.add("hidden");
 
   if (showStartScreen) {
@@ -101,7 +109,18 @@ function restartGame() {
 }
 
 function updateNextFruit() {
-  nextFruitElement.textContent = fruits[nextFruitLevel].emoji;
+  const fruit = fruits[nextFruitLevel];
+  nextFruitNameElement.textContent = fruit.name;
+
+  nextCtx.clearRect(0, 0, nextFruitCanvas.width, nextFruitCanvas.height);
+
+  drawFruitIcon(
+    nextCtx,
+    nextFruitCanvas.width / 2,
+    nextFruitCanvas.height / 2,
+    18,
+    nextFruitLevel
+  );
 }
 
 function drawBackground() {
@@ -122,7 +141,7 @@ function drawBackground() {
   ctx.stroke();
   ctx.setLineDash([]);
 
-  ctx.fillStyle = "rgba(255, 122, 26, 0.78)";
+  ctx.fillStyle = "rgba(255, 122, 26, 0.82)";
   ctx.font = "12px Arial";
   ctx.textAlign = "left";
   ctx.textBaseline = "middle";
@@ -130,32 +149,218 @@ function drawBackground() {
 }
 
 function drawFruit(ball) {
-  ctx.beginPath();
-  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+  drawFruitIcon(ctx, ball.x, ball.y, ball.radius, ball.level);
+}
 
-  const gradient = ctx.createRadialGradient(
-    ball.x - ball.radius / 3,
-    ball.y - ball.radius / 3,
-    ball.radius / 5,
-    ball.x,
-    ball.y,
-    ball.radius
+function drawFruitIcon(targetCtx, x, y, radius, level) {
+  const fruit = fruits[level];
+
+  targetCtx.save();
+
+  targetCtx.beginPath();
+  targetCtx.arc(x, y, radius, 0, Math.PI * 2);
+
+  const gradient = targetCtx.createRadialGradient(
+    x - radius * 0.35,
+    y - radius * 0.35,
+    radius * 0.1,
+    x,
+    y,
+    radius
   );
 
   gradient.addColorStop(0, "#ffffff");
-  gradient.addColorStop(1, "#ffd27a");
+  gradient.addColorStop(0.18, fruit.core);
+  gradient.addColorStop(1, fruit.skin);
 
-  ctx.fillStyle = gradient;
-  ctx.fill();
+  targetCtx.fillStyle = gradient;
+  targetCtx.fill();
 
-  ctx.strokeStyle = "#ffffff";
-  ctx.lineWidth = 4;
-  ctx.stroke();
+  targetCtx.strokeStyle = "#ffffff";
+  targetCtx.lineWidth = Math.max(3, radius * 0.08);
+  targetCtx.stroke();
 
-  ctx.font = `${Math.max(18, ball.radius * 1.05)}px Arial`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(ball.emoji, ball.x, ball.y + 2);
+  drawFruitDetails(targetCtx, x, y, radius, fruit.type);
+
+  targetCtx.restore();
+}
+
+function drawFruitDetails(targetCtx, x, y, radius, type) {
+  targetCtx.save();
+
+  if (type === "cherry") {
+    drawLeaf(targetCtx, x + radius * 0.2, y - radius * 0.75, radius * 0.22);
+    targetCtx.strokeStyle = "#4b8a3d";
+    targetCtx.lineWidth = Math.max(2, radius * 0.08);
+    targetCtx.beginPath();
+    targetCtx.moveTo(x, y - radius * 0.35);
+    targetCtx.quadraticCurveTo(x + radius * 0.2, y - radius * 0.7, x + radius * 0.45, y - radius * 0.82);
+    targetCtx.stroke();
+  }
+
+  if (type === "strawberry") {
+    drawLeaf(targetCtx, x, y - radius * 0.65, radius * 0.25);
+    targetCtx.fillStyle = "#ffe7a3";
+    for (let i = -1; i <= 1; i++) {
+      for (let j = -1; j <= 1; j++) {
+        targetCtx.beginPath();
+        targetCtx.arc(x + i * radius * 0.25, y + j * radius * 0.22, radius * 0.035, 0, Math.PI * 2);
+        targetCtx.fill();
+      }
+    }
+  }
+
+  if (type === "grape") {
+    const grapeColor = "#6f42c1";
+    targetCtx.fillStyle = grapeColor;
+    const spots = [
+      [0, -0.25], [-0.25, 0], [0.25, 0], [0, 0.25], [-0.18, 0.28], [0.18, 0.28]
+    ];
+    for (const [sx, sy] of spots) {
+      targetCtx.beginPath();
+      targetCtx.arc(x + sx * radius, y + sy * radius, radius * 0.22, 0, Math.PI * 2);
+      targetCtx.fill();
+      targetCtx.strokeStyle = "rgba(255,255,255,0.45)";
+      targetCtx.lineWidth = 1;
+      targetCtx.stroke();
+    }
+    drawLeaf(targetCtx, x + radius * 0.18, y - radius * 0.68, radius * 0.2);
+  }
+
+  if (type === "orange") {
+    targetCtx.strokeStyle = "rgba(255,255,255,0.6)";
+    targetCtx.lineWidth = Math.max(1, radius * 0.04);
+    for (let i = 0; i < 6; i++) {
+      const angle = (Math.PI * 2 / 6) * i;
+      targetCtx.beginPath();
+      targetCtx.moveTo(x, y);
+      targetCtx.lineTo(x + Math.cos(angle) * radius * 0.65, y + Math.sin(angle) * radius * 0.65);
+      targetCtx.stroke();
+    }
+  }
+
+  if (type === "apple") {
+    drawLeaf(targetCtx, x + radius * 0.18, y - radius * 0.72, radius * 0.25);
+    targetCtx.fillStyle = "rgba(255,255,255,0.45)";
+    targetCtx.beginPath();
+    targetCtx.ellipse(x - radius * 0.25, y - radius * 0.15, radius * 0.16, radius * 0.25, -0.4, 0, Math.PI * 2);
+    targetCtx.fill();
+  }
+
+  if (type === "peach") {
+    drawLeaf(targetCtx, x + radius * 0.15, y - radius * 0.72, radius * 0.24);
+    targetCtx.strokeStyle = "rgba(204,99,70,0.45)";
+    targetCtx.lineWidth = Math.max(2, radius * 0.04);
+    targetCtx.beginPath();
+    targetCtx.moveTo(x + radius * 0.12, y - radius * 0.55);
+    targetCtx.quadraticCurveTo(x - radius * 0.2, y, x + radius * 0.1, y + radius * 0.55);
+    targetCtx.stroke();
+  }
+
+  if (type === "pineapple") {
+    targetCtx.strokeStyle = "rgba(128,89,19,0.28)";
+    targetCtx.lineWidth = Math.max(1, radius * 0.025);
+
+    for (let i = -3; i <= 3; i++) {
+      targetCtx.beginPath();
+      targetCtx.moveTo(x - radius * 0.55, y + i * radius * 0.18);
+      targetCtx.lineTo(x + radius * 0.55, y + (i + 2) * radius * 0.18);
+      targetCtx.stroke();
+
+      targetCtx.beginPath();
+      targetCtx.moveTo(x + radius * 0.55, y + i * radius * 0.18);
+      targetCtx.lineTo(x - radius * 0.55, y + (i + 2) * radius * 0.18);
+      targetCtx.stroke();
+    }
+
+    drawLeaf(targetCtx, x, y - radius * 0.78, radius * 0.32);
+  }
+
+  if (type === "watermelon") {
+    targetCtx.beginPath();
+    targetCtx.arc(x, y, radius * 0.72, 0, Math.PI * 2);
+    targetCtx.fillStyle = "#f2505e";
+    targetCtx.fill();
+
+    targetCtx.strokeStyle = "#f8ffd9";
+    targetCtx.lineWidth = radius * 0.08;
+    targetCtx.stroke();
+
+    targetCtx.fillStyle = "#263238";
+    for (let i = 0; i < 6; i++) {
+      const angle = (Math.PI * 2 / 6) * i;
+      targetCtx.beginPath();
+      targetCtx.ellipse(
+        x + Math.cos(angle) * radius * 0.35,
+        y + Math.sin(angle) * radius * 0.35,
+        radius * 0.035,
+        radius * 0.065,
+        angle,
+        0,
+        Math.PI * 2
+      );
+      targetCtx.fill();
+    }
+  }
+
+  if (type === "coconut") {
+    targetCtx.beginPath();
+    targetCtx.arc(x, y, radius * 0.65, 0, Math.PI * 2);
+    targetCtx.fillStyle = "#f7f0df";
+    targetCtx.fill();
+
+    targetCtx.strokeStyle = "rgba(77,47,26,0.28)";
+    targetCtx.lineWidth = radius * 0.08;
+    targetCtx.stroke();
+
+    targetCtx.fillStyle = "rgba(77,47,26,0.5)";
+    for (let i = -1; i <= 1; i++) {
+      targetCtx.beginPath();
+      targetCtx.arc(x + i * radius * 0.18, y - radius * 0.15, radius * 0.035, 0, Math.PI * 2);
+      targetCtx.fill();
+    }
+  }
+
+  if (type === "melon") {
+    targetCtx.strokeStyle = "rgba(255,255,255,0.65)";
+    targetCtx.lineWidth = Math.max(2, radius * 0.035);
+    for (let i = -3; i <= 3; i++) {
+      targetCtx.beginPath();
+      targetCtx.moveTo(x + i * radius * 0.18, y - radius * 0.65);
+      targetCtx.quadraticCurveTo(x, y, x - i * radius * 0.18, y + radius * 0.65);
+      targetCtx.stroke();
+    }
+  }
+
+  if (type === "dragonfruit") {
+    targetCtx.beginPath();
+    targetCtx.arc(x, y, radius * 0.68, 0, Math.PI * 2);
+    targetCtx.fillStyle = "#fff4f9";
+    targetCtx.fill();
+
+    targetCtx.fillStyle = "#202020";
+    for (let i = 0; i < 18; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = Math.random() * radius * 0.45;
+      targetCtx.beginPath();
+      targetCtx.arc(x + Math.cos(angle) * dist, y + Math.sin(angle) * dist, radius * 0.018, 0, Math.PI * 2);
+      targetCtx.fill();
+    }
+
+    drawLeaf(targetCtx, x - radius * 0.42, y + radius * 0.12, radius * 0.18);
+    drawLeaf(targetCtx, x + radius * 0.42, y - radius * 0.1, radius * 0.18);
+  }
+
+  targetCtx.restore();
+}
+
+function drawLeaf(targetCtx, x, y, size) {
+  targetCtx.save();
+  targetCtx.fillStyle = "#6fbd44";
+  targetCtx.beginPath();
+  targetCtx.ellipse(x, y, size * 0.55, size, -0.7, 0, Math.PI * 2);
+  targetCtx.fill();
+  targetCtx.restore();
 }
 
 function updatePhysics() {
@@ -210,7 +415,7 @@ function handleCollisions() {
       const minDistance = a.radius + b.radius;
 
       if (distance > 0 && distance < minDistance) {
-        if (a.level === b.level && a.level < fruits.length - 1) {
+        if (a.level === b.level && a.level < fruits.length - 1 && distance < minDistance - 2) {
           mergeFruits(i, j, a, b);
           return;
         }
@@ -314,7 +519,7 @@ function draw() {
     drawFruit(ball);
   }
 
-  if (!isGameOver && currentFruit) {
+  if (!isGameOver && isGameStarted && currentFruit) {
     currentFruit.x = mouseX;
     drawFruit(currentFruit);
   }
@@ -388,9 +593,17 @@ canvas.addEventListener(
   { passive: false }
 );
 
-startButton.addEventListener("click", startGame);
-restartButton.addEventListener("click", restartGame);
-playAgainButton.addEventListener("click", restartGame);
+startButton.addEventListener("click", () => {
+  setupRound(false);
+});
+
+restartButton.addEventListener("click", () => {
+  setupRound(false);
+});
+
+playAgainButton.addEventListener("click", () => {
+  setupRound(false);
+});
 
 setupRound(true);
 gameLoop();
