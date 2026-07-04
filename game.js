@@ -2,11 +2,13 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 const scoreElement = document.getElementById("score");
+const bestScoreElement = document.getElementById("bestScore");
 const nextFruitElement = document.getElementById("nextFruit");
 const restartButton = document.getElementById("restartButton");
 const playAgainButton = document.getElementById("playAgainButton");
 const gameOverOverlay = document.getElementById("gameOverOverlay");
 const finalScoreElement = document.getElementById("finalScore");
+const finalBestScoreElement = document.getElementById("finalBestScore");
 
 const fruits = [
   { name: "Cherry", emoji: "🍒", radius: 16, score: 5 },
@@ -27,13 +29,10 @@ let currentFruit;
 let nextFruitLevel;
 let mouseX = canvas.width / 2;
 let score = 0;
+let bestScore = Number(localStorage.getItem("fruitMergeBestScore")) || 0;
 let isGameOver = false;
 let canDrop = true;
 
-// 这几个参数决定游戏手感
-// gravity：重力
-// friction：横向摩擦，越小越快停止
-// bounce：弹跳，越小越稳定
 const gravity = 0.30;
 const friction = 0.94;
 const bounce = 0.12;
@@ -41,16 +40,15 @@ const bounce = 0.12;
 const dropLineY = 90;
 const spawnY = 50;
 
-// 带权重随机：加入中级水果，减少连续合成概率
 function randomStartLevel() {
   const random = Math.random();
 
-  if (random < 0.22) return 0; // Cherry
-  if (random < 0.44) return 1; // Strawberry
-  if (random < 0.64) return 2; // Grape
-  if (random < 0.80) return 3; // Orange
-  if (random < 0.92) return 4; // Apple
-  return 5;                    // Peach
+  if (random < 0.22) return 0;
+  if (random < 0.44) return 1;
+  if (random < 0.64) return 2;
+  if (random < 0.80) return 3;
+  if (random < 0.92) return 4;
+  return 5;
 }
 
 function createFruit(x, y, level) {
@@ -77,6 +75,7 @@ function initGame() {
   mouseX = canvas.width / 2;
 
   scoreElement.textContent = score;
+  bestScoreElement.textContent = bestScore;
   gameOverOverlay.classList.add("hidden");
 
   nextFruitLevel = randomStartLevel();
@@ -153,8 +152,6 @@ function updatePhysics() {
     ball.y += ball.vy;
 
     ball.vx *= friction;
-
-    // 限制横向速度，避免水果被撞飞
     ball.vx = clamp(ball.vx, -1.2, 1.2);
 
     if (ball.x - ball.radius < 0) {
@@ -177,7 +174,6 @@ function updatePhysics() {
       }
     }
 
-    // 避免垂直方向乱弹
     ball.vy = clamp(ball.vy, -1.5, 4);
   }
 
@@ -197,7 +193,6 @@ function handleCollisions() {
       const minDistance = a.radius + b.radius;
 
       if (distance > 0 && distance < minDistance) {
-        // 相同水果接触时合成
         if (a.level === b.level && a.level < fruits.length - 1) {
           mergeFruits(i, j, a, b);
           return;
@@ -207,25 +202,19 @@ function handleCollisions() {
         const nx = dx / distance;
         const ny = dy / distance;
 
-        // 关键优化：
-        // 水果只做轻微位置修正，不允许大幅挤开
         a.x -= nx * overlap * 0.18;
         a.y -= ny * overlap * 0.08;
         b.x += nx * overlap * 0.18;
         b.y += ny * overlap * 0.08;
 
-        // 关键优化：
-        // 极低推力，只让水果自然微调，不产生强烈弹跳
         const push = 0.025;
 
         a.vx -= nx * push;
         b.vx += nx * push;
 
-        // 垂直方向推力进一步降低，防止上下乱跳
         a.vy -= ny * push * 0.25;
         b.vy += ny * push * 0.25;
 
-        // 限制速度，防止连锁碰撞导致全局位移
         a.vx = clamp(a.vx, -1.2, 1.2);
         b.vx = clamp(b.vx, -1.2, 1.2);
         a.vy = clamp(a.vy, -1.5, 1.5);
@@ -244,7 +233,6 @@ function mergeFruits(indexA, indexB, a, b) {
     newLevel
   );
 
-  // 合成后只给轻微上浮效果，不让新水果弹太高
   newFruit.vy = -1.2;
   newFruit.vx = (Math.random() - 0.5) * 0.5;
 
@@ -254,6 +242,12 @@ function mergeFruits(indexA, indexB, a, b) {
 
   score += fruits[newLevel].score;
   scoreElement.textContent = score;
+
+  if (score > bestScore) {
+    bestScore = score;
+    localStorage.setItem("fruitMergeBestScore", bestScore);
+    bestScoreElement.textContent = bestScore;
+  }
 }
 
 function checkGameOver() {
@@ -271,7 +265,6 @@ function checkGameOver() {
       ball.dangerFrames = Math.max(0, ball.dangerFrames - 3);
     }
 
-    // 数值越小，Game Over 越快
     if (ball.dangerFrames > 35) {
       endGame();
       break;
@@ -283,7 +276,16 @@ function endGame() {
   if (isGameOver) return;
 
   isGameOver = true;
+
+  if (score > bestScore) {
+    bestScore = score;
+    localStorage.setItem("fruitMergeBestScore", bestScore);
+  }
+
+  bestScoreElement.textContent = bestScore;
   finalScoreElement.textContent = score;
+  finalBestScoreElement.textContent = bestScore;
+
   gameOverOverlay.classList.remove("hidden");
 }
 
