@@ -1,23 +1,6 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const nextFruitCanvasIds = [
-  "nextFruitCanvas",
-  "nextFruitCanvas0",
-  "nextFruitCanvas1",
-  "nextFruitCanvas2"
-];
-
-const nextFruitCanvases = Array.from(
-  new Set(
-    nextFruitCanvasIds
-      .map((id) => document.getElementById(id))
-      .filter(Boolean)
-  )
-);
-
-const nextFruitContexts = nextFruitCanvases.map((item) => item.getContext("2d"));
-
 const scoreElement = document.getElementById("score");
 const timeElement = document.getElementById("time");
 const bestScoreElement = document.getElementById("bestScore");
@@ -42,7 +25,10 @@ const leaderboardList = document.getElementById("leaderboardList");
 const gameOverLeaderboard = document.getElementById("gameOverLeaderboard");
 
 const ASSET_BASE = "/assets/fruits/";
-const ASSET_VERSION = "v=20260704-final-tuned-01";
+const ASSET_VERSION = "v=20260704-final-gameplay-tuned-02";
+
+let nextFruitCanvases = [];
+let nextFruitContexts = [];
 
 const fruits = [
   {
@@ -205,7 +191,7 @@ let screenShake = 0;
 let audioContext = null;
 let soundReady = false;
 
-const gravity = 0.62;
+const gravity = 0.64;
 const friction = 0.9;
 const floorFriction = 0.68;
 const bounce = 0.04;
@@ -213,9 +199,9 @@ const bounce = 0.04;
 const dropLineY = 98;
 const spawnY = 54;
 
-const initialDropVelocity = 2.35;
+const initialDropVelocity = 2.45;
 const maxHorizontalSpeed = 0.72;
-const maxVerticalSpeed = 7.6;
+const maxVerticalSpeed = 7.8;
 
 const collisionSolverIterations = 8;
 const collisionRestitution = 0.015;
@@ -235,6 +221,81 @@ function showElement(element) {
 
 function hideElement(element) {
   if (element) element.classList.add("hidden");
+}
+
+function setupNextPreviewUi() {
+  const existingNext0 = document.getElementById("nextFruitCanvas0");
+  const legacyNext = document.getElementById("nextFruitCanvas");
+
+  if (!existingNext0 && legacyNext) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "next-preview auto-next-preview";
+    wrapper.style.display = "flex";
+    wrapper.style.alignItems = "flex-end";
+    wrapper.style.justifyContent = "center";
+    wrapper.style.gap = "7px";
+    wrapper.style.marginTop = "4px";
+
+    const sizes = [44, 38, 34];
+    const labels = ["Next", "2nd", "3rd"];
+
+    for (let i = 0; i < 3; i++) {
+      const item = document.createElement("div");
+      item.style.display = "flex";
+      item.style.flexDirection = "column";
+      item.style.alignItems = "center";
+      item.style.gap = "2px";
+
+      const previewCanvas = document.createElement("canvas");
+      previewCanvas.id = `nextFruitCanvas${i}`;
+      previewCanvas.width = sizes[i];
+      previewCanvas.height = sizes[i];
+      previewCanvas.style.width = `${sizes[i]}px`;
+      previewCanvas.style.height = `${sizes[i]}px`;
+
+      const label = document.createElement("small");
+      label.textContent = labels[i];
+      label.style.fontSize = "10px";
+      label.style.color = "#777";
+      label.style.lineHeight = "1";
+
+      item.appendChild(previewCanvas);
+      item.appendChild(label);
+      wrapper.appendChild(item);
+    }
+
+    legacyNext.replaceWith(wrapper);
+  }
+
+  const ids = [
+    "nextFruitCanvas0",
+    "nextFruitCanvas1",
+    "nextFruitCanvas2",
+    "nextFruitCanvas"
+  ];
+
+  nextFruitCanvases = Array.from(
+    new Set(
+      ids
+        .map((id) => document.getElementById(id))
+        .filter(Boolean)
+    )
+  );
+
+  nextFruitContexts = nextFruitCanvases.map((item) => item.getContext("2d"));
+}
+
+function polishRestartButton() {
+  if (!restartButton) return;
+
+  restartButton.style.width = "auto";
+  restartButton.style.height = "auto";
+  restartButton.style.minWidth = "92px";
+  restartButton.style.padding = "12px 18px";
+  restartButton.style.borderRadius = "999px";
+  restartButton.style.fontSize = "14px";
+  restartButton.style.fontWeight = "800";
+  restartButton.style.boxShadow = "0 8px 20px rgba(255, 122, 80, 0.22)";
 }
 
 function initAudio() {
@@ -427,19 +488,19 @@ function getStageName() {
 function getDangerLimit() {
   const stage = getDifficultyStage();
 
-  if (stage === 0) return 58;
-  if (stage === 1) return 44;
-  if (stage === 2) return 34;
-  return 26;
+  if (stage === 0) return 56;
+  if (stage === 1) return 42;
+  if (stage === 2) return 32;
+  return 24;
 }
 
 function getDropCooldown() {
   const stage = getDifficultyStage();
 
-  if (stage === 0) return 330;
-  if (stage === 1) return 300;
-  if (stage === 2) return 270;
-  return 240;
+  if (stage === 0) return 320;
+  if (stage === 1) return 290;
+  if (stage === 2) return 260;
+  return 230;
 }
 
 function randomStartLevel() {
@@ -447,33 +508,33 @@ function randomStartLevel() {
   const random = Math.random();
 
   if (stage === 0) {
-    if (random < 0.18) return 0;
-    if (random < 0.46) return 1;
+    if (random < 0.20) return 0;
+    if (random < 0.45) return 1;
     if (random < 0.74) return 2;
     return 3;
   }
 
   if (stage === 1) {
-    if (random < 0.12) return 0;
-    if (random < 0.32) return 1;
-    if (random < 0.56) return 2;
-    if (random < 0.78) return 3;
+    if (random < 0.08) return 0;
+    if (random < 0.25) return 1;
+    if (random < 0.50) return 2;
+    if (random < 0.75) return 3;
     if (random < 0.92) return 4;
     return 5;
   }
 
   if (stage === 2) {
-    if (random < 0.12) return 2;
-    if (random < 0.36) return 3;
-    if (random < 0.62) return 4;
-    if (random < 0.84) return 5;
+    if (random < 0.18) return 2;
+    if (random < 0.42) return 3;
+    if (random < 0.67) return 4;
+    if (random < 0.88) return 5;
     return 6;
   }
 
   if (random < 0.16) return 3;
-  if (random < 0.40) return 4;
-  if (random < 0.64) return 5;
-  if (random < 0.84) return 6;
+  if (random < 0.39) return 4;
+  if (random < 0.63) return 5;
+  if (random < 0.85) return 6;
   return 7;
 }
 
@@ -676,19 +737,27 @@ function getMaxDangerRatio() {
 
 function drawBackground() {
   const dangerRatio = getMaxDangerRatio();
+  const time = performance.now();
+  const pulse = 0.5 + Math.sin(time / 120) * 0.5;
+  const dangerActive = dangerRatio > 0.35;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  const warningAlpha = 0.08 + dangerRatio * 0.3;
 
   ctx.fillStyle = "#ecfbff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+  const warningAlpha = dangerActive
+    ? 0.14 + dangerRatio * 0.34 + pulse * 0.08
+    : 0.08 + dangerRatio * 0.22;
+
   ctx.fillStyle = `rgba(255, 80, 60, ${warningAlpha})`;
   ctx.fillRect(0, 0, canvas.width, dropLineY);
 
-  ctx.strokeStyle = dangerRatio > 0.35 ? "#ff4c3d" : "#18c7b8";
-  ctx.lineWidth = dangerRatio > 0.35 ? 4 : 3;
+  ctx.strokeStyle = dangerActive
+    ? `rgba(255, 76, 61, ${0.7 + pulse * 0.3})`
+    : "#18c7b8";
+
+  ctx.lineWidth = dangerActive ? 4 + pulse * 1.2 : 3;
   ctx.setLineDash([8, 8]);
 
   ctx.beginPath();
@@ -698,16 +767,16 @@ function drawBackground() {
 
   ctx.setLineDash([]);
 
-  ctx.fillStyle = dangerRatio > 0.35 ? "#ff4c3d" : "#00a99d";
-  ctx.font = dangerRatio > 0.35 ? "bold 13px Arial" : "13px Arial";
+  ctx.fillStyle = dangerActive ? "#ff4c3d" : "#00a99d";
+  ctx.font = dangerActive ? "bold 14px Arial" : "13px Arial";
   ctx.textAlign = "left";
   ctx.textBaseline = "middle";
-  ctx.fillText(dangerRatio > 0.35 ? "Danger!" : "Danger Line", 12, dropLineY - 14);
+  ctx.fillText(dangerActive ? "Warning!" : "Danger Line", 12, dropLineY - 14);
 
   ctx.textAlign = "right";
   ctx.fillText(getStageName(), canvas.width - 12, dropLineY - 14);
 
-  if (dangerRatio > 0.35 && !isGameOver) {
+  if (dangerActive && !isGameOver) {
     drawDangerCountdown(dangerRatio);
   }
 }
@@ -719,7 +788,7 @@ function drawDangerCountdown(dangerRatio) {
   else if (dangerRatio > 0.5) number = 2;
 
   ctx.save();
-  ctx.globalAlpha = 0.18 + dangerRatio * 0.38;
+  ctx.globalAlpha = 0.18 + dangerRatio * 0.42;
   ctx.fillStyle = "#ff4c3d";
   ctx.font = "bold 78px Arial";
   ctx.textAlign = "center";
@@ -771,7 +840,7 @@ function drawFruitIcon(targetCtx, x, y, radius, level) {
   drawFruitShadow(targetCtx, radius);
 
   if (imageRecord && imageRecord.loaded && imageRecord.canvas) {
-    drawImageFruit(targetCtx, imageRecord.canvas, radius, fruit);
+    drawImageFruit(targetCtx, imageRecord.canvas, radius, fruit, level);
   } else {
     drawFallbackFruit(targetCtx, radius, fruit);
   }
@@ -779,7 +848,7 @@ function drawFruitIcon(targetCtx, x, y, radius, level) {
   targetCtx.restore();
 }
 
-function drawImageFruit(targetCtx, imageCanvas, radius, fruit) {
+function drawImageFruit(targetCtx, imageCanvas, radius, fruit, level) {
   const maxSize = radius * 2 * fruit.visualScale;
   const aspect = imageCanvas.width / imageCanvas.height;
 
@@ -796,6 +865,38 @@ function drawImageFruit(targetCtx, imageCanvas, radius, fruit) {
 
   const offsetX = fruit.drawOffsetX || 0;
   const offsetY = fruit.drawOffsetY || 0;
+
+  if (level <= 2) {
+    targetCtx.save();
+    targetCtx.shadowColor = "rgba(255, 255, 255, 0.95)";
+    targetCtx.shadowBlur = 4;
+    targetCtx.shadowOffsetX = 0;
+    targetCtx.shadowOffsetY = 0;
+    targetCtx.drawImage(
+      imageCanvas,
+      -drawWidth / 2 + offsetX,
+      -drawHeight / 2 + offsetY,
+      drawWidth,
+      drawHeight
+    );
+    targetCtx.restore();
+
+    targetCtx.save();
+    targetCtx.shadowColor = "rgba(20, 120, 120, 0.18)";
+    targetCtx.shadowBlur = 3;
+    targetCtx.shadowOffsetX = 0;
+    targetCtx.shadowOffsetY = 1;
+    targetCtx.drawImage(
+      imageCanvas,
+      -drawWidth / 2 + offsetX,
+      -drawHeight / 2 + offsetY,
+      drawWidth,
+      drawHeight
+    );
+    targetCtx.restore();
+
+    return;
+  }
 
   targetCtx.drawImage(
     imageCanvas,
@@ -1360,6 +1461,8 @@ if (shareScoreButton) {
   shareScoreButton.addEventListener("click", shareScore);
 }
 
+setupNextPreviewUi();
+polishRestartButton();
 preloadFruitImages();
 setupEvolutionBar();
 setupRound(true);
