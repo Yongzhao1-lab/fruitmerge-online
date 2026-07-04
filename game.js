@@ -25,7 +25,7 @@ const leaderboardList = document.getElementById("leaderboardList");
 const gameOverLeaderboard = document.getElementById("gameOverLeaderboard");
 
 const ASSET_BASE = "/assets/fruits/";
-const ASSET_VERSION = "v=20260704-final-gameplay-tuned-02";
+const ASSET_VERSION = "v=20260704-final-ui-gameplay-03";
 
 let nextFruitCanvases = [];
 let nextFruitContexts = [];
@@ -230,21 +230,12 @@ function setupNextPreviewUi() {
   if (!existingNext0 && legacyNext) {
     const wrapper = document.createElement("div");
     wrapper.className = "next-preview auto-next-preview";
-    wrapper.style.display = "flex";
-    wrapper.style.alignItems = "flex-end";
-    wrapper.style.justifyContent = "center";
-    wrapper.style.gap = "7px";
-    wrapper.style.marginTop = "4px";
 
-    const sizes = [44, 38, 34];
+    const sizes = [42, 36, 32];
     const labels = ["Next", "2nd", "3rd"];
 
     for (let i = 0; i < 3; i++) {
       const item = document.createElement("div");
-      item.style.display = "flex";
-      item.style.flexDirection = "column";
-      item.style.alignItems = "center";
-      item.style.gap = "2px";
 
       const previewCanvas = document.createElement("canvas");
       previewCanvas.id = `nextFruitCanvas${i}`;
@@ -255,9 +246,6 @@ function setupNextPreviewUi() {
 
       const label = document.createElement("small");
       label.textContent = labels[i];
-      label.style.fontSize = "10px";
-      label.style.color = "#777";
-      label.style.lineHeight = "1";
 
       item.appendChild(previewCanvas);
       item.appendChild(label);
@@ -291,11 +279,13 @@ function polishRestartButton() {
   restartButton.style.width = "auto";
   restartButton.style.height = "auto";
   restartButton.style.minWidth = "92px";
+  restartButton.style.minHeight = "44px";
   restartButton.style.padding = "12px 18px";
   restartButton.style.borderRadius = "999px";
   restartButton.style.fontSize = "14px";
   restartButton.style.fontWeight = "800";
   restartButton.style.boxShadow = "0 8px 20px rgba(255, 122, 80, 0.22)";
+  restartButton.style.transform = "none";
 }
 
 function initAudio() {
