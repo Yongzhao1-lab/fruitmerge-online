@@ -26,12 +26,35 @@
     </section>
 
     <section id="game" class="game-section">
-      <h2>Play Fruit Merge Game</h2>
-      <div class="game-box">
-        <canvas id="gameCanvas" width="360" height="520"></canvas>
+  <h2>Play Fruit Merge Game</h2>
+
+  <div class="game-panel">
+    <div class="game-info">
+      <div class="info-card">
+        <span class="info-label">Score</span>
+        <strong id="score">0</strong>
       </div>
-      <p class="score-text">Score: <span id="score">0</span></p>
-    </section>
+
+      <div class="info-card">
+        <span class="info-label">Next Fruit</span>
+        <strong id="nextFruit">🍒</strong>
+      </div>
+
+      <button id="restartButton" class="restart-button">Restart</button>
+    </div>
+
+    <div class="game-box">
+      <canvas id="gameCanvas" width="360" height="520"></canvas>
+      <div id="gameOverOverlay" class="game-over hidden">
+        <h3>Game Over</h3>
+        <p>Your final score: <span id="finalScore">0</span></p>
+        <button id="playAgainButton">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="game-tip">Move your mouse or finger to choose where the fruit drops.</p>
+</section>
 
     <section id="how-to-play" class="content-section">
       <h2>How to Play Fruit Merge Online</h2>
