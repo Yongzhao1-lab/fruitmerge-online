@@ -1,17 +1,15 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const nextCanvases = [
-  document.getElementById("nextFruitCanvas0"),
-  document.getElementById("nextFruitCanvas1"),
-  document.getElementById("nextFruitCanvas2")
-];
-const nextContexts = nextCanvases.map((c) => c.getContext("2d"));
+const nextFruitCanvas = document.getElementById("nextFruitCanvas");
+const nextCtx = nextFruitCanvas.getContext("2d");
 
 const scoreElement = document.getElementById("score");
+const timeElement = document.getElementById("time");
 const bestScoreElement = document.getElementById("bestScore");
+const nextFruitNameElement = document.getElementById("nextFruitName");
+
 const restartButton = document.getElementById("restartButton");
-const focusButton = document.getElementById("focusButton");
 const startButton = document.getElementById("startButton");
 const playAgainButton = document.getElementById("playAgainButton");
 const shareScoreButton = document.getElementById("shareScoreButton");
@@ -20,58 +18,116 @@ const startOverlay = document.getElementById("startOverlay");
 const gameOverOverlay = document.getElementById("gameOverOverlay");
 
 const finalScoreElement = document.getElementById("finalScore");
+const finalTimeElement = document.getElementById("finalTime");
 const finalBestScoreElement = document.getElementById("finalBestScore");
 const gameOverMessageElement = document.getElementById("gameOverMessage");
 const evolutionBar = document.getElementById("evolutionBar");
-const gameSection = document.getElementById("game");
 
 const fruits = [
-  { name: "Cherry", radius: 18, score: 5, skin: "#e84545", core: "#ff6b6b", type: "cherry" },
-  { name: "Strawberry", radius: 24, score: 10, skin: "#e83e5a", core: "#ff6b7f", type: "strawberry" },
-  { name: "Grape", radius: 30, score: 20, skin: "#7b4bc7", core: "#a883e8", type: "grape" },
-  { name: "Orange", radius: 37, score: 40, skin: "#ff9a1f", core: "#ffc65c", type: "orange" },
-  { name: "Apple", radius: 46, score: 80, skin: "#e94f64", core: "#ff7b8a", type: "apple" },
-  { name: "Peach", radius: 56, score: 160, skin: "#ff9b6a", core: "#ffc48f", type: "peach" },
-  { name: "Pineapple", radius: 66, score: 320, skin: "#f0b93a", core: "#ffd66b", type: "pineapple" },
-  { name: "Watermelon", radius: 78, score: 640, skin: "#2fbf71", core: "#f2505e", type: "watermelon" },
-  { name: "Coconut", radius: 90, score: 1280, skin: "#8a5a3b", core: "#f7f0df", type: "coconut" },
-  { name: "Melon", radius: 104, score: 2560, skin: "#8bd66b", core: "#c6ef84", type: "melon" },
-  { name: "Dragon Fruit", radius: 116, score: 5120, skin: "#f04e98", core: "#fff4f9", type: "dragonfruit" }
+  { name: "Cherry", radius: 16, score: 5, skin: "#e84545", core: "#ff6b6b", type: "cherry" },
+  { name: "Strawberry", radius: 21, score: 10, skin: "#e83e5a", core: "#ff6b7f", type: "strawberry" },
+  { name: "Grape", radius: 27, score: 20, skin: "#7b4bc7", core: "#a883e8", type: "grape" },
+  { name: "Orange", radius: 34, score: 40, skin: "#ff9a1f", core: "#ffc65c", type: "orange" },
+  { name: "Apple", radius: 42, score: 80, skin: "#e94f64", core: "#ff7b8a", type: "apple" },
+  { name: "Peach", radius: 51, score: 160, skin: "#ff9b6a", core: "#ffc48f", type: "peach" },
+  { name: "Pineapple", radius: 61, score: 320, skin: "#f0b93a", core: "#ffd66b", type: "pineapple" },
+  { name: "Watermelon", radius: 72, score: 640, skin: "#2fbf71", core: "#f2505e", type: "watermelon" },
+  { name: "Coconut", radius: 84, score: 1280, skin: "#8a5a3b", core: "#f7f0df", type: "coconut" },
+  { name: "Melon", radius: 96, score: 2560, skin: "#8bd66b", core: "#c6ef84", type: "melon" },
+  { name: "Dragon Fruit", radius: 110, score: 5120, skin: "#f04e98", core: "#fff4f9", type: "dragonfruit" }
 ];
 
 let balls = [];
 let currentFruit;
-let nextQueue = [];
+let nextFruitLevel;
 
 let mouseX = canvas.width / 2;
 let score = 0;
 let bestScore = Number(localStorage.getItem("fruitMergeBestScore")) || 0;
+let bestTime = Number(localStorage.getItem("fruitMergeBestTime")) || 0;
 let highestUnlocked = Number(localStorage.getItem("fruitMergeHighestUnlocked")) || 0;
 
 let isGameOver = false;
 let isGameStarted = false;
 let canDrop = true;
 
+let gameStartTime = 0;
+let survivalTime = 0;
+
 let floatingTexts = [];
 let mergeBursts = [];
 let screenShake = 0;
 
-const gravity = 0.30;
+const gravity = 0.31;
 const friction = 0.94;
 const bounce = 0.12;
-const dropLineY = 105;
-const spawnY = 58;
-const dangerLimit = 42;
+const dropLineY = 98;
+const spawnY = 54;
+
+function getDifficultyStage() {
+  if (survivalTime < 30) return 0;
+  if (survivalTime < 60) return 1;
+  if (survivalTime < 90) return 2;
+  return 3;
+}
+
+function getStageName() {
+  const stage = getDifficultyStage();
+  if (stage === 0) return "Warm Up";
+  if (stage === 1) return "Pressure";
+  if (stage === 2) return "Hard";
+  return "Expert";
+}
+
+function getDangerLimit() {
+  const stage = getDifficultyStage();
+  if (stage === 0) return 50;
+  if (stage === 1) return 42;
+  if (stage === 2) return 34;
+  return 26;
+}
+
+function getDropCooldown() {
+  const stage = getDifficultyStage();
+  if (stage === 0) return 420;
+  if (stage === 1) return 380;
+  if (stage === 2) return 340;
+  return 300;
+}
 
 function randomStartLevel() {
+  const stage = getDifficultyStage();
   const random = Math.random();
 
-  if (random < 0.22) return 0;
-  if (random < 0.44) return 1;
-  if (random < 0.64) return 2;
-  if (random < 0.80) return 3;
-  if (random < 0.92) return 4;
-  return 5;
+  if (stage === 0) {
+    if (random < 0.30) return 0;
+    if (random < 0.58) return 1;
+    if (random < 0.82) return 2;
+    return 3;
+  }
+
+  if (stage === 1) {
+    if (random < 0.20) return 0;
+    if (random < 0.40) return 1;
+    if (random < 0.60) return 2;
+    if (random < 0.78) return 3;
+    if (random < 0.92) return 4;
+    return 5;
+  }
+
+  if (stage === 2) {
+    if (random < 0.18) return 2;
+    if (random < 0.40) return 3;
+    if (random < 0.62) return 4;
+    if (random < 0.82) return 5;
+    return 6;
+  }
+
+  if (random < 0.18) return 3;
+  if (random < 0.40) return 4;
+  if (random < 0.62) return 5;
+  if (random < 0.82) return 6;
+  return 7;
 }
 
 function createFruit(x, y, level) {
@@ -118,6 +174,7 @@ function setupRound(showStartScreen = true) {
   mergeBursts = [];
 
   score = 0;
+  survivalTime = 0;
   isGameOver = false;
   isGameStarted = !showStartScreen;
   canDrop = true;
@@ -125,6 +182,7 @@ function setupRound(showStartScreen = true) {
   screenShake = 0;
 
   scoreElement.textContent = score;
+  timeElement.textContent = "00:00";
   bestScoreElement.textContent = bestScore;
 
   gameOverOverlay.classList.add("hidden");
@@ -133,32 +191,43 @@ function setupRound(showStartScreen = true) {
     startOverlay.classList.remove("hidden");
   } else {
     startOverlay.classList.add("hidden");
+    gameStartTime = performance.now();
   }
 
-  nextQueue = [randomStartLevel(), randomStartLevel(), randomStartLevel()];
+  nextFruitLevel = randomStartLevel();
   currentFruit = createFruit(mouseX, spawnY, randomStartLevel());
 
-  updateNextPreviews();
+  updateNextFruit();
   updateEvolutionBar();
 }
 
-function updateNextPreviews() {
-  nextQueue.forEach((level, index) => {
-    const canvas = nextCanvases[index];
-    const context = nextContexts[index];
+function updateNextFruit() {
+  const fruit = fruits[nextFruitLevel];
 
-    context.clearRect(0, 0, canvas.width, canvas.height);
+  nextFruitNameElement.textContent = fruit.name;
+  nextCtx.clearRect(0, 0, nextFruitCanvas.width, nextFruitCanvas.height);
 
-    const radius = index === 0 ? 17 : index === 1 ? 14 : 12;
+  drawFruitIcon(
+    nextCtx,
+    nextFruitCanvas.width / 2,
+    nextFruitCanvas.height / 2,
+    18,
+    nextFruitLevel
+  );
+}
 
-    drawFruitIcon(
-      context,
-      canvas.width / 2,
-      canvas.height / 2,
-      radius,
-      level
-    );
-  });
+function updateSurvivalTime() {
+  if (!isGameStarted || isGameOver) return;
+
+  survivalTime = (performance.now() - gameStartTime) / 1000;
+  timeElement.textContent = formatTime(survivalTime);
+}
+
+function formatTime(seconds) {
+  const total = Math.floor(seconds);
+  const min = String(Math.floor(total / 60)).padStart(2, "0");
+  const sec = String(total % 60).padStart(2, "0");
+  return `${min}:${sec}`;
 }
 
 function getMaxDangerRatio() {
@@ -170,7 +239,7 @@ function getMaxDangerRatio() {
     }
   }
 
-  return Math.min(1, maxDangerFrames / dangerLimit);
+  return Math.min(1, maxDangerFrames / getDangerLimit());
 }
 
 function drawBackground() {
@@ -178,7 +247,7 @@ function drawBackground() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const warningAlpha = 0.12 + dangerRatio * 0.25;
+  const warningAlpha = 0.12 + dangerRatio * 0.28;
 
   ctx.fillStyle = "#fff3dc";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -203,6 +272,9 @@ function drawBackground() {
   ctx.textBaseline = "middle";
   ctx.fillText(dangerRatio > 0.35 ? "Danger!" : "Danger Line", 12, dropLineY - 14);
 
+  ctx.textAlign = "right";
+  ctx.fillText(getStageName(), canvas.width - 12, dropLineY - 14);
+
   if (dangerRatio > 0.35 && !isGameOver) {
     drawDangerCountdown(dangerRatio);
   }
@@ -217,10 +289,10 @@ function drawDangerCountdown(dangerRatio) {
   ctx.save();
   ctx.globalAlpha = 0.18 + dangerRatio * 0.4;
   ctx.fillStyle = "#ff3b1f";
-  ctx.font = "bold 82px Arial";
+  ctx.font = "bold 78px Arial";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(String(number), canvas.width / 2, dropLineY + 76);
+  ctx.fillText(String(number), canvas.width / 2, dropLineY + 72);
   ctx.restore();
 }
 
@@ -304,9 +376,7 @@ function drawFruitDetails(targetCtx, x, y, radius, type) {
 
   if (type === "grape") {
     targetCtx.fillStyle = "#6f42c1";
-    const spots = [
-      [0, -0.25], [-0.25, 0], [0.25, 0], [0, 0.25], [-0.18, 0.28], [0.18, 0.28]
-    ];
+    const spots = [[0, -0.25], [-0.25, 0], [0.25, 0], [0, 0.25], [-0.18, 0.28], [0.18, 0.28]];
 
     for (const [sx, sy] of spots) {
       targetCtx.beginPath();
@@ -463,6 +533,8 @@ function drawLeaf(targetCtx, x, y, size) {
 function updatePhysics() {
   if (isGameOver || !isGameStarted) return;
 
+  updateSurvivalTime();
+
   for (const ball of balls) {
     ball.age += 1;
 
@@ -575,7 +647,6 @@ function mergeFruits(indexA, indexB, a, b) {
   }
 
   updateEvolutionBar(newLevel);
-
   addFloatingText(newFruit.x, newFruit.y - newFruit.radius, `+${gainedScore}`);
   addMergeBurst(newFruit.x, newFruit.y, newFruit.radius, fruits[newLevel].skin);
 
@@ -666,6 +737,8 @@ function drawEffects() {
 }
 
 function checkGameOver() {
+  const dangerLimit = getDangerLimit();
+
   for (const ball of balls) {
     const fruitTop = ball.y - ball.radius;
     const fruitCenter = ball.y;
@@ -694,20 +767,31 @@ function endGame() {
   isGameStarted = false;
 
   const oldBest = bestScore;
+  const oldBestTime = bestTime;
 
   if (score > bestScore) {
     bestScore = score;
     localStorage.setItem("fruitMergeBestScore", bestScore);
   }
 
+  if (survivalTime > bestTime) {
+    bestTime = survivalTime;
+    localStorage.setItem("fruitMergeBestTime", bestTime);
+  }
+
   bestScoreElement.textContent = bestScore;
   finalScoreElement.textContent = score;
+  finalTimeElement.textContent = formatTime(survivalTime);
   finalBestScoreElement.textContent = bestScore;
 
   if (score > oldBest) {
     gameOverMessageElement.textContent = `New Best! You beat your record by ${score - oldBest} points.`;
+  } else if (survivalTime > oldBestTime) {
+    gameOverMessageElement.textContent = `New survival record: ${formatTime(survivalTime)}!`;
+  } else if (survivalTime >= 180) {
+    gameOverMessageElement.textContent = "Expert run! You survived more than 3 minutes.";
   } else {
-    gameOverMessageElement.textContent = `Only ${Math.max(0, bestScore - score)} points away from your best score!`;
+    gameOverMessageElement.textContent = `Only ${Math.max(0, bestScore - score)} points away from your best score.`;
   }
 
   gameOverOverlay.classList.remove("hidden");
@@ -751,15 +835,13 @@ function dropFruit() {
   const fruit = createFruit(mouseX, spawnY, currentFruit.level);
   balls.push(fruit);
 
-  const nextLevel = nextQueue.shift();
-  currentFruit = createFruit(mouseX, spawnY, nextLevel);
-  nextQueue.push(randomStartLevel());
-
-  updateNextPreviews();
+  currentFruit = createFruit(mouseX, spawnY, nextFruitLevel);
+  nextFruitLevel = randomStartLevel();
+  updateNextFruit();
 
   setTimeout(() => {
     canDrop = true;
-  }, 420);
+  }, getDropCooldown());
 }
 
 function updateMousePosition(clientX) {
@@ -777,23 +859,8 @@ function updateMousePosition(clientX) {
   );
 }
 
-function toggleFocusMode() {
-  document.body.classList.toggle("focus-mode");
-
-  const isFocusMode = document.body.classList.contains("focus-mode");
-  focusButton.textContent = isFocusMode ? "Exit Focus" : "Focus Mode";
-
-  if (isFocusMode && gameSection.requestFullscreen) {
-    gameSection.requestFullscreen().catch(() => {});
-  }
-
-  if (!isFocusMode && document.fullscreenElement) {
-    document.exitFullscreen().catch(() => {});
-  }
-}
-
 function shareScore() {
-  const text = `I scored ${score} in Fruit Merge Online! Can you beat me? https://fruitmerge.online`;
+  const text = `I scored ${score} and survived ${formatTime(survivalTime)} in Fruit Merge Online! Can you beat me? https://fruitmerge.online`;
 
   if (navigator.share) {
     navigator.share({
@@ -853,15 +920,7 @@ playAgainButton.addEventListener("click", () => {
   setupRound(false);
 });
 
-focusButton.addEventListener("click", toggleFocusMode);
 shareScoreButton.addEventListener("click", shareScore);
-
-document.addEventListener("fullscreenchange", () => {
-  if (!document.fullscreenElement) {
-    document.body.classList.remove("focus-mode");
-    focusButton.textContent = "Focus Mode";
-  }
-});
 
 setupEvolutionBar();
 setupRound(true);
