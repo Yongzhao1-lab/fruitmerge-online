@@ -1,44 +1,52 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const nextFruitCanvas = document.getElementById("nextFruitCanvas");
-const nextCtx = nextFruitCanvas.getContext("2d");
+const nextCanvases = [
+  document.getElementById("nextFruitCanvas0"),
+  document.getElementById("nextFruitCanvas1"),
+  document.getElementById("nextFruitCanvas2")
+];
+const nextContexts = nextCanvases.map((c) => c.getContext("2d"));
 
 const scoreElement = document.getElementById("score");
 const bestScoreElement = document.getElementById("bestScore");
-const nextFruitNameElement = document.getElementById("nextFruitName");
-
 const restartButton = document.getElementById("restartButton");
+const focusButton = document.getElementById("focusButton");
 const startButton = document.getElementById("startButton");
 const playAgainButton = document.getElementById("playAgainButton");
+const shareScoreButton = document.getElementById("shareScoreButton");
 
 const startOverlay = document.getElementById("startOverlay");
 const gameOverOverlay = document.getElementById("gameOverOverlay");
 
 const finalScoreElement = document.getElementById("finalScore");
 const finalBestScoreElement = document.getElementById("finalBestScore");
+const gameOverMessageElement = document.getElementById("gameOverMessage");
+const evolutionBar = document.getElementById("evolutionBar");
+const gameSection = document.getElementById("game");
 
 const fruits = [
-  { name: "Cherry", radius: 16, score: 5, skin: "#e84545", core: "#ff6b6b", type: "cherry" },
-  { name: "Strawberry", radius: 22, score: 10, skin: "#e83e5a", core: "#ff6b7f", type: "strawberry" },
-  { name: "Grape", radius: 28, score: 20, skin: "#7b4bc7", core: "#a883e8", type: "grape" },
-  { name: "Orange", radius: 35, score: 40, skin: "#ff9a1f", core: "#ffc65c", type: "orange" },
-  { name: "Apple", radius: 43, score: 80, skin: "#e94f64", core: "#ff7b8a", type: "apple" },
-  { name: "Peach", radius: 52, score: 160, skin: "#ff9b6a", core: "#ffc48f", type: "peach" },
-  { name: "Pineapple", radius: 62, score: 320, skin: "#f0b93a", core: "#ffd66b", type: "pineapple" },
-  { name: "Watermelon", radius: 73, score: 640, skin: "#2fbf71", core: "#f2505e", type: "watermelon" },
-  { name: "Coconut", radius: 85, score: 1280, skin: "#8a5a3b", core: "#f7f0df", type: "coconut" },
-  { name: "Melon", radius: 98, score: 2560, skin: "#8bd66b", core: "#c6ef84", type: "melon" },
-  { name: "Dragon Fruit", radius: 112, score: 5120, skin: "#f04e98", core: "#fff4f9", type: "dragonfruit" }
+  { name: "Cherry", radius: 18, score: 5, skin: "#e84545", core: "#ff6b6b", type: "cherry" },
+  { name: "Strawberry", radius: 24, score: 10, skin: "#e83e5a", core: "#ff6b7f", type: "strawberry" },
+  { name: "Grape", radius: 30, score: 20, skin: "#7b4bc7", core: "#a883e8", type: "grape" },
+  { name: "Orange", radius: 37, score: 40, skin: "#ff9a1f", core: "#ffc65c", type: "orange" },
+  { name: "Apple", radius: 46, score: 80, skin: "#e94f64", core: "#ff7b8a", type: "apple" },
+  { name: "Peach", radius: 56, score: 160, skin: "#ff9b6a", core: "#ffc48f", type: "peach" },
+  { name: "Pineapple", radius: 66, score: 320, skin: "#f0b93a", core: "#ffd66b", type: "pineapple" },
+  { name: "Watermelon", radius: 78, score: 640, skin: "#2fbf71", core: "#f2505e", type: "watermelon" },
+  { name: "Coconut", radius: 90, score: 1280, skin: "#8a5a3b", core: "#f7f0df", type: "coconut" },
+  { name: "Melon", radius: 104, score: 2560, skin: "#8bd66b", core: "#c6ef84", type: "melon" },
+  { name: "Dragon Fruit", radius: 116, score: 5120, skin: "#f04e98", core: "#fff4f9", type: "dragonfruit" }
 ];
 
 let balls = [];
 let currentFruit;
-let nextFruitLevel;
+let nextQueue = [];
 
 let mouseX = canvas.width / 2;
 let score = 0;
 let bestScore = Number(localStorage.getItem("fruitMergeBestScore")) || 0;
+let highestUnlocked = Number(localStorage.getItem("fruitMergeHighestUnlocked")) || 0;
 
 let isGameOver = false;
 let isGameStarted = false;
@@ -51,8 +59,8 @@ let screenShake = 0;
 const gravity = 0.30;
 const friction = 0.94;
 const bounce = 0.12;
-const dropLineY = 90;
-const spawnY = 50;
+const dropLineY = 105;
+const spawnY = 58;
 const dangerLimit = 42;
 
 function randomStartLevel() {
@@ -80,6 +88,30 @@ function createFruit(x, y, level) {
   };
 }
 
+function setupEvolutionBar() {
+  evolutionBar.innerHTML = "";
+
+  fruits.forEach((fruit, index) => {
+    const item = document.createElement("span");
+    item.className = "evolution-item";
+    item.dataset.level = index;
+    item.textContent = fruit.name;
+    evolutionBar.appendChild(item);
+  });
+
+  updateEvolutionBar();
+}
+
+function updateEvolutionBar(currentLevel = highestUnlocked) {
+  const items = evolutionBar.querySelectorAll(".evolution-item");
+
+  items.forEach((item) => {
+    const level = Number(item.dataset.level);
+    item.classList.toggle("unlocked", level <= highestUnlocked);
+    item.classList.toggle("current", level === currentLevel);
+  });
+}
+
 function setupRound(showStartScreen = true) {
   balls = [];
   floatingTexts = [];
@@ -103,24 +135,30 @@ function setupRound(showStartScreen = true) {
     startOverlay.classList.add("hidden");
   }
 
-  nextFruitLevel = randomStartLevel();
+  nextQueue = [randomStartLevel(), randomStartLevel(), randomStartLevel()];
   currentFruit = createFruit(mouseX, spawnY, randomStartLevel());
-  updateNextFruit();
+
+  updateNextPreviews();
+  updateEvolutionBar();
 }
 
-function updateNextFruit() {
-  const fruit = fruits[nextFruitLevel];
+function updateNextPreviews() {
+  nextQueue.forEach((level, index) => {
+    const canvas = nextCanvases[index];
+    const context = nextContexts[index];
 
-  nextFruitNameElement.textContent = fruit.name;
-  nextCtx.clearRect(0, 0, nextFruitCanvas.width, nextFruitCanvas.height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
 
-  drawFruitIcon(
-    nextCtx,
-    nextFruitCanvas.width / 2,
-    nextFruitCanvas.height / 2,
-    18,
-    nextFruitLevel
-  );
+    const radius = index === 0 ? 17 : index === 1 ? 14 : 12;
+
+    drawFruitIcon(
+      context,
+      canvas.width / 2,
+      canvas.height / 2,
+      radius,
+      level
+    );
+  });
 }
 
 function getMaxDangerRatio() {
@@ -160,10 +198,10 @@ function drawBackground() {
   ctx.setLineDash([]);
 
   ctx.fillStyle = dangerRatio > 0.35 ? "#ff3b1f" : "rgba(255, 122, 26, 0.82)";
-  ctx.font = dangerRatio > 0.35 ? "bold 12px Arial" : "12px Arial";
+  ctx.font = dangerRatio > 0.35 ? "bold 13px Arial" : "13px Arial";
   ctx.textAlign = "left";
   ctx.textBaseline = "middle";
-  ctx.fillText(dangerRatio > 0.35 ? "Danger!" : "Danger Line", 10, dropLineY - 12);
+  ctx.fillText(dangerRatio > 0.35 ? "Danger!" : "Danger Line", 12, dropLineY - 14);
 
   if (dangerRatio > 0.35 && !isGameOver) {
     drawDangerCountdown(dangerRatio);
@@ -179,10 +217,10 @@ function drawDangerCountdown(dangerRatio) {
   ctx.save();
   ctx.globalAlpha = 0.18 + dangerRatio * 0.4;
   ctx.fillStyle = "#ff3b1f";
-  ctx.font = "bold 72px Arial";
+  ctx.font = "bold 82px Arial";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(String(number), canvas.width / 2, dropLineY + 70);
+  ctx.fillText(String(number), canvas.width / 2, dropLineY + 76);
   ctx.restore();
 }
 
@@ -257,24 +295,15 @@ function drawFruitDetails(targetCtx, x, y, radius, type) {
 
   if (type === "cherry") {
     drawLeaf(targetCtx, x + radius * 0.2, y - radius * 0.75, radius * 0.22);
-    targetCtx.strokeStyle = "#4b8a3d";
-    targetCtx.lineWidth = Math.max(2, radius * 0.08);
-    targetCtx.beginPath();
-    targetCtx.moveTo(x, y - radius * 0.35);
-    targetCtx.quadraticCurveTo(x + radius * 0.2, y - radius * 0.7, x + radius * 0.45, y - radius * 0.82);
-    targetCtx.stroke();
   }
 
   if (type === "strawberry") {
     drawLeaf(targetCtx, x, y - radius * 0.65, radius * 0.25);
-    targetCtx.fillStyle = "#ffe7a3";
-    drawSeeds(targetCtx, x, y, radius, 3, 3, "#ffe7a3");
+    drawSeeds(targetCtx, x, y, radius, "#ffe7a3");
   }
 
   if (type === "grape") {
-    const grapeColor = "#6f42c1";
-    targetCtx.fillStyle = grapeColor;
-
+    targetCtx.fillStyle = "#6f42c1";
     const spots = [
       [0, -0.25], [-0.25, 0], [0.25, 0], [0, 0.25], [-0.18, 0.28], [0.18, 0.28]
     ];
@@ -283,10 +312,6 @@ function drawFruitDetails(targetCtx, x, y, radius, type) {
       targetCtx.beginPath();
       targetCtx.arc(x + sx * radius, y + sy * radius, radius * 0.22, 0, Math.PI * 2);
       targetCtx.fill();
-
-      targetCtx.strokeStyle = "rgba(255,255,255,0.45)";
-      targetCtx.lineWidth = 1;
-      targetCtx.stroke();
     }
 
     drawLeaf(targetCtx, x + radius * 0.18, y - radius * 0.68, radius * 0.2);
@@ -307,10 +332,6 @@ function drawFruitDetails(targetCtx, x, y, radius, type) {
 
   if (type === "apple") {
     drawLeaf(targetCtx, x + radius * 0.18, y - radius * 0.72, radius * 0.25);
-    targetCtx.fillStyle = "rgba(255,255,255,0.45)";
-    targetCtx.beginPath();
-    targetCtx.ellipse(x - radius * 0.25, y - radius * 0.15, radius * 0.16, radius * 0.25, -0.4, 0, Math.PI * 2);
-    targetCtx.fill();
   }
 
   if (type === "peach") {
@@ -353,6 +374,7 @@ function drawFruitDetails(targetCtx, x, y, radius, type) {
     targetCtx.stroke();
 
     targetCtx.fillStyle = "#263238";
+
     for (let i = 0; i < 6; i++) {
       const angle = (Math.PI * 2 / 6) * i;
       targetCtx.beginPath();
@@ -374,17 +396,6 @@ function drawFruitDetails(targetCtx, x, y, radius, type) {
     targetCtx.arc(x, y, radius * 0.65, 0, Math.PI * 2);
     targetCtx.fillStyle = "#f7f0df";
     targetCtx.fill();
-
-    targetCtx.strokeStyle = "rgba(77,47,26,0.28)";
-    targetCtx.lineWidth = radius * 0.08;
-    targetCtx.stroke();
-
-    targetCtx.fillStyle = "rgba(77,47,26,0.5)";
-    for (let i = -1; i <= 1; i++) {
-      targetCtx.beginPath();
-      targetCtx.arc(x + i * radius * 0.18, y - radius * 0.15, radius * 0.035, 0, Math.PI * 2);
-      targetCtx.fill();
-    }
   }
 
   if (type === "melon") {
@@ -406,6 +417,7 @@ function drawFruitDetails(targetCtx, x, y, radius, type) {
     targetCtx.fill();
 
     targetCtx.fillStyle = "#202020";
+
     for (let i = 0; i < 16; i++) {
       const angle = (Math.PI * 2 / 16) * i;
       const dist = radius * (0.18 + (i % 4) * 0.09);
@@ -427,7 +439,7 @@ function drawFruitDetails(targetCtx, x, y, radius, type) {
   targetCtx.restore();
 }
 
-function drawSeeds(targetCtx, x, y, radius, cols, rows, color) {
+function drawSeeds(targetCtx, x, y, radius, color) {
   targetCtx.fillStyle = color;
 
   for (let i = -1; i <= 1; i++) {
@@ -557,10 +569,18 @@ function mergeFruits(indexA, indexB, a, b) {
   score += gainedScore;
   scoreElement.textContent = score;
 
+  if (newLevel > highestUnlocked) {
+    highestUnlocked = newLevel;
+    localStorage.setItem("fruitMergeHighestUnlocked", highestUnlocked);
+  }
+
+  updateEvolutionBar(newLevel);
+
   addFloatingText(newFruit.x, newFruit.y - newFruit.radius, `+${gainedScore}`);
   addMergeBurst(newFruit.x, newFruit.y, newFruit.radius, fruits[newLevel].skin);
 
   if (newLevel >= 7) {
+    addFloatingText(newFruit.x, newFruit.y - newFruit.radius - 24, "Great Merge!");
     screenShake = 6;
   }
 
@@ -673,6 +693,8 @@ function endGame() {
   isGameOver = true;
   isGameStarted = false;
 
+  const oldBest = bestScore;
+
   if (score > bestScore) {
     bestScore = score;
     localStorage.setItem("fruitMergeBestScore", bestScore);
@@ -681,6 +703,12 @@ function endGame() {
   bestScoreElement.textContent = bestScore;
   finalScoreElement.textContent = score;
   finalBestScoreElement.textContent = bestScore;
+
+  if (score > oldBest) {
+    gameOverMessageElement.textContent = `New Best! You beat your record by ${score - oldBest} points.`;
+  } else {
+    gameOverMessageElement.textContent = `Only ${Math.max(0, bestScore - score)} points away from your best score!`;
+  }
 
   gameOverOverlay.classList.remove("hidden");
 }
@@ -723,9 +751,11 @@ function dropFruit() {
   const fruit = createFruit(mouseX, spawnY, currentFruit.level);
   balls.push(fruit);
 
-  currentFruit = createFruit(mouseX, spawnY, nextFruitLevel);
-  nextFruitLevel = randomStartLevel();
-  updateNextFruit();
+  const nextLevel = nextQueue.shift();
+  currentFruit = createFruit(mouseX, spawnY, nextLevel);
+  nextQueue.push(randomStartLevel());
+
+  updateNextPreviews();
 
   setTimeout(() => {
     canDrop = true;
@@ -745,6 +775,40 @@ function updateMousePosition(clientX) {
     radius + margin,
     Math.min(canvas.width - radius - margin, mouseX)
   );
+}
+
+function toggleFocusMode() {
+  document.body.classList.toggle("focus-mode");
+
+  const isFocusMode = document.body.classList.contains("focus-mode");
+  focusButton.textContent = isFocusMode ? "Exit Focus" : "Focus Mode";
+
+  if (isFocusMode && gameSection.requestFullscreen) {
+    gameSection.requestFullscreen().catch(() => {});
+  }
+
+  if (!isFocusMode && document.fullscreenElement) {
+    document.exitFullscreen().catch(() => {});
+  }
+}
+
+function shareScore() {
+  const text = `I scored ${score} in Fruit Merge Online! Can you beat me? https://fruitmerge.online`;
+
+  if (navigator.share) {
+    navigator.share({
+      title: "Fruit Merge Online",
+      text,
+      url: "https://fruitmerge.online"
+    }).catch(() => {});
+    return;
+  }
+
+  navigator.clipboard.writeText(text).then(() => {
+    gameOverMessageElement.textContent = "Score copied! Share it with your friends.";
+  }).catch(() => {
+    gameOverMessageElement.textContent = text;
+  });
 }
 
 function clamp(value, min, max) {
@@ -789,5 +853,16 @@ playAgainButton.addEventListener("click", () => {
   setupRound(false);
 });
 
+focusButton.addEventListener("click", toggleFocusMode);
+shareScoreButton.addEventListener("click", shareScore);
+
+document.addEventListener("fullscreenchange", () => {
+  if (!document.fullscreenElement) {
+    document.body.classList.remove("focus-mode");
+    focusButton.textContent = "Focus Mode";
+  }
+});
+
+setupEvolutionBar();
 setupRound(true);
 gameLoop();
