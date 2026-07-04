@@ -67,29 +67,43 @@ let audioContext = null;
 let soundReady = false;
 
 /**
- * Stable stack physics
- * This version makes fruits feel heavier and reduces large collision movement.
+ * Stable non-overlap physics
+ * This version keeps fruits heavy and stable, but uses stronger multi-pass
+ * separation so fruits do not visibly overlap or sink into each other.
  */
 const gravity = 0.34;
-const friction = 0.90;
-const bounce = 0.04;
+const friction = 0.88;
+const bounce = 0.03;
 const dropLineY = 98;
 const spawnY = 54;
 
-const maxHorizontalSpeed = 0.75;
+const maxHorizontalSpeed = 0.65;
 const maxVerticalSpeed = 3.8;
-const collisionRestitution = 0.02;
-const collisionCorrection = 0.34;
-const maxCorrectionPerFrame = 2.4;
+
+const collisionSolverIterations = 5;
+const collisionRestitution = 0.01;
+const collisionCorrection = 0.68;
+const maxCorrectionPerFrame = 5.2;
+const mergeTolerance = 3.5;
 
 function initAudio() {
-  if (soundReady) return;
+  if (soundReady) {
+    if (audioContext && audioContext.state === "suspended") {
+      audioContext.resume().catch(() => {});
+    }
+    return;
+  }
 
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
 
   if (!AudioContextClass) return;
 
   audioContext = new AudioContextClass();
+
+  if (audioContext.state === "suspended") {
+    audioContext.resume().catch(() => {});
+  }
+
   soundReady = true;
 }
 
@@ -508,12 +522,12 @@ function updateLeaderboard() {
 function renderLeaderboard() {
   const list = getLeaderboard();
 
-  if (!leaderboardList) return;
-
-  if (!list.length) {
-    leaderboardList.innerHTML = `<div class="leaderboard-empty">No local runs yet. Play a round to create your first record.</div>`;
-  } else {
-    leaderboardList.innerHTML = list.map((item, index) => createLeaderboardRow(item, index)).join("");
+  if (leaderboardList) {
+    if (!list.length) {
+      leaderboardList.innerHTML = `<div class="leaderboard-empty">No local runs yet. Play a round to create your first record.</div>`;
+    } else {
+      leaderboardList.innerHTML = list.map((item, index) => createLeaderboardRow(item, index)).join("");
+    }
   }
 
   if (gameOverLeaderboard) {
@@ -655,6 +669,36 @@ function drawFruitIcon(targetCtx, x, y, radius, level) {
   targetCtx.restore();
 }
 
+function keepFruitInside(ball) {
+  if (ball.x - ball.radius < 0) {
+    ball.x = ball.radius;
+    ball.vx = Math.max(0, ball.vx) * bounce;
+  }
+
+  if (ball.x + ball.radius > canvas.width) {
+    ball.x = canvas.width - ball.radius;
+    ball.vx = Math.min(0, ball.vx) * bounce;
+  }
+
+  if (ball.y + ball.radius > canvas.height) {
+    ball.y = canvas.height - ball.radius;
+
+    if (ball.vy > 0) {
+      ball.vy *= -bounce;
+    }
+
+    ball.vx *= 0.55;
+
+    if (Math.abs(ball.vy) < 0.5) {
+      ball.vy = 0;
+    }
+
+    if (Math.abs(ball.vx) < 0.04) {
+      ball.vx = 0;
+    }
+  }
+}
+
 function updatePhysics() {
   if (isGameOver || !isGameStarted) return;
 
@@ -673,41 +717,18 @@ function updatePhysics() {
 
     ball.vx *= friction;
 
-    if (Math.abs(ball.vx) < 0.015) {
+    if (Math.abs(ball.vx) < 0.012) {
       ball.vx = 0;
     }
 
-    if (Math.abs(ball.vy) < 0.015) {
+    if (Math.abs(ball.vy) < 0.012) {
       ball.vy = 0;
     }
 
     ball.vx = clamp(ball.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
-
-    if (ball.x - ball.radius < 0) {
-      ball.x = ball.radius;
-      ball.vx *= -bounce;
-    }
-
-    if (ball.x + ball.radius > canvas.width) {
-      ball.x = canvas.width - ball.radius;
-      ball.vx *= -bounce;
-    }
-
-    if (ball.y + ball.radius > canvas.height) {
-      ball.y = canvas.height - ball.radius;
-      ball.vy *= -bounce;
-      ball.vx *= 0.55;
-
-      if (Math.abs(ball.vy) < 0.55) {
-        ball.vy = 0;
-      }
-
-      if (Math.abs(ball.vx) < 0.05) {
-        ball.vx = 0;
-      }
-    }
-
     ball.vy = clamp(ball.vy, -1.2, maxVerticalSpeed);
+
+    keepFruitInside(ball);
   }
 
   updateEffects();
@@ -716,81 +737,92 @@ function updatePhysics() {
 }
 
 function handleCollisions() {
-  for (let i = 0; i < balls.length; i++) {
-    for (let j = i + 1; j < balls.length; j++) {
-      const a = balls[i];
-      const b = balls[j];
+  for (let pass = 0; pass < collisionSolverIterations; pass++) {
+    for (let i = 0; i < balls.length; i++) {
+      for (let j = i + 1; j < balls.length; j++) {
+        const a = balls[i];
+        const b = balls[j];
 
-      let dx = b.x - a.x;
-      let dy = b.y - a.y;
-      let distance = Math.sqrt(dx * dx + dy * dy);
+        let dx = b.x - a.x;
+        let dy = b.y - a.y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (distance < 0.001) {
-        distance = 0.001;
-        dx = 0.001;
-        dy = 0;
-      }
-
-      const minDistance = a.radius + b.radius;
-
-      if (distance < minDistance) {
-        if (a.level === b.level && a.level < fruits.length - 1 && distance < minDistance - 2) {
-          mergeFruits(i, j, a, b);
-          return;
+        if (distance < 0.001) {
+          distance = 0.001;
+          dx = 0.001;
+          dy = 0;
         }
 
-        const overlap = minDistance - distance;
-        const nx = dx / distance;
-        const ny = dy / distance;
+        const minDistance = a.radius + b.radius;
 
-        const massA = a.radius * a.radius;
-        const massB = b.radius * b.radius;
-        const totalMass = massA + massB;
+        if (distance < minDistance) {
+          if (
+            pass === 0 &&
+            a.level === b.level &&
+            a.level < fruits.length - 1 &&
+            distance < minDistance - mergeTolerance
+          ) {
+            mergeFruits(i, j, a, b);
+            return;
+          }
 
-        const moveA = massB / totalMass;
-        const moveB = massA / totalMass;
+          const overlap = minDistance - distance;
+          const nx = dx / distance;
+          const ny = dy / distance;
 
-        const correctionAmount = Math.min(
-          overlap * collisionCorrection,
-          maxCorrectionPerFrame
-        );
+          const massA = a.radius * a.radius;
+          const massB = b.radius * b.radius;
+          const totalMass = massA + massB;
 
-        a.x -= nx * correctionAmount * moveA;
-        b.x += nx * correctionAmount * moveB;
+          const moveA = massB / totalMass;
+          const moveB = massA / totalMass;
 
-        a.y -= ny * correctionAmount * moveA * 0.45;
-        b.y += ny * correctionAmount * moveB * 0.45;
+          const correctionAmount = Math.min(
+            overlap * collisionCorrection,
+            maxCorrectionPerFrame
+          );
 
-        const relativeVx = b.vx - a.vx;
-        const relativeVy = b.vy - a.vy;
-        const velocityAlongNormal = relativeVx * nx + relativeVy * ny;
+          a.x -= nx * correctionAmount * moveA;
+          b.x += nx * correctionAmount * moveB;
 
-        if (velocityAlongNormal < 0) {
-          const impulse = -(1 + collisionRestitution) * velocityAlongNormal;
-          const impulseStrength = impulse * 0.08;
+          a.y -= ny * correctionAmount * moveA * 0.85;
+          b.y += ny * correctionAmount * moveB * 0.85;
 
-          a.vx -= nx * impulseStrength * moveA;
-          b.vx += nx * impulseStrength * moveB;
+          const relativeVx = b.vx - a.vx;
+          const relativeVy = b.vy - a.vy;
+          const velocityAlongNormal = relativeVx * nx + relativeVy * ny;
 
-          a.vy -= ny * impulseStrength * moveA * 0.35;
-          b.vy += ny * impulseStrength * moveB * 0.35;
+          if (velocityAlongNormal < 0) {
+            const impulse = -(1 + collisionRestitution) * velocityAlongNormal;
+            const impulseStrength = Math.min(impulse * 0.035, 0.22);
+
+            a.vx -= nx * impulseStrength * moveA;
+            b.vx += nx * impulseStrength * moveB;
+
+            a.vy -= ny * impulseStrength * moveA * 0.18;
+            b.vy += ny * impulseStrength * moveB * 0.18;
+          }
+
+          a.vx *= 0.72;
+          b.vx *= 0.72;
+
+          if (a.y + a.radius > canvas.height - 6) {
+            a.vx *= 0.55;
+          }
+
+          if (b.y + b.radius > canvas.height - 6) {
+            b.vx *= 0.55;
+          }
+
+          a.vx = clamp(a.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
+          b.vx = clamp(b.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
+
+          a.vy = clamp(a.vy, -1.2, maxVerticalSpeed);
+          b.vy = clamp(b.vy, -1.2, maxVerticalSpeed);
+
+          keepFruitInside(a);
+          keepFruitInside(b);
         }
-
-        a.vx *= 0.82;
-        b.vx *= 0.82;
-
-        if (a.y + a.radius > canvas.height - 4) {
-          a.vx *= 0.65;
-        }
-
-        if (b.y + b.radius > canvas.height - 4) {
-          b.vx *= 0.65;
-        }
-
-        a.vx = clamp(a.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
-        b.vx = clamp(b.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
-        a.vy = clamp(a.vy, -1.2, maxVerticalSpeed);
-        b.vy = clamp(b.vy, -1.2, maxVerticalSpeed);
       }
     }
   }
@@ -995,7 +1027,9 @@ function draw() {
   drawBackground();
   drawAimLine();
 
-  for (const ball of balls) {
+  const sortedBalls = balls.slice().sort((a, b) => a.y - b.y);
+
+  for (const ball of sortedBalls) {
     drawFruit(ball);
   }
 
