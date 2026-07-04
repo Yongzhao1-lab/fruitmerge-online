@@ -190,13 +190,13 @@ a {
 
 .game-section {
   text-align: center;
-  padding: 60px 20px 50px;
+  padding: 54px 20px 48px;
   scroll-margin-top: 100px;
 }
 
 .section-heading {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .section-heading.left {
@@ -225,20 +225,20 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
 }
 
 .game-info {
   display: flex;
   align-items: stretch;
   justify-content: center;
-  gap: 14px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .info-card {
-  min-width: 122px;
-  padding: 11px 16px;
+  min-width: 112px;
+  padding: 10px 14px;
   background: #ffffff;
   border: 2px solid #ff8a2a;
   border-radius: 16px;
@@ -254,34 +254,31 @@ a {
 
 .info-card strong {
   display: block;
-  font-size: 24px;
+  font-size: 23px;
   line-height: 1.1;
 }
 
 .next-card {
-  min-width: 190px;
+  min-width: 130px;
 }
 
-.next-preview {
-  display: flex;
-  justify-content: center;
-  align-items: end;
-  gap: 8px;
-}
-
-.next-preview canvas {
-  background: transparent;
-  border-radius: 50%;
-}
-
-.next-preview small {
+#nextFruitCanvas {
+  width: 44px;
+  height: 44px;
   display: block;
-  font-size: 10px;
-  color: #777;
+  margin: 0 auto 2px;
+  background: transparent;
+}
+
+.next-fruit-name {
+  display: block;
+  font-size: 11px;
+  color: #666;
+  line-height: 1.2;
+  min-height: 14px;
 }
 
 .restart-button,
-.focus-button,
 #startButton,
 #playAgainButton,
 .share-button {
@@ -295,12 +292,7 @@ a {
   box-shadow: 0 8px 18px rgba(255, 122, 26, 0.25);
 }
 
-.focus-button {
-  background: #222;
-}
-
 .restart-button:hover,
-.focus-button:hover,
 #startButton:hover,
 #playAgainButton:hover,
 .share-button:hover {
@@ -354,7 +346,7 @@ canvas {
 
 .game-overlay h3,
 .game-over h3 {
-  font-size: 36px;
+  font-size: 34px;
   margin: 0 0 12px;
   letter-spacing: -0.7px;
 }
@@ -387,13 +379,13 @@ canvas {
 .game-tip {
   color: #666;
   font-size: 14px;
-  margin-top: 14px;
+  margin-top: 12px;
 }
 
 .evolution-panel {
   width: 100%;
-  max-width: 760px;
-  margin-top: 4px;
+  max-width: 720px;
+  margin-top: 2px;
 }
 
 .evolution-title {
@@ -409,7 +401,7 @@ canvas {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .evolution-item {
@@ -536,34 +528,6 @@ footer {
   font-size: 14px;
 }
 
-body.focus-mode {
-  background: #161616;
-}
-
-body.focus-mode .site-header,
-body.focus-mode .hero,
-body.focus-mode main > section:not(#game),
-body.focus-mode footer {
-  display: none;
-}
-
-body.focus-mode .game-section {
-  min-height: 100vh;
-  padding: 24px 10px;
-  background: radial-gradient(circle at top, #333, #111);
-}
-
-body.focus-mode .game-section h2,
-body.focus-mode .section-kicker,
-body.focus-mode .game-tip,
-body.focus-mode .evolution-title {
-  color: #fff;
-}
-
-body.focus-mode .game-box {
-  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-}
-
 @media (max-width: 860px) {
   .site-header {
     flex-direction: column;
@@ -590,29 +554,27 @@ body.focus-mode .game-box {
   }
 
   .game-section {
-    padding: 44px 10px;
+    padding: 42px 10px;
   }
 
   .game-info {
     display: grid;
     grid-template-columns: 1fr 1fr;
     width: 100%;
-    max-width: 420px;
+    max-width: 410px;
   }
 
   .next-card {
     min-width: 0;
-    grid-column: span 2;
   }
 
-  .restart-button,
-  .focus-button {
+  .restart-button {
     width: 100%;
   }
 
   .game-box {
     width: 100%;
-    max-width: 450px;
+    max-width: 420px;
     padding: 10px;
   }
 
