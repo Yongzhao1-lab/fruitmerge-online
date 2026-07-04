@@ -21,7 +21,11 @@ const finalScoreElement = document.getElementById("finalScore");
 const finalTimeElement = document.getElementById("finalTime");
 const finalBestScoreElement = document.getElementById("finalBestScore");
 const gameOverMessageElement = document.getElementById("gameOverMessage");
+const runTitleElement = document.getElementById("runTitle");
+
 const evolutionBar = document.getElementById("evolutionBar");
+const leaderboardList = document.getElementById("leaderboardList");
+const gameOverLeaderboard = document.getElementById("gameOverLeaderboard");
 
 const fruits = [
   { name: "Cherry", radius: 16, score: 5, skin: "#e84545", core: "#ff7f8b", type: "cherry" },
@@ -59,11 +63,70 @@ let floatingTexts = [];
 let mergeBursts = [];
 let screenShake = 0;
 
+let audioContext = null;
+let soundReady = false;
+
 const gravity = 0.31;
 const friction = 0.94;
 const bounce = 0.12;
 const dropLineY = 98;
 const spawnY = 54;
+
+function initAudio() {
+  if (soundReady) return;
+
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
+  if (!AudioContextClass) return;
+
+  audioContext = new AudioContextClass();
+  soundReady = true;
+}
+
+function playTone(frequency, duration, type = "sine", volume = 0.045) {
+  if (!audioContext) return;
+
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+
+  oscillator.type = type;
+  oscillator.frequency.value = frequency;
+
+  gain.gain.setValueAtTime(volume, audioContext.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+
+  oscillator.connect(gain);
+  gain.connect(audioContext.destination);
+
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + duration);
+}
+
+function playDropSound() {
+  playTone(280, 0.055, "triangle", 0.025);
+}
+
+function playMergeSound(level) {
+  const frequency = 420 + level * 42;
+  playTone(frequency, 0.075, "sine", 0.045);
+  playTone(frequency * 1.32, 0.09, "triangle", 0.025);
+}
+
+function playBigMergeSound() {
+  playTone(620, 0.09, "sine", 0.045);
+  setTimeout(() => playTone(820, 0.12, "sine", 0.04), 70);
+}
+
+function playGameOverSound() {
+  playTone(240, 0.14, "sawtooth", 0.03);
+  setTimeout(() => playTone(160, 0.18, "sawtooth", 0.025), 120);
+}
+
+function vibrate(ms) {
+  if (navigator.vibrate) {
+    navigator.vibrate(ms);
+  }
+}
 
 function makeFruitSvg(fruit) {
   const detail = getFruitDetailSvg(fruit.type);
@@ -82,7 +145,6 @@ function makeFruitSvg(fruit) {
     </defs>
 
     <ellipse cx="128" cy="224" rx="70" ry="13" fill="#38cfd8" opacity="0.15"/>
-
     <circle cx="128" cy="128" r="92" fill="url(#g)" filter="url(#shadow)"/>
     <circle cx="96" cy="84" r="22" fill="#ffffff" opacity="0.52"/>
     <circle cx="85" cy="112" r="8" fill="#ffffff" opacity="0.35"/>
@@ -147,7 +209,6 @@ function getFruitDetailSvg(type) {
     return `
       <path d="M128 68 C119 51 108 44 94 47" fill="none" stroke="#7b4f2f" stroke-width="8" stroke-linecap="round"/>
       <ellipse cx="151" cy="50" rx="25" ry="13" fill="#6fbd44" transform="rotate(-24 151 50)"/>
-      <ellipse cx="95" cy="94" rx="22" ry="11" fill="#ffffff" opacity="0.35" transform="rotate(-35 95 94)"/>
     `;
   }
 
@@ -361,6 +422,7 @@ function setupRound(showStartScreen = true) {
 
   updateNextFruit();
   updateEvolutionBar();
+  renderLeaderboard();
 }
 
 function updateNextFruit() {
@@ -391,6 +453,79 @@ function formatTime(seconds) {
   const min = String(Math.floor(total / 60)).padStart(2, "0");
   const sec = String(total % 60).padStart(2, "0");
   return `${min}:${sec}`;
+}
+
+function getRunTitle(seconds) {
+  if (seconds >= 180) return "Expert Run";
+  if (seconds >= 120) return "Pro Run";
+  if (seconds >= 60) return "Strong Run";
+  if (seconds >= 30) return "Casual Run";
+  return "Quick Try";
+}
+
+function getLeaderboard() {
+  try {
+    return JSON.parse(localStorage.getItem("fruitMergeLeaderboard")) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLeaderboard(list) {
+  localStorage.setItem("fruitMergeLeaderboard", JSON.stringify(list));
+}
+
+function updateLeaderboard() {
+  if (score <= 0 && survivalTime <= 0) return;
+
+  const list = getLeaderboard();
+
+  list.push({
+    score,
+    time: survivalTime,
+    title: getRunTitle(survivalTime),
+    date: new Date().toISOString()
+  });
+
+  list.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return b.time - a.time;
+  });
+
+  saveLeaderboard(list.slice(0, 5));
+}
+
+function renderLeaderboard() {
+  const list = getLeaderboard();
+
+  if (!leaderboardList) return;
+
+  if (!list.length) {
+    leaderboardList.innerHTML = `<div class="leaderboard-empty">No local runs yet. Play a round to create your first record.</div>`;
+  } else {
+    leaderboardList.innerHTML = list.map((item, index) => createLeaderboardRow(item, index)).join("");
+  }
+
+  if (gameOverLeaderboard) {
+    if (!list.length) {
+      gameOverLeaderboard.innerHTML = "";
+    } else {
+      gameOverLeaderboard.innerHTML = list.slice(0, 3).map((item, index) => createLeaderboardRow(item, index)).join("");
+    }
+  }
+}
+
+function createLeaderboardRow(item, index) {
+  return `
+    <div class="leaderboard-row">
+      <span class="leaderboard-rank">${index + 1}</span>
+      <span class="leaderboard-main">
+        <strong>${item.title || "Quick Run"}</strong>
+        <span>Time ${formatTime(item.time || 0)}</span>
+      </span>
+      <span class="leaderboard-score">${item.score || 0}</span>
+    </div>
+  `;
 }
 
 function getMaxDangerRatio() {
@@ -630,9 +765,13 @@ function mergeFruits(indexA, indexB, a, b) {
   addFloatingText(newFruit.x, newFruit.y - newFruit.radius, `+${gainedScore}`);
   addMergeBurst(newFruit.x, newFruit.y, newFruit.radius, fruits[newLevel].skin);
 
+  playMergeSound(newLevel);
+
   if (newLevel >= 7) {
     addFloatingText(newFruit.x, newFruit.y - newFruit.radius - 24, "Cool Merge!");
     screenShake = 6;
+    playBigMergeSound();
+    vibrate(35);
   }
 
   if (score > bestScore) {
@@ -748,6 +887,7 @@ function endGame() {
 
   const oldBest = bestScore;
   const oldBestTime = bestTime;
+  const runTitle = getRunTitle(survivalTime);
 
   if (score > bestScore) {
     bestScore = score;
@@ -759,10 +899,14 @@ function endGame() {
     localStorage.setItem("fruitMergeBestTime", bestTime);
   }
 
+  updateLeaderboard();
+  renderLeaderboard();
+
   bestScoreElement.textContent = bestScore;
   finalScoreElement.textContent = score;
   finalTimeElement.textContent = formatTime(survivalTime);
   finalBestScoreElement.textContent = bestScore;
+  runTitleElement.textContent = runTitle;
 
   if (score > oldBest) {
     gameOverMessageElement.textContent = `New Best! You beat your record by ${score - oldBest} points.`;
@@ -773,6 +917,9 @@ function endGame() {
   } else {
     gameOverMessageElement.textContent = `Only ${Math.max(0, bestScore - score)} points away from your best score.`;
   }
+
+  playGameOverSound();
+  vibrate(60);
 
   gameOverOverlay.classList.remove("hidden");
 }
@@ -810,10 +957,13 @@ function gameLoop() {
 function dropFruit() {
   if (isGameOver || !isGameStarted || !canDrop) return;
 
+  initAudio();
   canDrop = false;
 
   const fruit = createFruit(mouseX, spawnY, currentFruit.level);
   balls.push(fruit);
+
+  playDropSound();
 
   currentFruit = createFruit(mouseX, spawnY, nextFruitLevel);
   nextFruitLevel = randomStartLevel();
@@ -893,14 +1043,17 @@ canvas.addEventListener(
 );
 
 startButton.addEventListener("click", () => {
+  initAudio();
   setupRound(false);
 });
 
 restartButton.addEventListener("click", () => {
+  initAudio();
   setupRound(false);
 });
 
 playAgainButton.addEventListener("click", () => {
+  initAudio();
   setupRound(false);
 });
 
