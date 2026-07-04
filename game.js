@@ -5,7 +5,9 @@ const scoreElement = document.getElementById("score");
 const bestScoreElement = document.getElementById("bestScore");
 const nextFruitElement = document.getElementById("nextFruit");
 const restartButton = document.getElementById("restartButton");
+const startButton = document.getElementById("startButton");
 const playAgainButton = document.getElementById("playAgainButton");
+const startOverlay = document.getElementById("startOverlay");
 const gameOverOverlay = document.getElementById("gameOverOverlay");
 const finalScoreElement = document.getElementById("finalScore");
 const finalBestScoreElement = document.getElementById("finalBestScore");
@@ -31,12 +33,12 @@ let mouseX = canvas.width / 2;
 let score = 0;
 let bestScore = Number(localStorage.getItem("fruitMergeBestScore")) || 0;
 let isGameOver = false;
+let isGameStarted = false;
 let canDrop = true;
 
 const gravity = 0.30;
 const friction = 0.94;
 const bounce = 0.12;
-
 const dropLineY = 90;
 const spawnY = 50;
 
@@ -67,10 +69,11 @@ function createFruit(x, y, level) {
   };
 }
 
-function initGame() {
+function setupRound(showStartScreen = true) {
   balls = [];
   score = 0;
   isGameOver = false;
+  isGameStarted = !showStartScreen;
   canDrop = true;
   mouseX = canvas.width / 2;
 
@@ -78,9 +81,23 @@ function initGame() {
   bestScoreElement.textContent = bestScore;
   gameOverOverlay.classList.add("hidden");
 
+  if (showStartScreen) {
+    startOverlay.classList.remove("hidden");
+  } else {
+    startOverlay.classList.add("hidden");
+  }
+
   nextFruitLevel = randomStartLevel();
   currentFruit = createFruit(mouseX, spawnY, randomStartLevel());
   updateNextFruit();
+}
+
+function startGame() {
+  setupRound(false);
+}
+
+function restartGame() {
+  setupRound(false);
 }
 
 function updateNextFruit() {
@@ -105,7 +122,7 @@ function drawBackground() {
   ctx.stroke();
   ctx.setLineDash([]);
 
-  ctx.fillStyle = "rgba(255, 122, 26, 0.75)";
+  ctx.fillStyle = "rgba(255, 122, 26, 0.78)";
   ctx.font = "12px Arial";
   ctx.textAlign = "left";
   ctx.textBaseline = "middle";
@@ -142,7 +159,7 @@ function drawFruit(ball) {
 }
 
 function updatePhysics() {
-  if (isGameOver) return;
+  if (isGameOver || !isGameStarted) return;
 
   for (const ball of balls) {
     ball.age += 1;
@@ -276,6 +293,7 @@ function endGame() {
   if (isGameOver) return;
 
   isGameOver = true;
+  isGameStarted = false;
 
   if (score > bestScore) {
     bestScore = score;
@@ -309,7 +327,7 @@ function gameLoop() {
 }
 
 function dropFruit() {
-  if (isGameOver || !canDrop) return;
+  if (isGameOver || !isGameStarted || !canDrop) return;
 
   canDrop = false;
 
@@ -370,8 +388,9 @@ canvas.addEventListener(
   { passive: false }
 );
 
-restartButton.addEventListener("click", initGame);
-playAgainButton.addEventListener("click", initGame);
+startButton.addEventListener("click", startGame);
+restartButton.addEventListener("click", restartGame);
+playAgainButton.addEventListener("click", restartGame);
 
-initGame();
+setupRound(true);
 gameLoop();
