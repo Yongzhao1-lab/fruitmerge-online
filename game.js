@@ -53,7 +53,7 @@ const fruits = [
     asset: "cherry.png",
     color: "#e93652",
     emoji: "🍒",
-    visualScale: 0.88
+    visualScale: 0.96
   },
   {
     name: "Strawberry",
@@ -63,7 +63,7 @@ const fruits = [
     asset: "strawberry.png",
     color: "#ef3f5c",
     emoji: "🍓",
-    visualScale: 0.90
+    visualScale: 0.96
   },
   {
     name: "Grape",
@@ -73,7 +73,7 @@ const fruits = [
     asset: "grape.png",
     color: "#7650d6",
     emoji: "🍇",
-    visualScale: 0.86
+    visualScale: 0.90
   },
   {
     name: "Orange",
@@ -113,7 +113,7 @@ const fruits = [
     asset: "pineapple.png",
     color: "#f0bd3a",
     emoji: "🍍",
-    visualScale: 0.88
+    visualScale: 0.92
   },
   {
     name: "Watermelon",
@@ -123,7 +123,7 @@ const fruits = [
     asset: "watermelon.png",
     color: "#31bd69",
     emoji: "🍉",
-    visualScale: 0.91
+    visualScale: 0.86
   },
   {
     name: "Mango",
@@ -133,7 +133,7 @@ const fruits = [
     asset: "mango.png",
     color: "#ff9f22",
     emoji: "🥭",
-    visualScale: 0.91
+    visualScale: 0.90
   },
   {
     name: "Melon",
@@ -143,7 +143,7 @@ const fruits = [
     asset: "melon.png",
     color: "#9bd66c",
     emoji: "🍈",
-    visualScale: 0.93
+    visualScale: 0.90
   },
   {
     name: "Dragon Fruit",
@@ -153,7 +153,7 @@ const fruits = [
     asset: "dragonfruit.png",
     color: "#f04e98",
     emoji: "🐉",
-    visualScale: 0.92
+    visualScale: 0.90
   }
 ];
 
