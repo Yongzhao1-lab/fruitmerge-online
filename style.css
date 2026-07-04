@@ -4,7 +4,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 92px;
+  scroll-padding-top: 96px;
 }
 
 body {
@@ -22,20 +22,35 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 8%;
-  background: #ff7a1a;
+  padding: 14px 8%;
+  background: rgba(255, 122, 26, 0.96);
   color: #fff;
   position: sticky;
   top: 0;
   z-index: 50;
   box-shadow: 0 8px 24px rgba(255, 122, 26, 0.18);
+  backdrop-filter: blur(10px);
 }
 
 .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
   font-size: 22px;
   font-weight: 900;
   text-decoration: none;
   letter-spacing: -0.3px;
+}
+
+.logo-mark {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
 .site-nav {
@@ -55,25 +70,53 @@ a {
   text-decoration: underline;
 }
 
-.menu-button {
-  display: none;
-  border: none;
-  background: transparent;
-  color: #fff;
-  font-size: 24px;
-}
-
 .hero {
+  position: relative;
+  overflow: hidden;
   text-align: center;
-  padding: 76px 20px 58px;
+  padding: 82px 20px 62px;
   background:
-    radial-gradient(circle at 30% 20%, rgba(255, 186, 111, 0.35), transparent 34%),
+    radial-gradient(circle at 18% 20%, rgba(255, 186, 111, 0.42), transparent 32%),
+    radial-gradient(circle at 80% 15%, rgba(255, 122, 26, 0.18), transparent 30%),
     linear-gradient(180deg, #ffe2bf, #fff8ef);
 }
 
 .hero-inner {
-  max-width: 760px;
+  position: relative;
+  z-index: 2;
+  max-width: 780px;
   margin: 0 auto;
+}
+
+.hero-bg-fruit {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.28;
+  filter: blur(0.2px);
+}
+
+.hero-fruit-1 {
+  width: 150px;
+  height: 150px;
+  left: 7%;
+  bottom: 12%;
+  background: radial-gradient(circle at 35% 35%, #fff, #ff7b8a 28%, #e94f64 100%);
+}
+
+.hero-fruit-2 {
+  width: 110px;
+  height: 110px;
+  right: 11%;
+  top: 20%;
+  background: radial-gradient(circle at 35% 35%, #fff, #ffc65c 28%, #ff9a1f 100%);
+}
+
+.hero-fruit-3 {
+  width: 190px;
+  height: 190px;
+  right: -60px;
+  bottom: -70px;
+  background: radial-gradient(circle at 38% 38%, #fff, #8bd66b 28%, #2fbf71 100%);
 }
 
 .eyebrow {
@@ -89,51 +132,108 @@ a {
 }
 
 .hero h1 {
-  font-size: 52px;
+  font-size: 56px;
   margin: 0 0 16px;
-  letter-spacing: -1px;
+  letter-spacing: -1.2px;
 }
 
 .hero-text {
   font-size: 18px;
-  max-width: 690px;
+  max-width: 700px;
   margin: 0 auto 30px;
   line-height: 1.65;
   color: #444;
 }
 
-.play-button {
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.play-button,
+.secondary-button {
   display: inline-block;
   padding: 15px 32px;
-  background: #ff7a1a;
-  color: #fff;
   border-radius: 999px;
   text-decoration: none;
   font-weight: 900;
-  box-shadow: 0 12px 28px rgba(255, 122, 26, 0.3);
+}
+
+.play-button {
+  background: #ff7a1a;
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(255, 122, 26, 0.32);
 }
 
 .play-button:hover {
   background: #e86600;
 }
 
-.game-section {
-  text-align: center;
-  padding: 56px 20px 46px;
-  scroll-margin-top: 96px;
+.secondary-button {
+  background: #fff;
+  color: #ff7a1a;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.08);
 }
 
-.game-section h2 {
+.hero-badges {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.hero-badges span {
+  display: inline-block;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(255, 138, 42, 0.25);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #74410f;
+}
+
+.game-section {
+  text-align: center;
+  padding: 60px 20px 50px;
+  scroll-margin-top: 100px;
+}
+
+.section-heading {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.section-heading.left {
+  text-align: left;
+  margin-bottom: 18px;
+}
+
+.section-kicker {
+  margin: 0 0 7px;
+  color: #ff7a1a;
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.section-heading h2,
+.game-section h2,
+.content-section h2 {
   font-size: 32px;
-  margin: 0 0 24px;
-  letter-spacing: -0.4px;
+  margin: 0;
+  letter-spacing: -0.5px;
 }
 
 .game-panel {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
 }
 
 .game-info {
@@ -145,12 +245,12 @@ a {
 }
 
 .info-card {
-  min-width: 120px;
-  padding: 10px 16px;
+  min-width: 122px;
+  padding: 11px 16px;
   background: #ffffff;
   border: 2px solid #ff8a2a;
-  border-radius: 14px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  border-radius: 16px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
 }
 
 .info-label {
@@ -167,7 +267,7 @@ a {
 }
 
 .next-card {
-  min-width: 132px;
+  min-width: 140px;
 }
 
 #nextFruitCanvas {
@@ -182,6 +282,7 @@ a {
   font-size: 11px;
   color: #666;
   line-height: 1.2;
+  min-height: 14px;
 }
 
 .restart-button,
@@ -209,15 +310,15 @@ a {
   padding: 12px;
   background: #fff;
   border: 4px solid #ffb15c;
-  border-radius: 18px;
-  box-shadow: 0 12px 34px rgba(0,0,0,0.14);
+  border-radius: 20px;
+  box-shadow: 0 16px 42px rgba(0,0,0,0.16);
 }
 
 canvas {
   display: block;
   max-width: 100%;
   background: #fff3dc;
-  border-radius: 12px;
+  border-radius: 14px;
   touch-action: none;
 }
 
@@ -229,17 +330,24 @@ canvas {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: rgba(255, 248, 239, 0.95);
-  border-radius: 12px;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 194, 113, 0.32), transparent 38%),
+    rgba(255, 248, 239, 0.96);
+  border-radius: 14px;
   text-align: center;
-  padding: 28px;
+  padding: 30px;
+}
+
+.overlay-badge {
+  font-size: 34px;
+  margin-bottom: 12px;
 }
 
 .game-overlay h3,
 .game-over h3 {
-  font-size: 34px;
+  font-size: 36px;
   margin: 0 0 12px;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.7px;
 }
 
 .game-overlay p,
@@ -247,7 +355,8 @@ canvas {
   font-size: 17px;
   line-height: 1.5;
   margin: 6px 0 12px;
-  max-width: 300px;
+  max-width: 310px;
+  color: #444;
 }
 
 .hidden {
@@ -261,30 +370,51 @@ canvas {
 }
 
 .content-section {
-  max-width: 900px;
+  max-width: 920px;
   margin: 0 auto;
-  padding: 44px 20px;
+  padding: 46px 20px;
   line-height: 1.75;
-  scroll-margin-top: 96px;
-}
-
-.content-section h2 {
-  font-size: 31px;
-  margin-top: 0;
-  letter-spacing: -0.4px;
-}
-
-.content-section h3 {
-  margin-top: 26px;
-  margin-bottom: 8px;
+  scroll-margin-top: 100px;
 }
 
 .content-section p {
   color: #444;
 }
 
-.content-section ul {
-  padding-left: 22px;
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.step-card,
+.tip-card,
+.faq-item {
+  background: #fff;
+  border: 1px solid #ffe0bf;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+}
+
+.step-number {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ff7a1a;
+  color: #fff;
+  border-radius: 50%;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.step-card h3,
+.tip-card h3,
+.faq-item h3 {
+  margin: 0 0 8px;
 }
 
 .tips-grid {
@@ -292,18 +422,6 @@ canvas {
   grid-template-columns: repeat(3, 1fr);
   gap: 18px;
   margin-top: 20px;
-}
-
-.tip-card {
-  background: #fff;
-  border: 1px solid #ffe0bf;
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.06);
-}
-
-.tip-card h3 {
-  margin: 0 0 8px;
 }
 
 .level-list {
@@ -321,7 +439,13 @@ canvas {
   border: 1px solid #ffd2a3;
   color: #444;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+.faq-list {
+  display: grid;
+  gap: 14px;
 }
 
 .legal-section {
@@ -330,7 +454,7 @@ canvas {
 
 footer {
   text-align: center;
-  padding: 32px 20px;
+  padding: 34px 20px;
   background: #222;
   color: #fff;
 }
@@ -352,7 +476,7 @@ footer {
   text-decoration: underline;
 }
 
-@media (max-width: 780px) {
+@media (max-width: 860px) {
   .site-header {
     flex-direction: column;
     gap: 10px;
@@ -366,11 +490,11 @@ footer {
   }
 
   .hero {
-    padding: 56px 18px 44px;
+    padding: 58px 18px 46px;
   }
 
   .hero h1 {
-    font-size: 38px;
+    font-size: 40px;
   }
 
   .hero-text {
@@ -378,7 +502,7 @@ footer {
   }
 
   .game-section {
-    padding: 42px 10px;
+    padding: 44px 10px;
   }
 
   .game-info {
@@ -419,15 +543,20 @@ footer {
 
   .game-overlay h3,
   .game-over h3 {
-    font-size: 28px;
+    font-size: 29px;
   }
 
+  .steps-grid,
   .tips-grid {
     grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 430px) {
+@media (max-width: 440px) {
+  .logo {
+    font-size: 19px;
+  }
+
   .site-nav a {
     font-size: 13px;
   }
@@ -436,12 +565,24 @@ footer {
     font-size: 34px;
   }
 
+  .section-heading h2,
   .game-section h2,
   .content-section h2 {
     font-size: 26px;
   }
 
   .content-section {
-    padding: 36px 18px;
+    padding: 38px 18px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .play-button,
+  .secondary-button {
+    width: 100%;
+    max-width: 260px;
   }
 }
