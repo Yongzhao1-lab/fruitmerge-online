@@ -42,7 +42,7 @@ const leaderboardList = document.getElementById("leaderboardList");
 const gameOverLeaderboard = document.getElementById("gameOverLeaderboard");
 
 const ASSET_BASE = "/assets/fruits/";
-const ASSET_VERSION = "v=20260704-trimmed-fruits-final";
+const ASSET_VERSION = "v=20260704-final-tuned-01";
 
 const fruits = [
   {
@@ -53,7 +53,9 @@ const fruits = [
     asset: "cherry.png",
     color: "#e93652",
     emoji: "🍒",
-    visualScale: 0.96
+    visualScale: 0.98,
+    drawOffsetX: 0,
+    drawOffsetY: 0
   },
   {
     name: "Strawberry",
@@ -63,7 +65,9 @@ const fruits = [
     asset: "strawberry.png",
     color: "#ef3f5c",
     emoji: "🍓",
-    visualScale: 0.96
+    visualScale: 0.98,
+    drawOffsetX: 0,
+    drawOffsetY: 0
   },
   {
     name: "Grape",
@@ -73,7 +77,9 @@ const fruits = [
     asset: "grape.png",
     color: "#7650d6",
     emoji: "🍇",
-    visualScale: 0.90
+    visualScale: 0.92,
+    drawOffsetX: 0,
+    drawOffsetY: 3
   },
   {
     name: "Orange",
@@ -83,7 +89,9 @@ const fruits = [
     asset: "orange.png",
     color: "#ff9f20",
     emoji: "🍊",
-    visualScale: 0.92
+    visualScale: 0.92,
+    drawOffsetX: 0,
+    drawOffsetY: 0
   },
   {
     name: "Apple",
@@ -93,7 +101,9 @@ const fruits = [
     asset: "apple.png",
     color: "#e6384f",
     emoji: "🍎",
-    visualScale: 0.89
+    visualScale: 0.88,
+    drawOffsetX: 0,
+    drawOffsetY: 0
   },
   {
     name: "Peach",
@@ -103,7 +113,9 @@ const fruits = [
     asset: "peach.png",
     color: "#ffb07f",
     emoji: "🍑",
-    visualScale: 0.90
+    visualScale: 0.89,
+    drawOffsetX: 0,
+    drawOffsetY: 0
   },
   {
     name: "Pineapple",
@@ -113,7 +125,9 @@ const fruits = [
     asset: "pineapple.png",
     color: "#f0bd3a",
     emoji: "🍍",
-    visualScale: 0.92
+    visualScale: 0.94,
+    drawOffsetX: 0,
+    drawOffsetY: 0
   },
   {
     name: "Watermelon",
@@ -123,7 +137,9 @@ const fruits = [
     asset: "watermelon.png",
     color: "#31bd69",
     emoji: "🍉",
-    visualScale: 0.86
+    visualScale: 0.82,
+    drawOffsetX: 0,
+    drawOffsetY: 0
   },
   {
     name: "Mango",
@@ -133,7 +149,9 @@ const fruits = [
     asset: "mango.png",
     color: "#ff9f22",
     emoji: "🥭",
-    visualScale: 0.90
+    visualScale: 0.86,
+    drawOffsetX: 0,
+    drawOffsetY: 0
   },
   {
     name: "Melon",
@@ -143,7 +161,9 @@ const fruits = [
     asset: "melon.png",
     color: "#9bd66c",
     emoji: "🍈",
-    visualScale: 0.90
+    visualScale: 0.88,
+    drawOffsetX: 0,
+    drawOffsetY: 0
   },
   {
     name: "Dragon Fruit",
@@ -153,7 +173,9 @@ const fruits = [
     asset: "dragonfruit.png",
     color: "#f04e98",
     emoji: "🐉",
-    visualScale: 0.90
+    visualScale: 0.88,
+    drawOffsetX: 0,
+    drawOffsetY: 0
   }
 ];
 
@@ -200,7 +222,7 @@ const collisionRestitution = 0.015;
 const collisionCorrection = 0.78;
 const maxCorrectionPerFrame = 6.2;
 
-const collisionTightness = 0.96;
+const collisionTightness = 0.99;
 const mergeDistanceFactor = 1.01;
 
 function setText(element, value) {
@@ -772,10 +794,13 @@ function drawImageFruit(targetCtx, imageCanvas, radius, fruit) {
     drawWidth = maxSize * aspect;
   }
 
+  const offsetX = fruit.drawOffsetX || 0;
+  const offsetY = fruit.drawOffsetY || 0;
+
   targetCtx.drawImage(
     imageCanvas,
-    -drawWidth / 2,
-    -drawHeight / 2,
+    -drawWidth / 2 + offsetX,
+    -drawHeight / 2 + offsetY,
     drawWidth,
     drawHeight
   );
