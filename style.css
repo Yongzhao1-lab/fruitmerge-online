@@ -1302,3 +1302,208 @@ canvas#gameCanvas {
     grid-template-columns: 1fr;
   }
 }
+/* =========================================================
+   Final UI Fixes for Fruit Merge Online
+   Fix header overlap, restart button, next fruit layout,
+   and desktop game presentation.
+========================================================= */
+
+/* 1. Fix sticky header covering title */
+html {
+  scroll-padding-top: 86px;
+}
+
+body {
+  scroll-padding-top: 86px;
+}
+
+main {
+  padding-top: 72px;
+}
+
+.game-section {
+  padding-top: 42px;
+}
+
+#game {
+  scroll-margin-top: 90px;
+}
+
+/* Make section title visible and cleaner */
+.game-section h2,
+#game h2 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* 2. Make the game area more centered and professional */
+.game-panel,
+.game-wrapper,
+.game-area {
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.game-box {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 460px;
+}
+
+/* Keep canvas clean on desktop */
+#gameCanvas,
+canvas#gameCanvas {
+  display: block;
+  width: 420px;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+/* 3. Improve score / time / next row */
+.game-info {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.info-card {
+  min-width: 104px;
+  min-height: 82px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #fff;
+  border: 2px solid #70e0d4;
+  box-shadow: 0 8px 24px rgba(60, 200, 190, 0.08);
+}
+
+/* 4. Next Fruit: make 3 previews readable */
+.next-card {
+  min-width: 160px;
+  max-width: 180px;
+}
+
+.next-preview,
+.auto-next-preview {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-end !important;
+  gap: 8px !important;
+  margin-top: 4px !important;
+}
+
+.next-preview > div,
+.auto-next-preview > div {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 2px !important;
+}
+
+.next-preview canvas,
+.auto-next-preview canvas {
+  display: block;
+  background: transparent;
+}
+
+/* Hide crowded next fruit name text */
+#nextFruitName {
+  display: none !important;
+}
+
+.next-preview small,
+.auto-next-preview small {
+  font-size: 10px !important;
+  line-height: 1 !important;
+  color: #777 !important;
+  font-weight: 700;
+}
+
+/* 5. Restart button: stop it looking like a huge promo button */
+#restartButton {
+  width: auto !important;
+  height: auto !important;
+  min-width: 92px !important;
+  min-height: 44px !important;
+  padding: 12px 18px !important;
+  border-radius: 999px !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  box-shadow: 0 8px 20px rgba(255, 122, 80, 0.22) !important;
+  transform: none !important;
+  align-self: center;
+}
+
+/* 6. Soften the game frame */
+.game-box,
+.canvas-wrap,
+.game-canvas-wrap {
+  border-radius: 18px;
+}
+
+/* 7. Mobile optimization */
+@media (max-width: 768px) {
+  main {
+    padding-top: 64px;
+  }
+
+  .game-section {
+    padding-top: 28px;
+  }
+
+  .game-info {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .next-card {
+    grid-column: span 2;
+    max-width: none;
+    width: 100%;
+  }
+
+  #restartButton {
+    grid-column: span 2;
+    width: 100% !important;
+    max-width: 220px;
+    margin: 0 auto;
+  }
+
+  #gameCanvas,
+  canvas#gameCanvas {
+    width: 100%;
+    max-width: 420px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-info {
+    max-width: 360px;
+  }
+
+  .info-card {
+    min-width: 0;
+    padding: 10px 8px;
+  }
+
+  .next-preview,
+  .auto-next-preview {
+    gap: 6px !important;
+  }
+
+  .next-preview small,
+  .auto-next-preview small {
+    font-size: 9px !important;
+  }
+}
