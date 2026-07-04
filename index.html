@@ -5,18 +5,97 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Fruit Merge Online - Play Free Fruit Merge Game</title>
-  <meta name="description" content="Play Fruit Merge Online for free. Drop and merge matching fruits to create bigger fruits and score as high as possible before the box fills up." />
+  <meta name="description" content="Play Fruit Merge Online for free in your browser. Drop fruits, merge matching fruits, create bigger fruits, and try to beat your best score." />
+  <meta name="keywords" content="fruit merge, fruit merge online, merge fruit game, watermelon merge, fruit game, browser game, free puzzle game" />
+  <meta name="robots" content="index, follow" />
+
+  <link rel="canonical" href="https://fruitmerge.online/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Fruit Merge Online - Play Free Fruit Merge Game" />
+  <meta property="og:description" content="Drop fruits, merge matching fruits, create bigger fruits, and try to beat your best score in Fruit Merge Online." />
+  <meta property="og:url" content="https://fruitmerge.online/" />
+  <meta property="og:site_name" content="Fruit Merge Online" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fruit Merge Online - Play Free Fruit Merge Game" />
+  <meta name="twitter:description" content="Play Fruit Merge Online for free. Merge matching fruits and challenge your best score." />
+
+  <meta name="theme-color" content="#ff7a1a" />
 
   <link rel="stylesheet" href="style.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Game",
+    "name": "Fruit Merge Online",
+    "url": "https://fruitmerge.online/",
+    "description": "Fruit Merge Online is a free browser puzzle game where players drop and merge matching fruits to create bigger fruits and score as high as possible.",
+    "genre": ["Puzzle", "Casual", "Merge Game"],
+    "gamePlatform": "Web Browser",
+    "operatingSystem": "Web",
+    "applicationCategory": "Game",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is Fruit Merge Online free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Fruit Merge Online is free to play directly in your browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to download Fruit Merge Online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No download is required. You can play Fruit Merge Online directly in your browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I play Fruit Merge Online on mobile?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Fruit Merge Online works on both desktop and mobile browsers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the goal of Fruit Merge Online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The goal is to drop and merge matching fruits, create bigger fruits, and achieve the highest score before the fruits reach the danger line."
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>
   <header class="site-header">
-    <div class="logo">Fruit Merge Online</div>
+    <a class="logo" href="/">Fruit Merge Online</a>
 
-    <nav>
+    <button class="menu-button" aria-label="Navigation Menu">☰</button>
+
+    <nav class="site-nav">
       <a href="#game">Play</a>
       <a href="#how-to-play">How to Play</a>
+      <a href="#tips">Tips</a>
       <a href="#faq">FAQ</a>
       <a href="#about">About</a>
     </nav>
@@ -24,12 +103,15 @@
 
   <main>
     <section class="hero">
-      <h1>Fruit Merge Online</h1>
-      <p>
-        Drop fruits, merge matching fruits, and try to create the biggest fruit possible.
-        Simple to play, hard to master.
-      </p>
-      <a class="play-button" href="#game">Play Now</a>
+      <div class="hero-inner">
+        <p class="eyebrow">Free Browser Puzzle Game</p>
+        <h1>Fruit Merge Online</h1>
+        <p class="hero-text">
+          Drop fruits, merge matching fruits, and create bigger fruits before the box fills up.
+          Simple to play, satisfying to master.
+        </p>
+        <a class="play-button" href="#game">Play Now</a>
+      </div>
     </section>
 
     <section id="game" class="game-section">
@@ -47,20 +129,21 @@
             <strong id="bestScore">0</strong>
           </div>
 
-          <div class="info-card">
+          <div class="info-card next-card">
             <span class="info-label">Next Fruit</span>
-            <strong id="nextFruit">🍒</strong>
+            <canvas id="nextFruitCanvas" width="52" height="52" aria-label="Next fruit preview"></canvas>
+            <span id="nextFruitName" class="next-fruit-name">Cherry</span>
           </div>
 
           <button id="restartButton" class="restart-button">Restart</button>
         </div>
 
         <div class="game-box">
-          <canvas id="gameCanvas" width="360" height="520"></canvas>
+          <canvas id="gameCanvas" width="360" height="520" aria-label="Fruit Merge Online game area"></canvas>
 
           <div id="startOverlay" class="game-overlay">
             <h3>Fruit Merge</h3>
-            <p>Merge matching fruits and keep them below the danger line.</p>
+            <p>Drop fruits, merge matching fruits, and keep everything below the danger line.</p>
             <button id="startButton">Start Game</button>
           </div>
 
@@ -81,18 +164,62 @@
     <section id="how-to-play" class="content-section">
       <h2>How to Play Fruit Merge Online</h2>
       <p>
-        Fruit Merge Online is a browser puzzle game where you drop fruits into a box.
-        When two matching fruits touch each other, they merge into a bigger fruit.
-        Your goal is to keep merging fruits and score as high as possible before the fruits reach the danger line.
+        Fruit Merge Online is a casual puzzle game where you drop fruits into a box.
+        When two matching fruits touch, they merge into a bigger fruit. The challenge is to keep the board under control while creating larger fruits and building a higher score.
       </p>
 
       <ul>
-        <li>Move the fruit left or right.</li>
+        <li>Move the current fruit left or right.</li>
         <li>Click or tap to drop the fruit.</li>
         <li>Merge two matching fruits to create a bigger fruit.</li>
         <li>Keep fruits below the danger line.</li>
         <li>The game ends when fruits stay near the top for too long.</li>
       </ul>
+    </section>
+
+    <section id="tips" class="content-section">
+      <h2>Fruit Merge Tips</h2>
+      <p>
+        A good strategy is to keep similar fruits close together, avoid random drops, and build from smaller fruits to larger fruits in a controlled area.
+      </p>
+
+      <div class="tips-grid">
+        <div class="tip-card">
+          <h3>Plan Before Dropping</h3>
+          <p>Do not drop fruits too quickly. A small pause can help you choose a better position.</p>
+        </div>
+
+        <div class="tip-card">
+          <h3>Keep Big Fruits Low</h3>
+          <p>Large fruits take up more space. Try to keep them near the bottom of the box.</p>
+        </div>
+
+        <div class="tip-card">
+          <h3>Control the Center</h3>
+          <p>The center area is important. If it gets blocked too early, merging becomes harder.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="fruit-levels" class="content-section">
+      <h2>Fruit Levels</h2>
+      <p>
+        Merge fruits step by step to unlock larger fruits. Watermelon is not the final fruit in this version, so keep merging to discover higher levels.
+      </p>
+
+      <div class="level-list">
+        <span>Cherry</span>
+        <span>Strawberry</span>
+        <span>Grape</span>
+        <span>Orange</span>
+        <span>Apple</span>
+        <span>Peach</span>
+        <span>Pineapple</span>
+        <span>Watermelon</span>
+        <span>Coconut</span>
+        <span>Melon</span>
+        <span>Dragon Fruit</span>
+      </div>
     </section>
 
     <section id="faq" class="content-section">
@@ -109,12 +236,12 @@
 
       <h3>What is the goal of the game?</h3>
       <p>
-        The goal is to merge matching fruits, create bigger fruits, and get the highest score possible before the game ends.
+        The goal is to merge matching fruits, create bigger fruits, and score as high as possible before the game ends.
       </p>
 
       <h3>What happens after watermelon?</h3>
       <p>
-        In this version, watermelon is not the final fruit. Keep merging to discover bigger fruits.
+        In this version, watermelon is not the final fruit. You can continue merging to unlock coconut, melon, and dragon fruit.
       </p>
     </section>
 
@@ -122,21 +249,44 @@
       <h2>About Fruit Merge Online</h2>
       <p>
         Fruit Merge Online is a simple fruit merging puzzle game built for quick browser play.
-        It is designed for casual players who enjoy relaxing merge games, fruit games, and simple puzzle challenges.
+        It is designed for casual players who enjoy merge games, fruit games, and relaxing puzzle challenges.
       </p>
     </section>
 
-    <section id="privacy" class="content-section">
-      <h2>Privacy</h2>
+    <section id="privacy" class="content-section legal-section">
+      <h2>Privacy Policy</h2>
       <p>
         Fruit Merge Online does not require account registration. Your best score is stored locally in your browser using local storage.
-        We do not collect personal information through this game page.
+        We do not require personal information to play this game.
+      </p>
+      <p>
+        If analytics or advertising services are added in the future, this privacy section should be updated to explain what data may be collected and how it is used.
+      </p>
+    </section>
+
+    <section id="terms" class="content-section legal-section">
+      <h2>Terms of Use</h2>
+      <p>
+        Fruit Merge Online is provided for casual entertainment. You may play the game for personal use through this website.
+        The game may be updated, modified, or temporarily unavailable at any time.
+      </p>
+    </section>
+
+    <section id="contact" class="content-section legal-section">
+      <h2>Contact</h2>
+      <p>
+        For feedback, bug reports, or business inquiries, please contact us through the site owner.
       </p>
     </section>
   </main>
 
   <footer>
     <p>© 2026 Fruit Merge Online. All rights reserved.</p>
+    <p class="footer-links">
+      <a href="#privacy">Privacy</a>
+      <a href="#terms">Terms</a>
+      <a href="#contact">Contact</a>
+    </p>
   </footer>
 
   <script src="game.js"></script>
