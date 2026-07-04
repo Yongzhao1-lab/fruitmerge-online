@@ -9,14 +9,14 @@ const gameOverOverlay = document.getElementById("gameOverOverlay");
 const finalScoreElement = document.getElementById("finalScore");
 
 const fruits = [
-  { name: "Cherry", emoji: "🍒", radius: 18, score: 10 },
-  { name: "Strawberry", emoji: "🍓", radius: 24, score: 20 },
-  { name: "Grape", emoji: "🍇", radius: 30, score: 40 },
-  { name: "Orange", emoji: "🍊", radius: 36, score: 80 },
-  { name: "Apple", emoji: "🍎", radius: 44, score: 160 },
-  { name: "Peach", emoji: "🍑", radius: 52, score: 320 },
-  { name: "Pineapple", emoji: "🍍", radius: 62, score: 640 },
-  { name: "Watermelon", emoji: "🍉", radius: 74, score: 1280 }
+  { name: "Cherry", emoji: "🍒", radius: 18, score: 5 },
+  { name: "Strawberry", emoji: "🍓", radius: 24, score: 10 },
+  { name: "Grape", emoji: "🍇", radius: 30, score: 20 },
+  { name: "Orange", emoji: "🍊", radius: 36, score: 40 },
+  { name: "Apple", emoji: "🍎", radius: 44, score: 80 },
+  { name: "Peach", emoji: "🍑", radius: 52, score: 160 },
+  { name: "Pineapple", emoji: "🍍", radius: 62, score: 320 },
+  { name: "Watermelon", emoji: "🍉", radius: 74, score: 640 }
 ];
 
 let balls = [];
@@ -31,6 +31,7 @@ const gravity = 0.32;
 const friction = 0.985;
 const bounce = 0.35;
 const dropLineY = 90;
+const spawnY = 48;
 
 function randomStartLevel() {
   return Math.floor(Math.random() * 4);
@@ -62,7 +63,7 @@ function initGame() {
   gameOverOverlay.classList.add("hidden");
 
   nextFruitLevel = randomStartLevel();
-  currentFruit = createFruit(mouseX, 42, randomStartLevel());
+  currentFruit = createFruit(mouseX, spawnY, randomStartLevel());
   updateNextFruit();
 }
 
@@ -76,6 +77,9 @@ function drawBackground() {
   ctx.fillStyle = "#fff3dc";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+  ctx.fillStyle = "rgba(255, 122, 26, 0.12)";
+  ctx.fillRect(0, 0, canvas.width, dropLineY);
+
   ctx.strokeStyle = "#ff7a1a";
   ctx.lineWidth = 3;
   ctx.setLineDash([8, 8]);
@@ -84,9 +88,6 @@ function drawBackground() {
   ctx.lineTo(canvas.width, dropLineY);
   ctx.stroke();
   ctx.setLineDash([]);
-
-  ctx.fillStyle = "rgba(255,122,26,0.12)";
-  ctx.fillRect(0, 0, canvas.width, dropLineY);
 }
 
 function drawFruit(ball) {
@@ -191,6 +192,7 @@ function handleCollisions() {
 
 function mergeFruits(indexA, indexB, a, b) {
   const newLevel = a.level + 1;
+
   const newFruit = createFruit(
     (a.x + b.x) / 2,
     (a.y + b.y) / 2,
@@ -210,16 +212,17 @@ function mergeFruits(indexA, indexB, a, b) {
 
 function checkGameOver() {
   for (const ball of balls) {
-    const isNearTop = ball.y - ball.radius < dropLineY;
-    const isAlmostStill = Math.abs(ball.vx) < 0.3 && Math.abs(ball.vy) < 0.3;
+    const fruitTop = ball.y - ball.radius;
+    const isAboveDangerLine = fruitTop < dropLineY;
+    const isAlmostStill = Math.abs(ball.vx) < 0.8 && Math.abs(ball.vy) < 0.8;
 
-    if (isNearTop && isAlmostStill) {
+    if (isAboveDangerLine && isAlmostStill) {
       ball.settledTime += 1;
     } else {
       ball.settledTime = 0;
     }
 
-    if (ball.settledTime > 90) {
+    if (ball.settledTime > 45) {
       endGame();
       break;
     }
@@ -256,10 +259,10 @@ function dropFruit() {
 
   canDrop = false;
 
-  const fruit = createFruit(mouseX, 42, currentFruit.level);
+  const fruit = createFruit(mouseX, spawnY, currentFruit.level);
   balls.push(fruit);
 
-  currentFruit = createFruit(mouseX, 42, nextFruitLevel);
+  currentFruit = createFruit(mouseX, spawnY, nextFruitLevel);
   nextFruitLevel = randomStartLevel();
   updateNextFruit();
 
@@ -274,8 +277,13 @@ function updateMousePosition(clientX) {
 
   mouseX = (clientX - rect.left) * scaleX;
 
-  const radius = currentFruit ? currentFruit.radius : 20;
-  mouseX = Math.max(radius, Math.min(canvas.width - radius, mouseX));
+  const radius = currentFruit ? currentFruit.radius : 24;
+  const margin = 10;
+
+  mouseX = Math.max(
+    radius + margin,
+    Math.min(canvas.width - radius - margin, mouseX)
+  );
 }
 
 canvas.addEventListener("mousemove", (event) => {
@@ -286,15 +294,23 @@ canvas.addEventListener("click", () => {
   dropFruit();
 });
 
-canvas.addEventListener("touchmove", (event) => {
-  event.preventDefault();
-  updateMousePosition(event.touches[0].clientX);
-}, { passive: false });
+canvas.addEventListener(
+  "touchmove",
+  (event) => {
+    event.preventDefault();
+    updateMousePosition(event.touches[0].clientX);
+  },
+  { passive: false }
+);
 
-canvas.addEventListener("touchend", (event) => {
-  event.preventDefault();
-  dropFruit();
-}, { passive: false });
+canvas.addEventListener(
+  "touchend",
+  (event) => {
+    event.preventDefault();
+    dropFruit();
+  },
+  { passive: false }
+);
 
 restartButton.addEventListener("click", initGame);
 playAgainButton.addEventListener("click", initGame);
