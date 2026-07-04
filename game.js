@@ -30,14 +30,18 @@ let score = 0;
 let isGameOver = false;
 let canDrop = true;
 
-const gravity = 0.34;
-const friction = 0.982;
-const bounce = 0.28;
+// 这几个参数决定游戏手感
+// gravity：重力
+// friction：横向摩擦，越小越快停止
+// bounce：弹跳，越小越稳定
+const gravity = 0.30;
+const friction = 0.94;
+const bounce = 0.12;
+
 const dropLineY = 90;
 const spawnY = 50;
 
-// 带权重随机：不只给小水果，而是混入中级水果
-// 这样相同水果更难连续匹配，局面更容易杂乱，更容易 Game Over
+// 带权重随机：加入中级水果，减少连续合成概率
 function randomStartLevel() {
   const random = Math.random();
 
@@ -150,6 +154,9 @@ function updatePhysics() {
 
     ball.vx *= friction;
 
+    // 限制横向速度，避免水果被撞飞
+    ball.vx = clamp(ball.vx, -1.2, 1.2);
+
     if (ball.x - ball.radius < 0) {
       ball.x = ball.radius;
       ball.vx *= -bounce;
@@ -163,12 +170,15 @@ function updatePhysics() {
     if (ball.y + ball.radius > canvas.height) {
       ball.y = canvas.height - ball.radius;
       ball.vy *= -bounce;
-      ball.vx *= 0.94;
+      ball.vx *= 0.85;
 
-      if (Math.abs(ball.vy) < 0.7) {
+      if (Math.abs(ball.vy) < 0.5) {
         ball.vy = 0;
       }
     }
+
+    // 避免垂直方向乱弹
+    ball.vy = clamp(ball.vy, -1.5, 4);
   }
 
   handleCollisions();
@@ -187,6 +197,7 @@ function handleCollisions() {
       const minDistance = a.radius + b.radius;
 
       if (distance > 0 && distance < minDistance) {
+        // 相同水果接触时合成
         if (a.level === b.level && a.level < fruits.length - 1) {
           mergeFruits(i, j, a, b);
           return;
@@ -196,16 +207,29 @@ function handleCollisions() {
         const nx = dx / distance;
         const ny = dy / distance;
 
-        a.x -= nx * overlap * 0.5;
-        a.y -= ny * overlap * 0.5;
-        b.x += nx * overlap * 0.5;
-        b.y += ny * overlap * 0.5;
+        // 关键优化：
+        // 水果只做轻微位置修正，不允许大幅挤开
+        a.x -= nx * overlap * 0.18;
+        a.y -= ny * overlap * 0.08;
+        b.x += nx * overlap * 0.18;
+        b.y += ny * overlap * 0.08;
 
-        const push = 0.12;
+        // 关键优化：
+        // 极低推力，只让水果自然微调，不产生强烈弹跳
+        const push = 0.025;
+
         a.vx -= nx * push;
-        a.vy -= ny * push;
         b.vx += nx * push;
-        b.vy += ny * push;
+
+        // 垂直方向推力进一步降低，防止上下乱跳
+        a.vy -= ny * push * 0.25;
+        b.vy += ny * push * 0.25;
+
+        // 限制速度，防止连锁碰撞导致全局位移
+        a.vx = clamp(a.vx, -1.2, 1.2);
+        b.vx = clamp(b.vx, -1.2, 1.2);
+        a.vy = clamp(a.vy, -1.5, 1.5);
+        b.vy = clamp(b.vy, -1.5, 1.5);
       }
     }
   }
@@ -220,8 +244,9 @@ function mergeFruits(indexA, indexB, a, b) {
     newLevel
   );
 
-  newFruit.vy = -2.5;
-  newFruit.vx = (Math.random() - 0.5) * 1.2;
+  // 合成后只给轻微上浮效果，不让新水果弹太高
+  newFruit.vy = -1.2;
+  newFruit.vx = (Math.random() - 0.5) * 0.5;
 
   balls.splice(indexB, 1);
   balls.splice(indexA, 1);
@@ -231,8 +256,6 @@ function mergeFruits(indexA, indexB, a, b) {
   scoreElement.textContent = score;
 }
 
-// 更直接的 Game Over 逻辑：
-// 只要非刚掉落的水果持续进入警戒区域，就结束
 function checkGameOver() {
   for (const ball of balls) {
     const fruitTop = ball.y - ball.radius;
@@ -313,6 +336,10 @@ function updateMousePosition(clientX) {
     radius + margin,
     Math.min(canvas.width - radius - margin, mouseX)
   );
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
 }
 
 canvas.addEventListener("mousemove", (event) => {
