@@ -1,0 +1,55 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#FFE2BF"/>
+      <stop offset="100%" stop-color="#FFF8EF"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000000" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1020" cy="120" r="90" fill="#FF9A1F" opacity="0.24"/>
+  <circle cx="120" cy="520" r="130" fill="#E94F64" opacity="0.18"/>
+  <circle cx="1070" cy="540" r="160" fill="#2FBF71" opacity="0.16"/>
+
+  <g filter="url(#shadow)">
+    <rect x="96" y="78" width="1008" height="474" rx="42" fill="#FFFFFF"/>
+  </g>
+
+  <text x="150" y="180" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="800" fill="#FF7A1A">
+    Free Browser Puzzle Game
+  </text>
+
+  <text x="150" y="280" font-family="Arial, Helvetica, sans-serif" font-size="78" font-weight="900" fill="#222222">
+    Fruit Merge Online
+  </text>
+
+  <text x="150" y="345" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="500" fill="#555555">
+    Drop fruits, merge matching fruits,
+  </text>
+
+  <text x="150" y="390" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="500" fill="#555555">
+    and challenge your best score.
+  </text>
+
+  <rect x="150" y="440" width="218" height="64" rx="32" fill="#FF7A1A"/>
+  <text x="197" y="482" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="900" fill="#FFFFFF">
+    Play Now
+  </text>
+
+  <g transform="translate(760 150)">
+    <circle cx="120" cy="150" r="110" fill="#2FBF71"/>
+    <circle cx="120" cy="150" r="78" fill="#F2505E"/>
+    <circle cx="92" cy="132" r="7" fill="#263238"/>
+    <circle cx="132" cy="168" r="7" fill="#263238"/>
+    <circle cx="152" cy="128" r="7" fill="#263238"/>
+    <path d="M48 150C70 105 170 105 192 150" fill="none" stroke="#F8FFD9" stroke-width="12" stroke-linecap="round"/>
+
+    <circle cx="-40" cy="70" r="48" fill="#FF9A1F"/>
+    <circle cx="246" cy="70" r="44" fill="#E94F64"/>
+    <circle cx="20" cy="285" r="58" fill="#7B4BC7"/>
+    <circle cx="230" cy="285" r="64" fill="#FF9B6A"/>
+  </g>
+</svg>
