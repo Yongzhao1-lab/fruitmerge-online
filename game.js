@@ -10,16 +10,16 @@ const finalScoreElement = document.getElementById("finalScore");
 
 const fruits = [
   { name: "Cherry", emoji: "🍒", radius: 16, score: 5 },
-  { name: "Strawberry", emoji: "🍓", radius: 21, score: 10 },
-  { name: "Grape", emoji: "🍇", radius: 26, score: 20 },
-  { name: "Orange", emoji: "🍊", radius: 31, score: 40 },
-  { name: "Apple", emoji: "🍎", radius: 37, score: 80 },
-  { name: "Peach", emoji: "🍑", radius: 43, score: 160 },
-  { name: "Pineapple", emoji: "🍍", radius: 50, score: 320 },
-  { name: "Watermelon", emoji: "🍉", radius: 58, score: 640 },
-  { name: "Coconut", emoji: "🥥", radius: 67, score: 1280 },
-  { name: "Melon", emoji: "🍈", radius: 76, score: 2560 },
-  { name: "Big Watermelon", emoji: "🍉", radius: 86, score: 5120 }
+  { name: "Strawberry", emoji: "🍓", radius: 22, score: 10 },
+  { name: "Grape", emoji: "🍇", radius: 28, score: 20 },
+  { name: "Orange", emoji: "🍊", radius: 35, score: 40 },
+  { name: "Apple", emoji: "🍎", radius: 43, score: 80 },
+  { name: "Peach", emoji: "🍑", radius: 52, score: 160 },
+  { name: "Pineapple", emoji: "🍍", radius: 62, score: 320 },
+  { name: "Watermelon", emoji: "🍉", radius: 73, score: 640 },
+  { name: "Coconut", emoji: "🥥", radius: 85, score: 1280 },
+  { name: "Melon", emoji: "🍈", radius: 98, score: 2560 },
+  { name: "Mega Fruit", emoji: "🌟", radius: 112, score: 5120 }
 ];
 
 let balls = [];
@@ -34,12 +34,19 @@ const gravity = 0.34;
 const friction = 0.982;
 const bounce = 0.28;
 const dropLineY = 90;
-const spawnY = 48;
+const spawnY = 50;
 
-// 关键修改：开局只随机前 3 种小水果
-// 这样不会太快出现大水果，合成到最终水果更难
+// 带权重随机：不只给小水果，而是混入中级水果
+// 这样相同水果更难连续匹配，局面更容易杂乱，更容易 Game Over
 function randomStartLevel() {
-  return Math.floor(Math.random() * 3);
+  const random = Math.random();
+
+  if (random < 0.22) return 0; // Cherry
+  if (random < 0.44) return 1; // Strawberry
+  if (random < 0.64) return 2; // Grape
+  if (random < 0.80) return 3; // Orange
+  if (random < 0.92) return 4; // Apple
+  return 5;                    // Peach
 }
 
 function createFruit(x, y, level) {
@@ -53,7 +60,8 @@ function createFruit(x, y, level) {
     level,
     radius: fruit.radius,
     emoji: fruit.emoji,
-    dangerFrames: 0
+    dangerFrames: 0,
+    age: 0
   };
 }
 
@@ -97,7 +105,8 @@ function drawBackground() {
   ctx.fillStyle = "rgba(255, 122, 26, 0.75)";
   ctx.font = "12px Arial";
   ctx.textAlign = "left";
-  ctx.fillText("Danger Line", 10, dropLineY - 10);
+  ctx.textBaseline = "middle";
+  ctx.fillText("Danger Line", 10, dropLineY - 12);
 }
 
 function drawFruit(ball) {
@@ -123,7 +132,7 @@ function drawFruit(ball) {
   ctx.lineWidth = 4;
   ctx.stroke();
 
-  ctx.font = `${Math.max(18, ball.radius * 1.08)}px Arial`;
+  ctx.font = `${Math.max(18, ball.radius * 1.05)}px Arial`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(ball.emoji, ball.x, ball.y + 2);
@@ -133,6 +142,8 @@ function updatePhysics() {
   if (isGameOver) return;
 
   for (const ball of balls) {
+    ball.age += 1;
+
     ball.vy += gravity;
     ball.x += ball.vx;
     ball.y += ball.vy;
@@ -220,25 +231,25 @@ function mergeFruits(indexA, indexB, a, b) {
   scoreElement.textContent = score;
 }
 
-// 关键修改：Game Over 不再只依赖“完全静止”
-// 只要有水果持续停留/挤压在警戒线以上，就会结束
+// 更直接的 Game Over 逻辑：
+// 只要非刚掉落的水果持续进入警戒区域，就结束
 function checkGameOver() {
   for (const ball of balls) {
     const fruitTop = ball.y - ball.radius;
     const fruitCenter = ball.y;
 
-    const isClearlyAboveLine = fruitTop < dropLineY - 4;
-    const isCenterNearDangerZone = fruitCenter < dropLineY + 35;
-    const isNotJustDroppedFruit = fruitCenter > spawnY + 20;
+    const isOldEnough = ball.age > 45;
+    const isAboveDangerLine = fruitTop < dropLineY - 2;
+    const isCenterNearTop = fruitCenter < dropLineY + 34;
 
-    if ((isClearlyAboveLine || isCenterNearDangerZone) && isNotJustDroppedFruit) {
+    if (isOldEnough && (isAboveDangerLine || isCenterNearTop)) {
       ball.dangerFrames += 1;
     } else {
-      ball.dangerFrames = Math.max(0, ball.dangerFrames - 2);
+      ball.dangerFrames = Math.max(0, ball.dangerFrames - 3);
     }
 
-    // 约 1 秒左右触发，避免玩家觉得游戏永远不结束
-    if (ball.dangerFrames > 60) {
+    // 数值越小，Game Over 越快
+    if (ball.dangerFrames > 35) {
       endGame();
       break;
     }
