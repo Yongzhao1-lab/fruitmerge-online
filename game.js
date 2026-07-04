@@ -1,11 +1,22 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const nextFruitCanvas =
-  document.getElementById("nextFruitCanvas") ||
-  document.getElementById("nextFruitCanvas0");
+const nextFruitCanvasIds = [
+  "nextFruitCanvas",
+  "nextFruitCanvas0",
+  "nextFruitCanvas1",
+  "nextFruitCanvas2"
+];
 
-const nextCtx = nextFruitCanvas ? nextFruitCanvas.getContext("2d") : null;
+const nextFruitCanvases = Array.from(
+  new Set(
+    nextFruitCanvasIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean)
+  )
+);
+
+const nextFruitContexts = nextFruitCanvases.map((item) => item.getContext("2d"));
 
 const scoreElement = document.getElementById("score");
 const timeElement = document.getElementById("time");
@@ -30,23 +41,134 @@ const evolutionBar = document.getElementById("evolutionBar");
 const leaderboardList = document.getElementById("leaderboardList");
 const gameOverLeaderboard = document.getElementById("gameOverLeaderboard");
 
+/**
+ * Fruit sprite sheet.
+ * Upload your image to:
+ * /assets/fruits/fruit-sheet.png
+ */
+const SPRITE_SHEET_SRC = "/assets/fruits/fruit-sheet.png?v=20260704-final-sheet";
+
+const spriteSheetImage = new Image();
+const fruitSprites = new Map();
+
+let spriteSheetReady = false;
+
 const fruits = [
-  { name: "Cherry", radius: 16, score: 5, skin: "#e84545", core: "#ff7f8b", type: "cherry" },
-  { name: "Strawberry", radius: 21, score: 10, skin: "#e83e5a", core: "#ff8a9c", type: "strawberry" },
-  { name: "Grape", radius: 27, score: 20, skin: "#7b4bc7", core: "#b694ff", type: "grape" },
-  { name: "Orange", radius: 34, score: 40, skin: "#ff9a1f", core: "#ffd36b", type: "orange" },
-  { name: "Apple", radius: 42, score: 80, skin: "#e94f64", core: "#ff8b98", type: "apple" },
-  { name: "Peach", radius: 51, score: 160, skin: "#ff9b6a", core: "#ffc7a1", type: "peach" },
-  { name: "Pineapple", radius: 61, score: 320, skin: "#f0b93a", core: "#ffe17a", type: "pineapple" },
-  { name: "Watermelon", radius: 72, score: 640, skin: "#2fbf71", core: "#ff6070", type: "watermelon" },
-  { name: "Coconut", radius: 84, score: 1280, skin: "#8a5a3b", core: "#fff3df", type: "coconut" },
-  { name: "Melon", radius: 96, score: 2560, skin: "#8bd66b", core: "#d7f59d", type: "melon" },
-  { name: "Dragon Fruit", radius: 110, score: 5120, skin: "#f04e98", core: "#fff4f9", type: "dragonfruit" }
+  {
+    name: "Cherry",
+    radius: 16,
+    score: 5,
+    type: "cherry",
+    color: "#e93652",
+    emoji: "🍒",
+    visualScale: 1.28,
+    sprite: { x: 20, y: 0, w: 320, h: 285 }
+  },
+  {
+    name: "Strawberry",
+    radius: 21,
+    score: 10,
+    type: "strawberry",
+    color: "#ef3f5c",
+    emoji: "🍓",
+    visualScale: 1.22,
+    sprite: { x: 345, y: 0, w: 300, h: 285 }
+  },
+  {
+    name: "Grape",
+    radius: 27,
+    score: 20,
+    type: "grape",
+    color: "#7650d6",
+    emoji: "🍇",
+    visualScale: 1.18,
+    sprite: { x: 650, y: 0, w: 305, h: 285 }
+  },
+  {
+    name: "Orange",
+    radius: 34,
+    score: 40,
+    type: "orange",
+    color: "#ff9f20",
+    emoji: "🍊",
+    visualScale: 1.12,
+    sprite: { x: 955, y: 0, w: 280, h: 285 }
+  },
+  {
+    name: "Apple",
+    radius: 42,
+    score: 80,
+    type: "apple",
+    color: "#e6384f",
+    emoji: "🍎",
+    visualScale: 1.13,
+    sprite: { x: 1240, y: 0, w: 295, h: 295 }
+  },
+  {
+    name: "Peach",
+    radius: 51,
+    score: 160,
+    type: "peach",
+    color: "#ffb07f",
+    emoji: "🍑",
+    visualScale: 1.13,
+    sprite: { x: 30, y: 330, w: 310, h: 315 }
+  },
+  {
+    name: "Pineapple",
+    radius: 61,
+    score: 320,
+    type: "pineapple",
+    color: "#f0bd3a",
+    emoji: "🍍",
+    visualScale: 1.14,
+    sprite: { x: 340, y: 330, w: 320, h: 315 }
+  },
+  {
+    name: "Watermelon",
+    radius: 72,
+    score: 640,
+    type: "watermelon",
+    color: "#31bd69",
+    emoji: "🍉",
+    visualScale: 1.14,
+    sprite: { x: 640, y: 325, w: 315, h: 320 }
+  },
+  {
+    name: "Coconut",
+    radius: 84,
+    score: 1280,
+    type: "coconut",
+    color: "#8a5a3b",
+    emoji: "🥥",
+    visualScale: 1.10,
+    sprite: { x: 950, y: 325, w: 300, h: 320 }
+  },
+  {
+    name: "Melon",
+    radius: 96,
+    score: 2560,
+    type: "melon",
+    color: "#9bd66c",
+    emoji: "🍈",
+    visualScale: 1.10,
+    sprite: { x: 1238, y: 325, w: 298, h: 320 }
+  },
+  {
+    name: "Dragon Fruit",
+    radius: 110,
+    score: 5120,
+    type: "dragonfruit",
+    color: "#f04e98",
+    emoji: "🐉",
+    visualScale: 1.12,
+    sprite: { x: 585, y: 675, w: 370, h: 295 }
+  }
 ];
 
 let balls = [];
 let currentFruit;
-let nextFruitLevel;
+let nextQueue = [];
 
 let mouseX = canvas.width / 2;
 let score = 0;
@@ -68,20 +190,32 @@ let screenShake = 0;
 let audioContext = null;
 let soundReady = false;
 
-const gravity = 0.46;
-const friction = 0.88;
-const bounce = 0.03;
+/**
+ * Final physics:
+ * - Faster falling speed.
+ * - Less excessive bouncing.
+ * - Tighter collision feeling.
+ * - Suitable for 1-2 minute casual rounds.
+ */
+const gravity = 0.62;
+const friction = 0.9;
+const floorFriction = 0.68;
+const bounce = 0.04;
+
 const dropLineY = 98;
 const spawnY = 54;
 
-const maxHorizontalSpeed = 0.65;
-const maxVerticalSpeed = 5.2;
+const initialDropVelocity = 2.35;
+const maxHorizontalSpeed = 0.72;
+const maxVerticalSpeed = 7.6;
 
-const collisionSolverIterations = 5;
-const collisionRestitution = 0.01;
-const collisionCorrection = 0.68;
-const maxCorrectionPerFrame = 5.2;
-const mergeTolerance = 3.5;
+const collisionSolverIterations = 8;
+const collisionRestitution = 0.015;
+const collisionCorrection = 0.78;
+const maxCorrectionPerFrame = 6.2;
+
+const collisionTightness = 0.96;
+const mergeDistanceFactor = 1.01;
 
 function setText(element, value) {
   if (element) element.textContent = value;
@@ -104,7 +238,6 @@ function initAudio() {
   }
 
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-
   if (!AudioContextClass) return;
 
   audioContext = new AudioContextClass();
@@ -116,7 +249,7 @@ function initAudio() {
   soundReady = true;
 }
 
-function playTone(frequency, duration, type = "sine", volume = 0.045) {
+function playTone(frequency, duration, type = "sine", volume = 0.04) {
   if (!audioContext) return;
 
   const oscillator = audioContext.createOscillator();
@@ -140,29 +273,192 @@ function playDropSound() {
 }
 
 function playMergeSound(level) {
-  const frequency = 420 + level * 42;
-  playTone(frequency, 0.075, "sine", 0.045);
-  playTone(frequency * 1.32, 0.09, "triangle", 0.025);
+  const frequency = 430 + level * 42;
+  playTone(frequency, 0.075, "sine", 0.042);
+  playTone(frequency * 1.3, 0.09, "triangle", 0.025);
 }
 
 function playBigMergeSound() {
   playTone(620, 0.09, "sine", 0.045);
-  setTimeout(() => playTone(820, 0.12, "sine", 0.04), 70);
+  setTimeout(() => playTone(820, 0.12, "sine", 0.038), 70);
 }
 
 function playGameOverSound() {
-  playTone(240, 0.14, "sawtooth", 0.03);
-  setTimeout(() => playTone(160, 0.18, "sawtooth", 0.025), 120);
+  playTone(240, 0.14, "sawtooth", 0.028);
+  setTimeout(() => playTone(160, 0.18, "sawtooth", 0.022), 120);
 }
 
 function vibrate(ms) {
-  if (navigator.vibrate) {
-    navigator.vibrate(ms);
-  }
+  if (navigator.vibrate) navigator.vibrate(ms);
 }
 
 function preloadFruitImages() {
-  updateNextFruit();
+  spriteSheetImage.onload = () => {
+    spriteSheetReady = true;
+    buildFruitSprites();
+    updateNextFruit();
+  };
+
+  spriteSheetImage.onerror = () => {
+    spriteSheetReady = false;
+    updateNextFruit();
+  };
+
+  spriteSheetImage.src = SPRITE_SHEET_SRC;
+}
+
+function buildFruitSprites() {
+  fruitSprites.clear();
+
+  fruits.forEach((fruit, index) => {
+    const { x, y, w, h } = fruit.sprite;
+
+    const rawCanvas = document.createElement("canvas");
+    rawCanvas.width = w;
+    rawCanvas.height = h;
+
+    const rawCtx = rawCanvas.getContext("2d", { willReadFrequently: true });
+    rawCtx.drawImage(spriteSheetImage, x, y, w, h, 0, 0, w, h);
+
+    removeSpriteBackground(rawCanvas, rawCtx);
+
+    const trimmedCanvas = trimTransparentCanvas(rawCanvas);
+
+    fruitSprites.set(index, {
+      canvas: trimmedCanvas,
+      width: trimmedCanvas.width,
+      height: trimmedCanvas.height
+    });
+  });
+}
+
+function removeSpriteBackground(canvas, canvasCtx) {
+  const width = canvas.width;
+  const height = canvas.height;
+  const imageData = canvasCtx.getImageData(0, 0, width, height);
+  const data = imageData.data;
+
+  const bg = getAverageCornerColor(data, width, height);
+
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+
+    const distance = Math.sqrt(
+      Math.pow(r - bg.r, 2) +
+      Math.pow(g - bg.g, 2) +
+      Math.pow(b - bg.b, 2)
+    );
+
+    const isLightBlueBackground =
+      r > 180 &&
+      g > 195 &&
+      b > 205 &&
+      b >= r - 6 &&
+      g >= r - 16;
+
+    const isNearCornerBackground = distance < 54 && isLightBlueBackground;
+    const isSoftEdgeBackground = distance < 82 && isLightBlueBackground;
+
+    if (isNearCornerBackground) {
+      data[i + 3] = 0;
+    } else if (isSoftEdgeBackground) {
+      const alphaRatio = (distance - 54) / 28;
+      data[i + 3] = Math.floor(data[i + 3] * alphaRatio);
+    }
+  }
+
+  canvasCtx.putImageData(imageData, 0, 0);
+}
+
+function getAverageCornerColor(data, width, height) {
+  const samplePoints = [
+    [2, 2],
+    [width - 3, 2],
+    [2, height - 3],
+    [width - 3, height - 3],
+    [Math.floor(width / 2), 2],
+    [2, Math.floor(height / 2)],
+    [width - 3, Math.floor(height / 2)]
+  ];
+
+  let r = 0;
+  let g = 0;
+  let b = 0;
+
+  samplePoints.forEach(([x, y]) => {
+    const index = (y * width + x) * 4;
+    r += data[index];
+    g += data[index + 1];
+    b += data[index + 2];
+  });
+
+  return {
+    r: r / samplePoints.length,
+    g: g / samplePoints.length,
+    b: b / samplePoints.length
+  };
+}
+
+function trimTransparentCanvas(sourceCanvas) {
+  const sourceCtx = sourceCanvas.getContext("2d", { willReadFrequently: true });
+  const width = sourceCanvas.width;
+  const height = sourceCanvas.height;
+  const imageData = sourceCtx.getImageData(0, 0, width, height);
+  const data = imageData.data;
+
+  let minX = width;
+  let minY = height;
+  let maxX = 0;
+  let maxY = 0;
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const alpha = data[(y * width + x) * 4 + 3];
+
+      if (alpha > 18) {
+        if (x < minX) minX = x;
+        if (y < minY) minY = y;
+        if (x > maxX) maxX = x;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+
+  if (minX > maxX || minY > maxY) {
+    return sourceCanvas;
+  }
+
+  const padding = 4;
+
+  minX = Math.max(0, minX - padding);
+  minY = Math.max(0, minY - padding);
+  maxX = Math.min(width - 1, maxX + padding);
+  maxY = Math.min(height - 1, maxY + padding);
+
+  const trimmedWidth = maxX - minX + 1;
+  const trimmedHeight = maxY - minY + 1;
+
+  const trimmedCanvas = document.createElement("canvas");
+  trimmedCanvas.width = trimmedWidth;
+  trimmedCanvas.height = trimmedHeight;
+
+  const trimmedCtx = trimmedCanvas.getContext("2d");
+
+  trimmedCtx.drawImage(
+    sourceCanvas,
+    minX,
+    minY,
+    trimmedWidth,
+    trimmedHeight,
+    0,
+    0,
+    trimmedWidth,
+    trimmedHeight
+  );
+
+  return trimmedCanvas;
 }
 
 function getDifficultyStage() {
@@ -182,18 +478,20 @@ function getStageName() {
 
 function getDangerLimit() {
   const stage = getDifficultyStage();
-  if (stage === 0) return 50;
-  if (stage === 1) return 42;
+
+  if (stage === 0) return 58;
+  if (stage === 1) return 44;
   if (stage === 2) return 34;
   return 26;
 }
 
 function getDropCooldown() {
   const stage = getDifficultyStage();
-  if (stage === 0) return 360;
-  if (stage === 1) return 330;
-  if (stage === 2) return 300;
-  return 270;
+
+  if (stage === 0) return 330;
+  if (stage === 1) return 300;
+  if (stage === 2) return 270;
+  return 240;
 }
 
 function randomStartLevel() {
@@ -208,16 +506,16 @@ function randomStartLevel() {
   }
 
   if (stage === 1) {
-    if (random < 0.14) return 0;
-    if (random < 0.34) return 1;
-    if (random < 0.58) return 2;
+    if (random < 0.12) return 0;
+    if (random < 0.32) return 1;
+    if (random < 0.56) return 2;
     if (random < 0.78) return 3;
     if (random < 0.92) return 4;
     return 5;
   }
 
   if (stage === 2) {
-    if (random < 0.14) return 2;
+    if (random < 0.12) return 2;
     if (random < 0.36) return 3;
     if (random < 0.62) return 4;
     if (random < 0.84) return 5;
@@ -299,8 +597,8 @@ function setupRound(showStartScreen = true) {
     gameStartTime = performance.now();
   }
 
-  nextFruitLevel = randomStartLevel();
   currentFruit = createFruit(mouseX, spawnY, randomStartLevel());
+  nextQueue = [randomStartLevel(), randomStartLevel(), randomStartLevel()];
 
   updateNextFruit();
   updateEvolutionBar();
@@ -308,22 +606,25 @@ function setupRound(showStartScreen = true) {
 }
 
 function updateNextFruit() {
-  if (typeof nextFruitLevel !== "number") return;
+  if (!nextQueue.length) return;
 
-  const fruit = fruits[nextFruitLevel];
+  const nextLevel = nextQueue[0];
+  const fruit = fruits[nextLevel];
+
   setText(nextFruitNameElement, fruit.name);
 
-  if (!nextCtx || !nextFruitCanvas) return;
+  if (!nextFruitCanvases.length) return;
 
-  nextCtx.clearRect(0, 0, nextFruitCanvas.width, nextFruitCanvas.height);
+  nextFruitCanvases.forEach((nextCanvas, index) => {
+    const nextCtx = nextFruitContexts[index];
+    if (!nextCtx) return;
 
-  drawFruitIcon(
-    nextCtx,
-    nextFruitCanvas.width / 2,
-    nextFruitCanvas.height / 2,
-    21,
-    nextFruitLevel
-  );
+    const level = nextQueue[index] ?? nextQueue[0];
+    const size = index === 0 ? 21 : index === 1 ? 18 : 16;
+
+    nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+    drawFruitIcon(nextCtx, nextCanvas.width / 2, nextCanvas.height / 2, size, level);
+  });
 }
 
 function updateSurvivalTime() {
@@ -506,7 +807,7 @@ function drawFruit(ball) {
   let scale = 1;
 
   if (ball.popFrames > 0) {
-    scale = 1 + ball.popFrames / 80;
+    scale = 1 + ball.popFrames / 85;
   }
 
   drawFruitIcon(ctx, ball.x, ball.y, ball.radius * scale, ball.level);
@@ -514,685 +815,100 @@ function drawFruit(ball) {
 
 function drawFruitIcon(targetCtx, x, y, radius, level) {
   const fruit = fruits[level];
-  const type = fruit.type;
+  const sprite = fruitSprites.get(level);
 
   targetCtx.save();
   targetCtx.translate(x, y);
 
   drawFruitShadow(targetCtx, radius);
 
-  if (type === "cherry") drawCherry(targetCtx, radius);
-  else if (type === "strawberry") drawStrawberry(targetCtx, radius);
-  else if (type === "grape") drawGrape(targetCtx, radius);
-  else if (type === "orange") drawOrange(targetCtx, radius);
-  else if (type === "apple") drawApple(targetCtx, radius);
-  else if (type === "peach") drawPeach(targetCtx, radius);
-  else if (type === "pineapple") drawPineapple(targetCtx, radius);
-  else if (type === "watermelon") drawWatermelon(targetCtx, radius);
-  else if (type === "coconut") drawCoconut(targetCtx, radius);
-  else if (type === "melon") drawMelon(targetCtx, radius);
-  else if (type === "dragonfruit") drawDragonFruit(targetCtx, radius);
-  else {
-    targetCtx.beginPath();
-    targetCtx.arc(0, 0, radius * 0.9, 0, Math.PI * 2);
-    targetCtx.fillStyle = fruit.skin || "#ff7a59";
-    targetCtx.fill();
+  if (spriteSheetReady && sprite && sprite.canvas) {
+    drawSpriteFruit(targetCtx, sprite.canvas, radius, fruit);
+  } else {
+    drawFallbackFruit(targetCtx, radius, fruit);
   }
 
   targetCtx.restore();
 }
 
-function drawFruitShadow(targetCtx, r) {
-  targetCtx.save();
-  targetCtx.globalAlpha = 0.12;
-  targetCtx.fillStyle = "#4ed0e0";
-  targetCtx.beginPath();
-  targetCtx.ellipse(0, r * 0.86, r * 0.58, r * 0.12, 0, 0, Math.PI * 2);
-  targetCtx.fill();
-  targetCtx.restore();
-}
+function drawSpriteFruit(targetCtx, spriteCanvas, radius, fruit) {
+  const maxSize = radius * 2 * fruit.visualScale;
+  const aspect = spriteCanvas.width / spriteCanvas.height;
 
-function createFruitGradient(targetCtx, r, c1, c2, c3) {
-  const g = targetCtx.createRadialGradient(-r * 0.32, -r * 0.36, r * 0.08, 0, 0, r);
-  g.addColorStop(0, c1);
-  g.addColorStop(0.42, c2);
-  g.addColorStop(1, c3);
-  return g;
-}
+  let drawWidth;
+  let drawHeight;
 
-function drawGloss(targetCtx, r, alpha = 0.12) {
-  targetCtx.save();
-  targetCtx.globalAlpha = alpha;
-  targetCtx.fillStyle = "#ffffff";
-  targetCtx.beginPath();
-  targetCtx.ellipse(-r * 0.34, -r * 0.36, r * 0.15, r * 0.09, -0.55, 0, Math.PI * 2);
-  targetCtx.fill();
-
-  targetCtx.globalAlpha = alpha * 0.45;
-  targetCtx.beginPath();
-  targetCtx.arc(-r * 0.48, -r * 0.12, r * 0.035, 0, Math.PI * 2);
-  targetCtx.fill();
-
-  targetCtx.restore();
-}
-
-function drawLeaf(targetCtx, x, y, w, h, rotation = 0) {
-  targetCtx.save();
-  targetCtx.translate(x, y);
-  targetCtx.rotate(rotation);
-
-  const g = targetCtx.createLinearGradient(-w, 0, w, 0);
-  g.addColorStop(0, "#3f8f30");
-  g.addColorStop(0.55, "#65bd45");
-  g.addColorStop(1, "#9be26b");
-
-  targetCtx.fillStyle = g;
-  targetCtx.beginPath();
-  targetCtx.moveTo(-w, 0);
-  targetCtx.quadraticCurveTo(0, -h, w, 0);
-  targetCtx.quadraticCurveTo(0, h, -w, 0);
-  targetCtx.closePath();
-  targetCtx.fill();
-
-  targetCtx.strokeStyle = "rgba(44,110,34,0.35)";
-  targetCtx.lineWidth = Math.max(1, w * 0.08);
-  targetCtx.beginPath();
-  targetCtx.moveTo(-w * 0.75, 0);
-  targetCtx.lineTo(w * 0.75, 0);
-  targetCtx.stroke();
-
-  targetCtx.restore();
-}
-
-function drawStem(targetCtx, x1, y1, x2, y2, width) {
-  targetCtx.save();
-  targetCtx.strokeStyle = "#7b4c25";
-  targetCtx.lineWidth = width;
-  targetCtx.lineCap = "round";
-  targetCtx.beginPath();
-  targetCtx.moveTo(x1, y1);
-  targetCtx.quadraticCurveTo((x1 + x2) / 2, y1 - width * 2.4, x2, y2);
-  targetCtx.stroke();
-
-  targetCtx.strokeStyle = "rgba(255,255,255,0.22)";
-  targetCtx.lineWidth = Math.max(1, width * 0.25);
-  targetCtx.beginPath();
-  targetCtx.moveTo(x1 - width * 0.1, y1);
-  targetCtx.quadraticCurveTo((x1 + x2) / 2 - width * 0.1, y1 - width * 2, x2 - width * 0.1, y2);
-  targetCtx.stroke();
-
-  targetCtx.restore();
-}
-
-function drawWaterDrops(targetCtx, r, points) {
-  targetCtx.save();
-  targetCtx.globalAlpha = 0.22;
-  targetCtx.fillStyle = "#ffffff";
-
-  for (const [x, y, size] of points) {
-    targetCtx.beginPath();
-    targetCtx.ellipse(x * r, y * r, size * r, size * r * 1.35, -0.3, 0, Math.PI * 2);
-    targetCtx.fill();
+  if (aspect >= 1) {
+    drawWidth = maxSize;
+    drawHeight = maxSize / aspect;
+  } else {
+    drawHeight = maxSize;
+    drawWidth = maxSize * aspect;
   }
 
-  targetCtx.restore();
+  targetCtx.drawImage(
+    spriteCanvas,
+    -drawWidth / 2,
+    -drawHeight / 2,
+    drawWidth,
+    drawHeight
+  );
 }
 
-/* ---------------- Cherry ---------------- */
-function drawCherry(targetCtx, r) {
-  targetCtx.save();
-
-  drawStem(targetCtx, -r * 0.30, -r * 0.26, -r * 0.08, -r * 0.96, r * 0.07);
-  drawStem(targetCtx, r * 0.24, -r * 0.24, -r * 0.08, -r * 0.96, r * 0.07);
-  drawLeaf(targetCtx, r * 0.18, -r * 0.92, r * 0.22, r * 0.12, -0.35);
-
-  targetCtx.beginPath();
-  targetCtx.arc(-r * 0.28, r * 0.08, r * 0.50, 0, Math.PI * 2);
-  targetCtx.fillStyle = createFruitGradient(targetCtx, r, "#ffb5bd", "#ef4058", "#b91430");
-  targetCtx.fill();
-
-  targetCtx.beginPath();
-  targetCtx.arc(r * 0.28, r * 0.06, r * 0.52, 0, Math.PI * 2);
-  targetCtx.fillStyle = createFruitGradient(targetCtx, r, "#ff9aa7", "#d91f43", "#a90f2b");
-  targetCtx.fill();
-
-  targetCtx.save();
-  targetCtx.globalAlpha = 0.16;
-  targetCtx.fillStyle = "#7d0b20";
-  targetCtx.beginPath();
-  targetCtx.ellipse(r * 0.40, r * 0.18, r * 0.16, r * 0.26, 0.35, 0, Math.PI * 2);
-  targetCtx.fill();
-  targetCtx.restore();
-
-  drawWaterDrops(targetCtx, r, [
-    [-0.42, -0.08, 0.04],
-    [-0.18, 0.02, 0.032],
-    [0.10, -0.12, 0.035],
-    [0.34, -0.02, 0.032]
-  ]);
-
-  drawGloss(targetCtx, r, 0.16);
-  targetCtx.restore();
-}
-
-/* ---------------- Strawberry ---------------- */
-function drawStrawberry(targetCtx, r) {
-  targetCtx.save();
-
-  targetCtx.beginPath();
-  targetCtx.moveTo(-r * 0.04, -r * 0.82);
-  targetCtx.bezierCurveTo(r * 0.58, -r * 0.90, r * 0.88, -r * 0.28, r * 0.76, r * 0.34);
-  targetCtx.bezierCurveTo(r * 0.62, r * 0.80, r * 0.22, r * 1.00, 0, r * 1.02);
-  targetCtx.bezierCurveTo(-r * 0.26, r * 0.98, -r * 0.62, r * 0.80, -r * 0.76, r * 0.34);
-  targetCtx.bezierCurveTo(-r * 0.90, -r * 0.28, -r * 0.58, -r * 0.88, -r * 0.04, -r * 0.82);
-  targetCtx.closePath();
-
-  targetCtx.fillStyle = createFruitGradient(targetCtx, r, "#ffb6bf", "#f23858", "#bd1838");
-  targetCtx.fill();
-
-  targetCtx.save();
-  targetCtx.globalAlpha = 0.18;
-  targetCtx.fillStyle = "#ff8a90";
-  targetCtx.beginPath();
-  targetCtx.ellipse(r * 0.18, r * 0.04, r * 0.30, r * 0.68, -0.12, 0, Math.PI * 2);
-  targetCtx.fill();
-  targetCtx.restore();
-
-  targetCtx.fillStyle = "#ffe8a6";
-  const seeds = [
-    [-0.36, -0.38], [-0.08, -0.45], [0.25, -0.38],
-    [-0.50, -0.10], [-0.18, -0.08], [0.16, -0.08], [0.45, -0.10],
-    [-0.38, 0.20], [-0.05, 0.24], [0.30, 0.20],
-    [-0.18, 0.52], [0.16, 0.52]
-  ];
-
-  for (const [sx, sy] of seeds) {
-    targetCtx.save();
-    targetCtx.translate(sx * r, sy * r);
-    targetCtx.rotate(sx * 0.8);
-    targetCtx.beginPath();
-    targetCtx.ellipse(0, 0, r * 0.034, r * 0.06, 0, 0, Math.PI * 2);
-    targetCtx.fill();
-    targetCtx.restore();
-  }
-
-  targetCtx.fillStyle = "#5cab3d";
-  targetCtx.beginPath();
-  targetCtx.moveTo(-r * 0.54, -r * 0.76);
-  targetCtx.lineTo(-r * 0.26, -r * 0.48);
-  targetCtx.lineTo(-r * 0.04, -r * 0.86);
-  targetCtx.lineTo(r * 0.18, -r * 0.50);
-  targetCtx.lineTo(r * 0.52, -r * 0.74);
-  targetCtx.lineTo(r * 0.32, -r * 0.40);
-  targetCtx.lineTo(-r * 0.34, -r * 0.40);
-  targetCtx.closePath();
-  targetCtx.fill();
-
-  drawLeaf(targetCtx, r * 0.28, -r * 0.86, r * 0.18, r * 0.09, -0.3);
-
-  drawWaterDrops(targetCtx, r, [
-    [-0.30, -0.18, 0.032],
-    [0.32, -0.22, 0.026],
-    [0.10, 0.34, 0.028]
-  ]);
-
-  drawGloss(targetCtx, r, 0.10);
-  targetCtx.restore();
-}
-
-/* ---------------- Grape ---------------- */
-function drawGrape(targetCtx, r) {
-  targetCtx.save();
-
-  drawStem(targetCtx, r * 0.02, -r * 0.48, r * 0.22, -r * 0.98, r * 0.07);
-  drawLeaf(targetCtx, r * 0.42, -r * 0.88, r * 0.24, r * 0.14, -0.25);
-
-  const grapes = [
-    [-0.34, -0.34, 0.26], [-0.04, -0.42, 0.28], [0.28, -0.34, 0.26],
-    [-0.48, -0.06, 0.25], [-0.16, -0.08, 0.29], [0.18, -0.08, 0.29], [0.48, -0.06, 0.24],
-    [-0.32, 0.22, 0.28], [0.00, 0.26, 0.30], [0.32, 0.22, 0.28],
-    [-0.08, 0.54, 0.25], [0.22, 0.48, 0.24]
-  ];
-
-  for (const [gx, gy, gr] of grapes) {
-    const rr = gr * r;
-
-    targetCtx.beginPath();
-    targetCtx.arc(gx * r, gy * r, rr, 0, Math.PI * 2);
-    targetCtx.fillStyle = createFruitGradient(targetCtx, rr, "#d2bbff", "#7e4bd2", "#4d238e");
-    targetCtx.fill();
-
-    targetCtx.save();
-    targetCtx.globalAlpha = 0.16;
-    targetCtx.fillStyle = "#1c063f";
-    targetCtx.beginPath();
-    targetCtx.ellipse(gx * r + rr * 0.22, gy * r + rr * 0.22, rr * 0.35, rr * 0.28, 0.5, 0, Math.PI * 2);
-    targetCtx.fill();
-    targetCtx.restore();
-
-    targetCtx.save();
-    targetCtx.globalAlpha = 0.25;
-    targetCtx.fillStyle = "#ffffff";
-    targetCtx.beginPath();
-    targetCtx.arc(gx * r - rr * 0.32, gy * r - rr * 0.30, rr * 0.16, 0, Math.PI * 2);
-    targetCtx.fill();
-    targetCtx.restore();
-  }
-
-  targetCtx.restore();
-}
-
-/* ---------------- Orange ---------------- */
-function drawOrange(targetCtx, r) {
-  targetCtx.save();
-
-  targetCtx.beginPath();
-  targetCtx.arc(0, 0, r * 0.9, 0, Math.PI * 2);
-  targetCtx.fillStyle = createFruitGradient(targetCtx, r, "#ffe4a8", "#ffb12a", "#ea7a00");
-  targetCtx.fill();
-
-  targetCtx.beginPath();
-  targetCtx.arc(0, 0, r * 0.78, 0, Math.PI * 2);
-  targetCtx.fillStyle = "#fff3d2";
-  targetCtx.fill();
-
-  targetCtx.beginPath();
-  targetCtx.arc(0, 0, r * 0.68, 0, Math.PI * 2);
-  targetCtx.fillStyle = "#ffa11a";
-  targetCtx.fill();
-
-  targetCtx.strokeStyle = "rgba(255,247,220,0.95)";
-  targetCtx.lineWidth = Math.max(1.2, r * 0.04);
-  targetCtx.lineCap = "round";
-
-  for (let i = 0; i < 10; i++) {
-    const angle = (Math.PI * 2 / 10) * i - Math.PI / 2;
-    targetCtx.beginPath();
-    targetCtx.moveTo(0, 0);
-    targetCtx.lineTo(Math.cos(angle) * r * 0.61, Math.sin(angle) * r * 0.61);
-    targetCtx.stroke();
-  }
-
-  targetCtx.beginPath();
-  targetCtx.arc(0, 0, r * 0.11, 0, Math.PI * 2);
-  targetCtx.fillStyle = "#fff8e8";
-  targetCtx.fill();
-
-  targetCtx.save();
-  targetCtx.globalAlpha = 0.18;
-  targetCtx.strokeStyle = "#ffffff";
-  targetCtx.lineWidth = Math.max(1, r * 0.012);
-  for (let i = 0; i < 20; i++) {
-    const a = (Math.PI * 2 / 20) * i;
-    targetCtx.beginPath();
-    targetCtx.moveTo(Math.cos(a) * r * 0.22, Math.sin(a) * r * 0.22);
-    targetCtx.lineTo(Math.cos(a) * r * 0.58, Math.sin(a) * r * 0.58);
-    targetCtx.stroke();
-  }
-  targetCtx.restore();
-
-  drawGloss(targetCtx, r, 0.07);
-  targetCtx.restore();
-}
-
-/* ---------------- Apple ---------------- */
-function drawApple(targetCtx, r) {
-  targetCtx.save();
-
-  drawStem(targetCtx, 0, -r * 0.64, -r * 0.08, -r * 0.94, r * 0.07);
-  drawLeaf(targetCtx, r * 0.26, -r * 0.9, r * 0.2, r * 0.11, -0.35);
-
-  targetCtx.beginPath();
-  targetCtx.moveTo(0, -r * 0.72);
-  targetCtx.bezierCurveTo(r * 0.36, -r * 0.96, r * 0.86, -r * 0.42, r * 0.84, r * 0.18);
-  targetCtx.bezierCurveTo(r * 0.82, r * 0.74, r * 0.34, r * 0.98, 0, r * 0.9);
-  targetCtx.bezierCurveTo(-r * 0.34, r * 0.98, -r * 0.82, r * 0.74, -r * 0.84, r * 0.18);
-  targetCtx.bezierCurveTo(-r * 0.86, -r * 0.42, -r * 0.36, -r * 0.96, 0, -r * 0.72);
-  targetCtx.closePath();
-
-  targetCtx.fillStyle = createFruitGradient(targetCtx, r, "#ffb8c2", "#ef3d59", "#be1632");
-  targetCtx.fill();
-
-  targetCtx.save();
-  targetCtx.globalAlpha = 0.16;
-  targetCtx.fillStyle = "#941226";
-  targetCtx.beginPath();
-  targetCtx.ellipse(r * 0.24, r * 0.12, r * 0.2, r * 0.52, 0.1, 0, Math.PI * 2);
-  targetCtx.fill();
-  targetCtx.restore();
-
+function drawFruitShadow(targetCtx, radius) {
   targetCtx.save();
   targetCtx.globalAlpha = 0.14;
-  targetCtx.fillStyle = "#8a0f22";
+  targetCtx.fillStyle = "#4ed0e0";
   targetCtx.beginPath();
-  targetCtx.ellipse(0, -r * 0.56, r * 0.14, r * 0.06, 0, 0, Math.PI * 2);
+  targetCtx.ellipse(
+    0,
+    radius * 0.86,
+    radius * 0.56,
+    radius * 0.11,
+    0,
+    0,
+    Math.PI * 2
+  );
   targetCtx.fill();
-  targetCtx.restore();
-
-  drawWaterDrops(targetCtx, r, [
-    [-0.26, -0.16, 0.03],
-    [-0.06, -0.02, 0.025],
-    [0.18, 0.16, 0.028]
-  ]);
-
-  drawGloss(targetCtx, r, 0.10);
   targetCtx.restore();
 }
 
-/* ---------------- Peach ---------------- */
-function drawPeach(targetCtx, r) {
-  targetCtx.save();
+function drawFallbackFruit(targetCtx, radius, fruit) {
+  const gradient = targetCtx.createRadialGradient(
+    -radius * 0.35,
+    -radius * 0.35,
+    radius * 0.05,
+    0,
+    0,
+    radius
+  );
 
-  drawStem(targetCtx, 0, -r * 0.66, -r * 0.05, -r * 0.88, r * 0.05);
-  drawLeaf(targetCtx, r * 0.24, -r * 0.84, r * 0.18, r * 0.1, -0.3);
+  gradient.addColorStop(0, "#ffffff");
+  gradient.addColorStop(0.35, fruit.color);
+  gradient.addColorStop(1, shadeColor(fruit.color, -28));
 
+  targetCtx.fillStyle = gradient;
   targetCtx.beginPath();
-  targetCtx.moveTo(0, -r * 0.8);
-  targetCtx.bezierCurveTo(r * 0.54, -r * 0.82, r * 0.82, -r * 0.2, r * 0.8, r * 0.28);
-  targetCtx.bezierCurveTo(r * 0.76, r * 0.8, r * 0.32, r * 0.98, 0, r * 0.92);
-  targetCtx.bezierCurveTo(-r * 0.32, r * 0.98, -r * 0.76, r * 0.8, -r * 0.8, r * 0.28);
-  targetCtx.bezierCurveTo(-r * 0.82, -r * 0.2, -r * 0.54, -r * 0.82, 0, -r * 0.8);
-  targetCtx.closePath();
-
-  targetCtx.fillStyle = createFruitGradient(targetCtx, r, "#ffe4c8", "#ffb07f", "#f28b68");
+  targetCtx.arc(0, 0, radius * 0.9, 0, Math.PI * 2);
   targetCtx.fill();
 
-  targetCtx.save();
-  targetCtx.globalAlpha = 0.26;
-  targetCtx.fillStyle = "#ff8c73";
-  targetCtx.beginPath();
-  targetCtx.ellipse(-r * 0.18, -r * 0.02, r * 0.34, r * 0.46, -0.25, 0, Math.PI * 2);
-  targetCtx.fill();
-  targetCtx.restore();
-
-  targetCtx.save();
-  targetCtx.globalAlpha = 0.30;
-  targetCtx.strokeStyle = "#de7e63";
-  targetCtx.lineWidth = Math.max(1.2, r * 0.05);
-  targetCtx.lineCap = "round";
-  targetCtx.beginPath();
-  targetCtx.moveTo(r * 0.04, -r * 0.62);
-  targetCtx.bezierCurveTo(-r * 0.12, -r * 0.18, -r * 0.08, r * 0.28, r * 0.02, r * 0.76);
-  targetCtx.stroke();
-  targetCtx.restore();
-
-  drawWaterDrops(targetCtx, r, [
-    [-0.22, -0.22, 0.028],
-    [0.22, -0.06, 0.028]
-  ]);
-
-  drawGloss(targetCtx, r, 0.09);
-  targetCtx.restore();
+  targetCtx.font = `${Math.max(14, radius * 0.9)}px Arial`;
+  targetCtx.textAlign = "center";
+  targetCtx.textBaseline = "middle";
+  targetCtx.fillText(fruit.emoji, 0, 1);
 }
 
-/* ---------------- Pineapple ---------------- */
-function drawPineapple(targetCtx, r) {
-  targetCtx.save();
+function shadeColor(hex, percent) {
+  const number = parseInt(hex.replace("#", ""), 16);
+  const amount = Math.round(2.55 * percent);
 
-  targetCtx.fillStyle = "#5db73f";
-  const leafSets = [
-    [-0.34, -0.72, -0.45, -1.06, -0.12, -0.6],
-    [-0.14, -0.76, -0.02, -1.12, 0.08, -0.64],
-    [0.06, -0.78, 0.18, -1.08, 0.26, -0.62],
-    [0.26, -0.68, 0.42, -0.96, 0.42, -0.56],
-    [-0.52, -0.60, -0.44, -0.92, -0.26, -0.5]
-  ];
+  const red = Math.max(0, Math.min(255, (number >> 16) + amount));
+  const green = Math.max(0, Math.min(255, ((number >> 8) & 0x00ff) + amount));
+  const blue = Math.max(0, Math.min(255, (number & 0x0000ff) + amount));
 
-  for (const [x1, y1, x2, y2, x3, y3] of leafSets) {
-    targetCtx.beginPath();
-    targetCtx.moveTo(x1 * r, y1 * r);
-    targetCtx.quadraticCurveTo(x2 * r, y2 * r, x3 * r, y3 * r);
-    targetCtx.quadraticCurveTo((x1 + x3) * 0.5 * r, (y1 + y3 + 0.08) * 0.5 * r, x1 * r, y1 * r);
-    targetCtx.fill();
-  }
-
-  targetCtx.beginPath();
-  targetCtx.ellipse(0, r * 0.14, r * 0.56, r * 0.74, 0, 0, Math.PI * 2);
-  targetCtx.fillStyle = createFruitGradient(targetCtx, r, "#ffe390", "#eebd39", "#c98319");
-  targetCtx.fill();
-
-  targetCtx.strokeStyle = "rgba(130,84,15,0.42)";
-  targetCtx.lineWidth = Math.max(1, r * 0.03);
-
-  for (let i = -4; i <= 4; i++) {
-    targetCtx.beginPath();
-    targetCtx.moveTo(-r * 0.6 + i * r * 0.22, -r * 0.18);
-    targetCtx.lineTo(r * 0.34 + i * r * 0.22, r * 0.86);
-    targetCtx.stroke();
-
-    targetCtx.beginPath();
-    targetCtx.moveTo(r * 0.58 - i * r * 0.22, -r * 0.16);
-    targetCtx.lineTo(-r * 0.36 - i * r * 0.22, r * 0.88);
-    targetCtx.stroke();
-  }
-
-  targetCtx.save();
-  targetCtx.globalAlpha = 0.18;
-  targetCtx.fillStyle = "#b06d12";
-  for (let yy = -0.08; yy <= 0.58; yy += 0.2) {
-    for (let xx = -0.26; xx <= 0.26; xx += 0.22) {
-      targetCtx.beginPath();
-      targetCtx.arc(xx * r, yy * r, r * 0.028, 0, Math.PI * 2);
-      targetCtx.fill();
-    }
-  }
-  targetCtx.restore();
-
-  drawGloss(targetCtx, r, 0.07);
-  targetCtx.restore();
-}
-
-/* ---------------- Watermelon ---------------- */
-function drawWatermelon(targetCtx, r) {
-  targetCtx.save();
-
-  targetCtx.beginPath();
-  targetCtx.ellipse(-r * 0.06, -r * 0.02, r * 0.78, r * 0.7, -0.06, 0, Math.PI * 2);
-  targetCtx.fillStyle = createFruitGradient(targetCtx, r, "#9be9b6", "#31bd69", "#1f8b4d");
-  targetCtx.fill();
-
-  targetCtx.strokeStyle = "rgba(20,108,56,0.42)";
-  targetCtx.lineWidth = Math.max(1.5, r * 0.05);
-  for (let i = -2; i <= 2; i++) {
-    targetCtx.beginPath();
-    targetCtx.ellipse(-r * 0.08 + i * r * 0.2, -r * 0.02, r * 0.14, r * 0.66, -0.05, 0, Math.PI * 2);
-    targetCtx.stroke();
-  }
-
-  targetCtx.save();
-  targetCtx.translate(r * 0.28, r * 0.36);
-  targetCtx.rotate(-0.08);
-
-  targetCtx.beginPath();
-  targetCtx.moveTo(-r * 0.50, -r * 0.04);
-  targetCtx.quadraticCurveTo(0, -r * 0.42, r * 0.50, -r * 0.04);
-  targetCtx.quadraticCurveTo(0, r * 0.18, -r * 0.50, -r * 0.04);
-  targetCtx.closePath();
-  targetCtx.fillStyle = "#24b86a";
-  targetCtx.fill();
-
-  targetCtx.beginPath();
-  targetCtx.moveTo(-r * 0.42, -r * 0.04);
-  targetCtx.quadraticCurveTo(0, -r * 0.34, r * 0.42, -r * 0.04);
-  targetCtx.quadraticCurveTo(0, r * 0.10, -r * 0.42, -r * 0.04);
-  targetCtx.closePath();
-  targetCtx.fillStyle = "#e9ffd7";
-  targetCtx.fill();
-
-  targetCtx.beginPath();
-  targetCtx.moveTo(-r * 0.34, -r * 0.04);
-  targetCtx.quadraticCurveTo(0, -r * 0.26, r * 0.34, -r * 0.04);
-  targetCtx.quadraticCurveTo(0, r * 0.05, -r * 0.34, -r * 0.04);
-  targetCtx.closePath();
-  targetCtx.fillStyle = "#ff5c69";
-  targetCtx.fill();
-
-  targetCtx.fillStyle = "#1f2326";
-  const seeds = [[-0.18, -0.08], [0.0, -0.13], [0.18, -0.08], [-0.06, -0.01], [0.08, -0.01]];
-  for (const [sx, sy] of seeds) {
-    targetCtx.beginPath();
-    targetCtx.ellipse(sx * r, sy * r, r * 0.025, r * 0.045, 0.1, 0, Math.PI * 2);
-    targetCtx.fill();
-  }
-
-  targetCtx.restore();
-
-  drawGloss(targetCtx, r, 0.07);
-  targetCtx.restore();
-}
-
-/* ---------------- Coconut ---------------- */
-function drawCoconut(targetCtx, r) {
-  targetCtx.save();
-
-  targetCtx.beginPath();
-  targetCtx.arc(0, 0, r * 0.88, 0, Math.PI * 2);
-  targetCtx.fillStyle = createFruitGradient(targetCtx, r, "#b9784b", "#7e4b2b", "#4f2b19");
-  targetCtx.fill();
-
-  targetCtx.strokeStyle = "rgba(59,33,18,0.42)";
-  targetCtx.lineWidth = Math.max(1.5, r * 0.045);
-
-  for (let i = 0; i < 16; i++) {
-    const angle = (Math.PI * 2 / 16) * i;
-    targetCtx.beginPath();
-    targetCtx.moveTo(Math.cos(angle) * r * 0.62, Math.sin(angle) * r * 0.62);
-    targetCtx.lineTo(Math.cos(angle) * r * 0.86, Math.sin(angle) * r * 0.86);
-    targetCtx.stroke();
-  }
-
-  targetCtx.beginPath();
-  targetCtx.arc(0, 0, r * 0.66, 0, Math.PI * 2);
-  targetCtx.fillStyle = "#fff1dd";
-  targetCtx.fill();
-
-  targetCtx.beginPath();
-  targetCtx.arc(0, 0, r * 0.46, 0, Math.PI * 2);
-  targetCtx.fillStyle = "#fffaf0";
-  targetCtx.fill();
-
-  targetCtx.fillStyle = "rgba(90,50,25,0.65)";
-  const holes = [[-0.18, -0.20], [0.06, -0.28], [0.25, -0.16]];
-  for (const [sx, sy] of holes) {
-    targetCtx.beginPath();
-    targetCtx.arc(sx * r, sy * r, r * 0.04, 0, Math.PI * 2);
-    targetCtx.fill();
-  }
-
-  targetCtx.restore();
-
-  drawGloss(targetCtx, r, 0.05);
-}
-
-/* ---------------- Melon ---------------- */
-function drawMelon(targetCtx, r) {
-  targetCtx.save();
-
-  targetCtx.beginPath();
-  targetCtx.arc(-r * 0.10, -r * 0.02, r * 0.78, 0, Math.PI * 2);
-  targetCtx.fillStyle = createFruitGradient(targetCtx, r, "#fff5b2", "#cbd875", "#8fb24c");
-  targetCtx.fill();
-
-  targetCtx.strokeStyle = "rgba(255,255,220,0.72)";
-  targetCtx.lineWidth = Math.max(1, r * 0.025);
-
-  for (let i = -5; i <= 5; i++) {
-    targetCtx.beginPath();
-    targetCtx.moveTo(-r * 0.82, i * r * 0.16);
-    targetCtx.quadraticCurveTo(-r * 0.10, i * r * 0.10 - r * 0.12, r * 0.60, i * r * 0.16);
-    targetCtx.stroke();
-
-    targetCtx.beginPath();
-    targetCtx.moveTo(i * r * 0.16, -r * 0.82);
-    targetCtx.quadraticCurveTo(i * r * 0.10 - r * 0.12, -r * 0.10, i * r * 0.16, r * 0.60);
-    targetCtx.stroke();
-  }
-
-  drawStem(targetCtx, r * 0.02, -r * 0.76, r * 0.10, -r * 1.02, r * 0.055);
-
-  targetCtx.save();
-  targetCtx.translate(r * 0.28, r * 0.42);
-  targetCtx.rotate(-0.16);
-
-  targetCtx.beginPath();
-  targetCtx.moveTo(-r * 0.56, -r * 0.08);
-  targetCtx.quadraticCurveTo(0, -r * 0.42, r * 0.56, -r * 0.08);
-  targetCtx.quadraticCurveTo(0, r * 0.20, -r * 0.56, -r * 0.08);
-  targetCtx.closePath();
-  targetCtx.fillStyle = "#8fcb55";
-  targetCtx.fill();
-
-  targetCtx.beginPath();
-  targetCtx.moveTo(-r * 0.46, -r * 0.08);
-  targetCtx.quadraticCurveTo(0, -r * 0.32, r * 0.46, -r * 0.08);
-  targetCtx.quadraticCurveTo(0, r * 0.12, -r * 0.46, -r * 0.08);
-  targetCtx.closePath();
-  targetCtx.fillStyle = "#d8f08b";
-  targetCtx.fill();
-
-  targetCtx.beginPath();
-  targetCtx.ellipse(0, -r * 0.04, r * 0.22, r * 0.10, 0, 0, Math.PI * 2);
-  targetCtx.fillStyle = "#efe0bc";
-  targetCtx.fill();
-
-  targetCtx.restore();
-  targetCtx.restore();
-
-  drawGloss(targetCtx, r, 0.05);
-}
-
-/* ---------------- Dragon Fruit ---------------- */
-function drawDragonFruit(targetCtx, r) {
-  targetCtx.save();
-
-  targetCtx.beginPath();
-  targetCtx.moveTo(-r * 0.10, -r * 0.88);
-  targetCtx.bezierCurveTo(r * 0.58, -r * 0.88, r * 0.88, -r * 0.26, r * 0.76, r * 0.28);
-  targetCtx.bezierCurveTo(r * 0.64, r * 0.82, r * 0.22, r * 1.02, -r * 0.08, r * 0.94);
-  targetCtx.bezierCurveTo(-r * 0.52, r * 0.82, -r * 0.88, r * 0.38, -r * 0.82, -r * 0.14);
-  targetCtx.bezierCurveTo(-r * 0.74, -r * 0.62, -r * 0.46, -r * 0.88, -r * 0.10, -r * 0.88);
-  targetCtx.closePath();
-
-  targetCtx.fillStyle = createFruitGradient(targetCtx, r, "#ff9ed3", "#ff2f96", "#cf126f");
-  targetCtx.fill();
-
-  drawLeaf(targetCtx, -r * 0.74, -r * 0.14, r * 0.18, r * 0.10, -0.55);
-  drawLeaf(targetCtx, r * 0.70, -r * 0.20, r * 0.18, r * 0.10, 0.55);
-  drawLeaf(targetCtx, -r * 0.54, r * 0.34, r * 0.15, r * 0.08, 0.35);
-  drawLeaf(targetCtx, r * 0.46, r * 0.52, r * 0.15, r * 0.08, -0.35);
-  drawLeaf(targetCtx, -r * 0.20, -r * 0.78, r * 0.14, r * 0.08, -0.10);
-
-  targetCtx.save();
-  targetCtx.translate(r * 0.34, r * 0.18);
-  targetCtx.rotate(-0.14);
-
-  targetCtx.beginPath();
-  targetCtx.ellipse(0, 0, r * 0.42, r * 0.54, 0, 0, Math.PI * 2);
-  targetCtx.fillStyle = "#ff3d9f";
-  targetCtx.fill();
-
-  targetCtx.beginPath();
-  targetCtx.ellipse(0, 0, r * 0.34, r * 0.45, 0, 0, Math.PI * 2);
-  targetCtx.fillStyle = "#fff9fb";
-  targetCtx.fill();
-
-  targetCtx.fillStyle = "#252525";
-  const seeds = [
-    [-0.18, -0.24], [0.02, -0.28], [0.20, -0.18],
-    [-0.20, 0.02], [0.02, 0.08], [0.22, 0.04],
-    [-0.06, 0.28], [0.18, 0.28]
-  ];
-
-  for (const [sx, sy] of seeds) {
-    targetCtx.beginPath();
-    targetCtx.arc(sx * r, sy * r, r * 0.016, 0, Math.PI * 2);
-    targetCtx.fill();
-  }
-
-  targetCtx.restore();
-  targetCtx.restore();
-
-  drawGloss(targetCtx, r, 0.05);
+  return `#${(0x1000000 + red * 0x10000 + green * 0x100 + blue)
+    .toString(16)
+    .slice(1)}`;
 }
 
 function keepFruitInside(ball) {
@@ -1213,9 +929,9 @@ function keepFruitInside(ball) {
       ball.vy *= -bounce;
     }
 
-    ball.vx *= 0.55;
+    ball.vx *= floorFriction;
 
-    if (Math.abs(ball.vy) < 0.5) {
+    if (Math.abs(ball.vy) < 0.55) {
       ball.vy = 0;
     }
 
@@ -1279,19 +995,21 @@ function handleCollisions() {
           dy = 0;
         }
 
-        const minDistance = a.radius + b.radius;
+        const realDistance = a.radius + b.radius;
+        const minDistance = realDistance * collisionTightness;
+        const mergeDistance = realDistance * mergeDistanceFactor;
+
+        if (
+          pass === 0 &&
+          a.level === b.level &&
+          a.level < fruits.length - 1 &&
+          distance < mergeDistance
+        ) {
+          mergeFruits(i, j, a, b);
+          return;
+        }
 
         if (distance < minDistance) {
-          if (
-            pass === 0 &&
-            a.level === b.level &&
-            a.level < fruits.length - 1 &&
-            distance < minDistance - mergeTolerance
-          ) {
-            mergeFruits(i, j, a, b);
-            return;
-          }
-
           const overlap = minDistance - distance;
           const nx = dx / distance;
           const ny = dy / distance;
@@ -1311,8 +1029,8 @@ function handleCollisions() {
           a.x -= nx * correctionAmount * moveA;
           b.x += nx * correctionAmount * moveB;
 
-          a.y -= ny * correctionAmount * moveA * 0.85;
-          b.y += ny * correctionAmount * moveB * 0.85;
+          a.y -= ny * correctionAmount * moveA * 0.86;
+          b.y += ny * correctionAmount * moveB * 0.86;
 
           const relativeVx = b.vx - a.vx;
           const relativeVy = b.vy - a.vy;
@@ -1333,11 +1051,11 @@ function handleCollisions() {
           b.vx *= 0.72;
 
           if (a.y + a.radius > canvas.height - 6) {
-            a.vx *= 0.55;
+            a.vx *= floorFriction;
           }
 
           if (b.y + b.radius > canvas.height - 6) {
-            b.vx *= 0.55;
+            b.vx *= floorFriction;
           }
 
           a.vx = clamp(a.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
@@ -1364,8 +1082,8 @@ function mergeFruits(indexA, indexB, a, b) {
     newLevel
   );
 
-  newFruit.vx = (a.vx + b.vx) * 0.18;
-  newFruit.vy = Math.min((a.vy + b.vy) * 0.12, 0.15);
+  newFruit.vx = (a.vx + b.vx) * 0.12;
+  newFruit.vy = Math.min((a.vy + b.vy) * 0.08, 0.15);
   newFruit.popFrames = 10;
 
   balls.splice(indexB, 1);
@@ -1382,7 +1100,7 @@ function mergeFruits(indexA, indexB, a, b) {
 
   updateEvolutionBar(newLevel);
   addFloatingText(newFruit.x, newFruit.y - newFruit.radius, `+${gainedScore}`);
-  addMergeBurst(newFruit.x, newFruit.y, newFruit.radius, fruits[newLevel].skin);
+  addMergeBurst(newFruit.x, newFruit.y, newFruit.radius, fruits[newLevel].color);
 
   playMergeSound(newLevel);
 
@@ -1576,19 +1294,21 @@ function gameLoop() {
 }
 
 function dropFruit() {
-  if (isGameOver || !isGameStarted || !canDrop) return;
+  if (isGameOver || !isGameStarted || !canDrop || !currentFruit) return;
 
   initAudio();
   canDrop = false;
 
   const fruit = createFruit(mouseX, spawnY, currentFruit.level);
-  fruit.vy = 1.15;
+  fruit.vy = initialDropVelocity;
   balls.push(fruit);
 
   playDropSound();
 
-  currentFruit = createFruit(mouseX, spawnY, nextFruitLevel);
-  nextFruitLevel = randomStartLevel();
+  const nextLevel = nextQueue.shift();
+  currentFruit = createFruit(mouseX, spawnY, nextLevel);
+  nextQueue.push(randomStartLevel());
+
   updateNextFruit();
 
   setTimeout(() => {
@@ -1603,7 +1323,7 @@ function updateMousePosition(clientX) {
   mouseX = (clientX - rect.left) * scaleX;
 
   const radius = currentFruit ? currentFruit.radius : 24;
-  const margin = 10;
+  const margin = 8;
 
   mouseX = Math.max(
     radius + margin,
