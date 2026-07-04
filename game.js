@@ -42,7 +42,7 @@ const leaderboardList = document.getElementById("leaderboardList");
 const gameOverLeaderboard = document.getElementById("gameOverLeaderboard");
 
 const ASSET_BASE = "/assets/fruits/";
-const ASSET_VERSION = "v=20260704-single-fruits-final";
+const ASSET_VERSION = "v=20260704-trimmed-fruits-final";
 
 const fruits = [
   {
@@ -53,7 +53,7 @@ const fruits = [
     asset: "cherry.png",
     color: "#e93652",
     emoji: "🍒",
-    visualScale: 1.08
+    visualScale: 1.25
   },
   {
     name: "Strawberry",
@@ -63,7 +63,7 @@ const fruits = [
     asset: "strawberry.png",
     color: "#ef3f5c",
     emoji: "🍓",
-    visualScale: 1.05
+    visualScale: 1.22
   },
   {
     name: "Grape",
@@ -73,7 +73,7 @@ const fruits = [
     asset: "grape.png",
     color: "#7650d6",
     emoji: "🍇",
-    visualScale: 1.04
+    visualScale: 1.18
   },
   {
     name: "Orange",
@@ -83,7 +83,7 @@ const fruits = [
     asset: "orange.png",
     color: "#ff9f20",
     emoji: "🍊",
-    visualScale: 1.00
+    visualScale: 1.14
   },
   {
     name: "Apple",
@@ -93,7 +93,7 @@ const fruits = [
     asset: "apple.png",
     color: "#e6384f",
     emoji: "🍎",
-    visualScale: 1.00
+    visualScale: 1.12
   },
   {
     name: "Peach",
@@ -103,7 +103,7 @@ const fruits = [
     asset: "peach.png",
     color: "#ffb07f",
     emoji: "🍑",
-    visualScale: 1.00
+    visualScale: 1.10
   },
   {
     name: "Pineapple",
@@ -113,7 +113,7 @@ const fruits = [
     asset: "pineapple.png",
     color: "#f0bd3a",
     emoji: "🍍",
-    visualScale: 1.00
+    visualScale: 1.08
   },
   {
     name: "Watermelon",
@@ -123,7 +123,7 @@ const fruits = [
     asset: "watermelon.png",
     color: "#31bd69",
     emoji: "🍉",
-    visualScale: 1.00
+    visualScale: 1.06
   },
   {
     name: "Mango",
@@ -133,7 +133,7 @@ const fruits = [
     asset: "mango.png",
     color: "#ff9f22",
     emoji: "🥭",
-    visualScale: 0.98
+    visualScale: 1.04
   },
   {
     name: "Melon",
@@ -143,7 +143,7 @@ const fruits = [
     asset: "melon.png",
     color: "#9bd66c",
     emoji: "🍈",
-    visualScale: 0.98
+    visualScale: 1.04
   },
   {
     name: "Dragon Fruit",
@@ -153,7 +153,7 @@ const fruits = [
     asset: "dragonfruit.png",
     color: "#f04e98",
     emoji: "🐉",
-    visualScale: 0.98
+    visualScale: 1.04
   }
 ];
 
@@ -183,10 +183,6 @@ let screenShake = 0;
 let audioContext = null;
 let soundReady = false;
 
-/**
- * Final physics:
- * Faster falling speed, tighter collision, less bouncing.
- */
 const gravity = 0.62;
 const friction = 0.9;
 const floorFriction = 0.68;
@@ -289,13 +285,17 @@ function preloadFruitImages() {
 
     fruitImages.set(index, {
       image,
+      canvas: null,
       loaded: false,
       failed: false
     });
 
     image.onload = () => {
+      const trimmedCanvas = createTrimmedFruitCanvas(image);
+
       fruitImages.set(index, {
         image,
+        canvas: trimmedCanvas,
         loaded: true,
         failed: false
       });
@@ -306,6 +306,7 @@ function preloadFruitImages() {
     image.onerror = () => {
       fruitImages.set(index, {
         image: null,
+        canvas: null,
         loaded: false,
         failed: true
       });
@@ -315,6 +316,75 @@ function preloadFruitImages() {
 
     image.src = `${ASSET_BASE}${fruit.asset}?${ASSET_VERSION}`;
   });
+}
+
+function createTrimmedFruitCanvas(image) {
+  const sourceCanvas = document.createElement("canvas");
+  sourceCanvas.width = image.naturalWidth;
+  sourceCanvas.height = image.naturalHeight;
+
+  const sourceCtx = sourceCanvas.getContext("2d", {
+    willReadFrequently: true
+  });
+
+  sourceCtx.drawImage(image, 0, 0);
+
+  const width = sourceCanvas.width;
+  const height = sourceCanvas.height;
+  const imageData = sourceCtx.getImageData(0, 0, width, height);
+  const data = imageData.data;
+
+  let minX = width;
+  let minY = height;
+  let maxX = 0;
+  let maxY = 0;
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const alpha = data[(y * width + x) * 4 + 3];
+
+      if (alpha > 12) {
+        if (x < minX) minX = x;
+        if (y < minY) minY = y;
+        if (x > maxX) maxX = x;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+
+  if (minX > maxX || minY > maxY) {
+    return sourceCanvas;
+  }
+
+  const padding = 6;
+
+  minX = Math.max(0, minX - padding);
+  minY = Math.max(0, minY - padding);
+  maxX = Math.min(width - 1, maxX + padding);
+  maxY = Math.min(height - 1, maxY + padding);
+
+  const trimmedWidth = maxX - minX + 1;
+  const trimmedHeight = maxY - minY + 1;
+
+  const trimmedCanvas = document.createElement("canvas");
+  trimmedCanvas.width = trimmedWidth;
+  trimmedCanvas.height = trimmedHeight;
+
+  const trimmedCtx = trimmedCanvas.getContext("2d");
+
+  trimmedCtx.drawImage(
+    sourceCanvas,
+    minX,
+    minY,
+    trimmedWidth,
+    trimmedHeight,
+    0,
+    0,
+    trimmedWidth,
+    trimmedHeight
+  );
+
+  return trimmedCanvas;
 }
 
 function getDifficultyStage() {
@@ -678,8 +748,8 @@ function drawFruitIcon(targetCtx, x, y, radius, level) {
 
   drawFruitShadow(targetCtx, radius);
 
-  if (imageRecord && imageRecord.loaded && imageRecord.image) {
-    drawImageFruit(targetCtx, imageRecord.image, radius, fruit);
+  if (imageRecord && imageRecord.loaded && imageRecord.canvas) {
+    drawImageFruit(targetCtx, imageRecord.canvas, radius, fruit);
   } else {
     drawFallbackFruit(targetCtx, radius, fruit);
   }
@@ -687,9 +757,9 @@ function drawFruitIcon(targetCtx, x, y, radius, level) {
   targetCtx.restore();
 }
 
-function drawImageFruit(targetCtx, image, radius, fruit) {
+function drawImageFruit(targetCtx, imageCanvas, radius, fruit) {
   const maxSize = radius * 2 * fruit.visualScale;
-  const aspect = image.naturalWidth / image.naturalHeight;
+  const aspect = imageCanvas.width / imageCanvas.height;
 
   let drawWidth;
   let drawHeight;
@@ -703,7 +773,7 @@ function drawImageFruit(targetCtx, image, radius, fruit) {
   }
 
   targetCtx.drawImage(
-    image,
+    imageCanvas,
     -drawWidth / 2,
     -drawHeight / 2,
     drawWidth,
