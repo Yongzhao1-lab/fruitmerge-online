@@ -1086,3 +1086,219 @@ canvas#gameCanvas {
     font-size: 30px;
   }
 }
+/* v1.5 Player Retention Upgrade */
+
+/* Replace emoji preview with Q-style CSS fruit */
+.preview-fruit {
+  font-size: 0 !important;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid rgba(255,255,255,0.9);
+}
+
+.preview-fruit::before,
+.preview-fruit::after {
+  content: "";
+  position: absolute;
+  display: block;
+}
+
+.q-cherry {
+  background: radial-gradient(circle at 35% 28%, #fff 0 10%, #ff8c98 18%, #e84545 72%);
+}
+
+.q-cherry::before {
+  width: 22%;
+  height: 22%;
+  background: #fff;
+  border-radius: 50%;
+  left: 26%;
+  top: 22%;
+  opacity: 0.7;
+}
+
+.q-strawberry {
+  border-radius: 48% 48% 56% 56%;
+  background: radial-gradient(circle at 35% 28%, #fff 0 9%, #ff90a0 20%, #e83e5a 76%);
+}
+
+.q-strawberry::before {
+  width: 46%;
+  height: 20%;
+  background: #6fbd44;
+  border-radius: 50% 50% 30% 30%;
+  left: 27%;
+  top: 3%;
+}
+
+.q-strawberry::after {
+  width: 7%;
+  height: 7%;
+  background: #fff2a8;
+  border-radius: 50%;
+  left: 44%;
+  top: 50%;
+  box-shadow: -16px -8px 0 #fff2a8, 17px -5px 0 #fff2a8, 9px 18px 0 #fff2a8;
+}
+
+.q-orange {
+  background:
+    radial-gradient(circle at 36% 28%, #fff 0 9%, transparent 10%),
+    repeating-conic-gradient(from 0deg, rgba(255,255,255,0.55) 0 8deg, transparent 8deg 40deg),
+    radial-gradient(circle, #ffd36b 0 38%, #ff9a1f 72%);
+}
+
+.q-watermelon {
+  background:
+    radial-gradient(circle at 34% 28%, #fff 0 8%, transparent 9%),
+    radial-gradient(circle, #ff6070 0 45%, #f8ffd9 46% 55%, #2fbf71 56% 100%);
+}
+
+.q-watermelon::after {
+  width: 7%;
+  height: 12%;
+  background: #263238;
+  border-radius: 50%;
+  left: 48%;
+  top: 52%;
+  box-shadow: -18px -12px 0 #263238, 20px -5px 0 #263238;
+}
+
+.q-pineapple {
+  border-radius: 48%;
+  background:
+    linear-gradient(45deg, transparent 43%, rgba(128,89,19,0.25) 44% 48%, transparent 49%),
+    linear-gradient(-45deg, transparent 43%, rgba(128,89,19,0.25) 44% 48%, transparent 49%),
+    radial-gradient(circle at 35% 28%, #fff 0 9%, #ffe17a 22%, #f0b93a 78%);
+}
+
+.q-pineapple::before {
+  width: 55%;
+  height: 28%;
+  background: #6fbd44;
+  clip-path: polygon(50% 0, 62% 46%, 100% 10%, 76% 70%, 100% 100%, 50% 78%, 0 100%, 24% 70%, 0 10%, 38% 46%);
+  left: 22%;
+  top: -6%;
+}
+
+/* Run title and leaderboard */
+.run-title {
+  display: inline-block;
+  margin: 2px 0 8px !important;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #effdff;
+  color: #00a99d !important;
+  font-weight: 900;
+  font-size: 14px !important;
+}
+
+.leaderboard-section {
+  max-width: 920px;
+}
+
+.leaderboard-list,
+.mini-leaderboard {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #d9f5f2;
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 8px 20px rgba(39, 185, 201, 0.08);
+}
+
+.leaderboard-rank {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #18c7b8, #36b7ff);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+}
+
+.leaderboard-main strong {
+  display: block;
+  font-size: 16px;
+}
+
+.leaderboard-main span {
+  display: block;
+  color: #667;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.leaderboard-score {
+  font-weight: 900;
+  color: #00a99d;
+}
+
+.leaderboard-empty {
+  background: #fff;
+  border: 1px dashed #8ee8d8;
+  color: #52666f;
+  border-radius: 18px;
+  padding: 18px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.mini-leaderboard {
+  width: 100%;
+  max-width: 320px;
+  margin: 8px auto 12px;
+  gap: 6px;
+}
+
+.mini-leaderboard .leaderboard-row {
+  grid-template-columns: 38px 1fr auto;
+  padding: 7px 9px;
+  border-radius: 12px;
+  font-size: 12px;
+  box-shadow: none;
+}
+
+.mini-leaderboard .leaderboard-rank {
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+}
+
+.mini-leaderboard .leaderboard-main strong {
+  font-size: 12px;
+}
+
+.mini-leaderboard .leaderboard-main span {
+  font-size: 11px;
+}
+
+/* Reduce empty portal feeling */
+.compact-related {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 760px) {
+  .leaderboard-row {
+    grid-template-columns: 44px 1fr;
+  }
+
+  .leaderboard-score {
+    grid-column: 2;
+  }
+
+  .compact-related {
+    grid-template-columns: 1fr;
+  }
+}
