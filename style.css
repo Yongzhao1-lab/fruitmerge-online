@@ -628,3 +628,106 @@ footer {
     max-width: 260px;
   }
 }
+/* Summer Q Style Theme - v1.3 */
+
+body {
+  background: #f2fcff;
+  color: #1f2d36;
+}
+
+.site-header {
+  background: linear-gradient(90deg, #18c7b8, #36b7ff);
+  box-shadow: 0 8px 24px rgba(24, 199, 184, 0.22);
+}
+
+.hero {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(126, 231, 255, 0.45), transparent 34%),
+    radial-gradient(circle at 78% 20%, rgba(255, 210, 128, 0.35), transparent 30%),
+    linear-gradient(180deg, #dff9ff, #f7feff);
+}
+
+.eyebrow,
+.section-kicker,
+.evolution-title,
+.game-over-message {
+  color: #00a99d !important;
+}
+
+.play-button,
+.restart-button,
+#startButton,
+#playAgainButton,
+.share-button {
+  background: linear-gradient(135deg, #ff7a66, #ff9f6e);
+  box-shadow: 0 10px 24px rgba(255, 122, 102, 0.28);
+}
+
+.secondary-button {
+  color: #00a99d;
+}
+
+.hero-badges span {
+  background: rgba(255,255,255,0.8);
+  border-color: rgba(0, 180, 170, 0.22);
+  color: #157a73;
+}
+
+.info-card {
+  border-color: #8ee8d8;
+  box-shadow: 0 8px 22px rgba(48, 196, 185, 0.12);
+}
+
+.game-box {
+  border-color: #8ee8d8;
+  box-shadow: 0 18px 46px rgba(39, 185, 201, 0.18);
+}
+
+canvas#gameCanvas {
+  background: linear-gradient(180deg, #ecfbff, #f8feff);
+}
+
+.game-overlay,
+.game-over {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(126, 231, 255, 0.28), transparent 38%),
+    rgba(247, 254, 255, 0.96);
+}
+
+.evolution-item {
+  border-color: #b7eee8;
+  background: #ffffff;
+}
+
+.evolution-item.unlocked {
+  border-color: #18c7b8;
+  box-shadow: 0 4px 12px rgba(24, 199, 184, 0.14);
+}
+
+.evolution-item.current {
+  background: linear-gradient(135deg, #18c7b8, #36b7ff);
+  color: #fff;
+}
+
+.step-card,
+.tip-card,
+.faq-item {
+  border-color: #d9f5f2;
+  box-shadow: 0 8px 22px rgba(39, 185, 201, 0.08);
+}
+
+.step-number {
+  background: linear-gradient(135deg, #18c7b8, #36b7ff);
+}
+
+.hero-fruit-1 {
+  background: radial-gradient(circle at 35% 35%, #fff, #ffb3c1 28%, #ff6f87 100%);
+}
+
+.hero-fruit-2 {
+  background: radial-gradient(circle at 35% 35%, #fff, #ffd37a 28%, #ff9f32 100%);
+}
+
+.hero-fruit-3 {
+  background: radial-gradient(circle at 38% 38%, #fff, #91f0d3 28%, #18c7b8 100%);
+}
