@@ -95,40 +95,6 @@
     ]
   }
   </script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "name": "Quick Casual Games",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Fruit Merge Online",
-        "url": "https://fruitmerge.online/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Fruit 2048",
-        "url": "https://fruitmerge.online/#related-games"
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "name": "Water Sort Puzzle",
-        "url": "https://fruitmerge.online/#related-games"
-      },
-      {
-        "@type": "ListItem",
-        "position": 4,
-        "name": "Bubble Shooter",
-        "url": "https://fruitmerge.online/#related-games"
-      }
-    ]
-  }
-  </script>
 </head>
 
 <body>
@@ -142,6 +108,7 @@
       <a href="#game">Play</a>
       <a href="#how-to-play">How to Play</a>
       <a href="#tips">Tips</a>
+      <a href="#leaderboard">Leaderboard</a>
       <a href="#related-games">More Games</a>
       <a href="#faq">FAQ</a>
     </nav>
@@ -184,24 +151,26 @@
               <span>Expert Goal</span>
             </div>
             <div>
-              <strong>Free</strong>
-              <span>Browser Play</span>
+              <strong>Top 5</strong>
+              <span>Local Ranking</span>
             </div>
           </div>
         </div>
 
         <div class="hero-game-card" aria-label="Fruit Merge Online preview">
           <div class="preview-top">
-            <span>Score</span>
+            <span>Quick Run</span>
             <strong>12,840</strong>
           </div>
+
           <div class="preview-box">
-            <span class="preview-fruit fruit-a">🍒</span>
-            <span class="preview-fruit fruit-b">🍓</span>
-            <span class="preview-fruit fruit-c">🍊</span>
-            <span class="preview-fruit fruit-d">🍉</span>
-            <span class="preview-fruit fruit-e">🍍</span>
+            <span class="preview-fruit fruit-a q-cherry"></span>
+            <span class="preview-fruit fruit-b q-strawberry"></span>
+            <span class="preview-fruit fruit-c q-orange"></span>
+            <span class="preview-fruit fruit-d q-watermelon"></span>
+            <span class="preview-fruit fruit-e q-pineapple"></span>
           </div>
+
           <div class="preview-bottom">Drop · Merge · Survive</div>
         </div>
       </div>
@@ -253,10 +222,13 @@
             <div id="gameOverOverlay" class="game-over hidden">
               <div class="overlay-badge">🍉</div>
               <h3>Game Over</h3>
+              <p id="runTitle" class="run-title">Quick Run</p>
               <p>Your score: <span id="finalScore">0</span></p>
               <p>Survival time: <span id="finalTime">00:00</span></p>
               <p>Best score: <span id="finalBestScore">0</span></p>
               <p id="gameOverMessage" class="game-over-message"></p>
+
+              <div id="gameOverLeaderboard" class="mini-leaderboard"></div>
 
               <div class="game-over-actions">
                 <button id="playAgainButton">Play Again</button>
@@ -301,8 +273,8 @@
         </div>
 
         <div class="feature-card">
-          <h3>High Score Loop</h3>
-          <p>Every run gives you a chance to beat your best score or survive longer than before.</p>
+          <h3>Local Top 5</h3>
+          <p>Your best local scores are saved in your browser so you can chase better runs.</p>
         </div>
       </div>
     </section>
@@ -390,6 +362,20 @@
       </div>
     </section>
 
+    <section id="leaderboard" class="content-section leaderboard-section">
+      <div class="section-heading left">
+        <p class="section-kicker">Leaderboard</p>
+        <h2>Your Local Top 5 Runs</h2>
+      </div>
+
+      <p>
+        This leaderboard is saved locally in your browser. It does not compare you with other players yet,
+        but it gives you a clear target to beat in your next quick run.
+      </p>
+
+      <div id="leaderboardList" class="leaderboard-list"></div>
+    </section>
+
     <section id="fruit-levels" class="content-section">
       <div class="section-heading left">
         <p class="section-kicker">Progression</p>
@@ -438,10 +424,10 @@
     <section id="rating" class="content-section rating-section">
       <div class="rating-card">
         <div>
-          <p class="section-kicker">Rate This Game</p>
-          <h2>Did You Enjoy Fruit Merge Online?</h2>
+          <p class="section-kicker">Feedback</p>
+          <h2>Was This Game Fun?</h2>
           <p>
-            Give this game a quick rating. Your rating is saved locally in your browser and helps shape future improvements.
+            Give this game a quick rating. Your rating is saved locally in your browser and helps guide future improvements.
           </p>
         </div>
 
@@ -461,15 +447,15 @@
     <section id="related-games" class="content-section related-section">
       <div class="section-heading left">
         <p class="section-kicker">More Games</p>
-        <h2>Related Quick Casual Games</h2>
+        <h2>More Quick Casual Games</h2>
       </div>
 
       <p>
         Fruit Merge Online is the first quick casual game on this site. More simple browser games are planned,
-        including puzzle, merge, sorting, and bubble games for short play sessions.
+        but this section is intentionally kept small until the next playable game is ready.
       </p>
 
-      <div class="related-grid">
+      <div class="related-grid compact-related">
         <a class="related-card active-game" href="#game">
           <div class="related-icon">🍉</div>
           <h3>Fruit Merge Online</h3>
@@ -488,27 +474,6 @@
           <div class="related-icon">💧</div>
           <h3>Water Sort Puzzle</h3>
           <p>Sort colorful liquids into the right bottles.</p>
-          <span>Coming Soon</span>
-        </div>
-
-        <div class="related-card coming-soon">
-          <div class="related-icon">🫧</div>
-          <h3>Bubble Shooter</h3>
-          <p>A classic bubble popping game for relaxing breaks.</p>
-          <span>Coming Soon</span>
-        </div>
-
-        <div class="related-card coming-soon">
-          <div class="related-icon">🍬</div>
-          <h3>Candy Match</h3>
-          <p>Match colorful candies and clear quick puzzle levels.</p>
-          <span>Coming Soon</span>
-        </div>
-
-        <div class="related-card coming-soon">
-          <div class="related-icon">🔢</div>
-          <h3>Number Merge</h3>
-          <p>Merge numbers, build bigger tiles, and chase a high score.</p>
           <span>Coming Soon</span>
         </div>
       </div>
@@ -571,7 +536,7 @@
 
       <p>
         Fruit Merge Online is a quick browser fruit merging game designed for short breaks.
-        It combines simple merge puzzle rules with time pressure, high-score chasing, and summer-style fruit visuals.
+        It combines simple merge puzzle rules with time pressure, high-score chasing, local ranking, and summer-style fruit visuals.
         The goal is to create a game that is easy to start but challenging enough to replay.
       </p>
 
@@ -585,7 +550,7 @@
       <h2>Privacy Policy</h2>
       <p>
         Fruit Merge Online does not require account registration. Your best score, survival time, unlocked fruit progress,
-        and local rating may be stored in your browser using local storage. We do not require personal information to play this game.
+        local leaderboard, and local rating may be stored in your browser using local storage. We do not require personal information to play this game.
       </p>
     </section>
 
@@ -609,6 +574,7 @@
     <p>© 2026 Fruit Merge Online. All rights reserved.</p>
     <p class="footer-links">
       <a href="#game">Play</a>
+      <a href="#leaderboard">Leaderboard</a>
       <a href="#related-games">More Games</a>
       <a href="#privacy">Privacy</a>
       <a href="#terms">Terms</a>
