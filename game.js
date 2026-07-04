@@ -156,39 +156,23 @@ function makeFruitSvg(fruit) {
   return `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
     <defs>
-      <filter id="fruitShadow" x="-30%" y="-30%" width="160%" height="160%">
-        <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#35b8d6" flood-opacity="0.22"/>
+      <filter id="fruitShadow" x="-25%" y="-25%" width="150%" height="150%">
+        <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0fa3b1" flood-opacity="0.18"/>
       </filter>
 
-      <radialGradient id="badgeBg" cx="50%" cy="35%" r="80%">
-        <stop offset="0%" stop-color="#fffdf6"/>
-        <stop offset="100%" stop-color="#ffe8b8"/>
-      </radialGradient>
-
-      <radialGradient id="shineGrad" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <radialGradient id="gloss" cx="35%" cy="24%" r="70%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.82"/>
+        <stop offset="30%" stop-color="#ffffff" stop-opacity="0.18"/>
         <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
       </radialGradient>
-
-      <linearGradient id="coolShadow" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#5de1ff" stop-opacity="0.22"/>
-        <stop offset="100%" stop-color="#00c6c9" stop-opacity="0.08"/>
-      </linearGradient>
     </defs>
 
-    <ellipse cx="128" cy="222" rx="72" ry="14" fill="url(#coolShadow)"/>
+    <ellipse cx="128" cy="224" rx="70" ry="12" fill="#59dbe0" opacity="0.16"/>
 
     <g filter="url(#fruitShadow)">
-      <circle cx="128" cy="128" r="95" fill="url(#badgeBg)"/>
-      <circle cx="128" cy="128" r="92" fill="none" stroke="#fffef9" stroke-width="5" opacity="0.95"/>
-      <circle cx="128" cy="128" r="86" fill="#fff7e8" opacity="0.55"/>
-
       ${detail}
-
-      <ellipse cx="92" cy="74" rx="30" ry="17" fill="url(#shineGrad)" transform="rotate(-18 92 74)"/>
-      <circle cx="72" cy="96" r="7" fill="#ffffff" opacity="0.22"/>
-      <circle cx="176" cy="70" r="5" fill="#ffffff" opacity="0.18"/>
-      <circle cx="188" cy="160" r="4" fill="#ffffff" opacity="0.14"/>
+      <ellipse cx="92" cy="78" rx="30" ry="17" fill="url(#gloss)" transform="rotate(-20 92 78)"/>
+      <circle cx="76" cy="103" r="6" fill="#ffffff" opacity="0.18"/>
     </g>
   </svg>`;
 }
@@ -197,18 +181,18 @@ function getFruitDetailSvg(type) {
   if (type === "cherry") {
     return `
       <g>
-        <path d="M118 88 C114 66 122 50 140 42" fill="none" stroke="#4f8a38" stroke-width="8" stroke-linecap="round"/>
-        <path d="M138 88 C146 63 165 50 184 56" fill="none" stroke="#4f8a38" stroke-width="8" stroke-linecap="round"/>
-        <ellipse cx="180" cy="55" rx="20" ry="10" fill="#79c64b" transform="rotate(-24 180 55)"/>
+        <path d="M114 85 C112 58 124 41 145 34" fill="none" stroke="#4f8a38" stroke-width="9" stroke-linecap="round"/>
+        <path d="M139 86 C151 59 171 46 192 53" fill="none" stroke="#4f8a38" stroke-width="9" stroke-linecap="round"/>
+        <ellipse cx="192" cy="53" rx="22" ry="11" fill="#7ccc50" transform="rotate(-22 192 53)"/>
 
-        <circle cx="106" cy="145" r="35" fill="#ef4565"/>
-        <circle cx="150" cy="136" r="35" fill="#d9234f"/>
+        <circle cx="101" cy="148" r="48" fill="#ef4265"/>
+        <circle cx="154" cy="139" r="49" fill="#dc234f"/>
 
-        <circle cx="94" cy="127" r="10" fill="#ffffff" opacity="0.32"/>
-        <circle cx="139" cy="118" r="10" fill="#ffffff" opacity="0.26"/>
+        <circle cx="85" cy="128" r="14" fill="#ffffff" opacity="0.28"/>
+        <circle cx="139" cy="118" r="13" fill="#ffffff" opacity="0.24"/>
 
-        <circle cx="106" cy="145" r="35" fill="none" stroke="#c71c42" stroke-width="4" opacity="0.4"/>
-        <circle cx="150" cy="136" r="35" fill="none" stroke="#b8183b" stroke-width="4" opacity="0.4"/>
+        <circle cx="101" cy="148" r="48" fill="none" stroke="#c81d43" stroke-width="5" opacity="0.5"/>
+        <circle cx="154" cy="139" r="49" fill="none" stroke="#b7193e" stroke-width="5" opacity="0.5"/>
       </g>
     `;
   }
@@ -216,33 +200,33 @@ function getFruitDetailSvg(type) {
   if (type === "strawberry") {
     return `
       <g>
-        <path d="M82 77 L103 95 L128 74 L153 95 L174 77 L164 102 L92 102 Z" fill="#67b83f"/>
-        <path d="M128 88
-                 C92 88 76 112 78 145
-                 C80 181 104 204 128 209
-                 C152 204 176 181 178 145
-                 C180 112 164 88 128 88 Z"
+        <path d="M78 57 L103 82 L128 55 L153 82 L178 57 L164 95 L92 95 Z" fill="#68b944"/>
+
+        <path d="M128 78
+                 C89 78 62 107 66 149
+                 C70 194 101 224 128 229
+                 C155 224 186 194 190 149
+                 C194 107 167 78 128 78 Z"
               fill="#ff4f6d"/>
-        <path d="M128 88
-                 C92 88 76 112 78 145
-                 C80 181 104 204 128 209
-                 C152 204 176 181 178 145
-                 C180 112 164 88 128 88 Z"
-              fill="none" stroke="#d93c58" stroke-width="4" opacity="0.45"/>
 
-        <g fill="#ffe7a3">
-          <ellipse cx="101" cy="118" rx="4" ry="6" transform="rotate(-18 101 118)"/>
-          <ellipse cx="126" cy="112" rx="4" ry="6" transform="rotate(0 126 112)"/>
-          <ellipse cx="152" cy="118" rx="4" ry="6" transform="rotate(18 152 118)"/>
-          <ellipse cx="94" cy="145" rx="4" ry="6" transform="rotate(-18 94 145)"/>
-          <ellipse cx="120" cy="140" rx="4" ry="6" transform="rotate(0 120 140)"/>
-          <ellipse cx="146" cy="145" rx="4" ry="6" transform="rotate(18 146 145)"/>
-          <ellipse cx="104" cy="172" rx="4" ry="6" transform="rotate(-18 104 172)"/>
-          <ellipse cx="130" cy="176" rx="4" ry="6" transform="rotate(0 130 176)"/>
-          <ellipse cx="152" cy="170" rx="4" ry="6" transform="rotate(18 152 170)"/>
+        <path d="M128 78
+                 C89 78 62 107 66 149
+                 C70 194 101 224 128 229
+                 C155 224 186 194 190 149
+                 C194 107 167 78 128 78 Z"
+              fill="none" stroke="#d93b58" stroke-width="5" opacity="0.5"/>
+
+        <g fill="#ffe7a5">
+          <ellipse cx="99" cy="116" rx="4.5" ry="7" transform="rotate(-18 99 116)"/>
+          <ellipse cx="128" cy="108" rx="4.5" ry="7"/>
+          <ellipse cx="158" cy="116" rx="4.5" ry="7" transform="rotate(18 158 116)"/>
+          <ellipse cx="89" cy="150" rx="4.5" ry="7" transform="rotate(-18 89 150)"/>
+          <ellipse cx="119" cy="145" rx="4.5" ry="7"/>
+          <ellipse cx="151" cy="150" rx="4.5" ry="7" transform="rotate(18 151 150)"/>
+          <ellipse cx="103" cy="185" rx="4.5" ry="7" transform="rotate(-18 103 185)"/>
+          <ellipse cx="132" cy="190" rx="4.5" ry="7"/>
+          <ellipse cx="160" cy="180" rx="4.5" ry="7" transform="rotate(18 160 180)"/>
         </g>
-
-        <ellipse cx="106" cy="116" rx="14" ry="9" fill="#ffffff" opacity="0.20"/>
       </g>
     `;
   }
@@ -250,25 +234,25 @@ function getFruitDetailSvg(type) {
   if (type === "grape") {
     return `
       <g>
-        <ellipse cx="146" cy="56" rx="22" ry="11" fill="#79c64b" transform="rotate(-26 146 56)"/>
-        <path d="M132 70 C132 58 137 52 145 48" fill="none" stroke="#6d9c39" stroke-width="7" stroke-linecap="round"/>
+        <path d="M133 70 C135 54 144 45 158 40" fill="none" stroke="#689b38" stroke-width="8" stroke-linecap="round"/>
+        <ellipse cx="162" cy="42" rx="25" ry="12" fill="#76c84d" transform="rotate(-24 162 42)"/>
 
-        <g fill="#7f4cd3" stroke="#6b36c5" stroke-width="3">
-          <circle cx="103" cy="114" r="21"/>
-          <circle cx="128" cy="108" r="21"/>
-          <circle cx="153" cy="114" r="21"/>
-          <circle cx="114" cy="136" r="21"/>
-          <circle cx="140" cy="138" r="21"/>
-          <circle cx="102" cy="160" r="20"/>
-          <circle cx="128" cy="164" r="21"/>
-          <circle cx="154" cy="160" r="20"/>
+        <g fill="#7f4cd3" stroke="#6430b4" stroke-width="4">
+          <circle cx="99" cy="101" r="29"/>
+          <circle cx="133" cy="94" r="30"/>
+          <circle cx="166" cy="105" r="29"/>
+          <circle cx="113" cy="132" r="30"/>
+          <circle cx="148" cy="134" r="30"/>
+          <circle cx="96" cy="168" r="29"/>
+          <circle cx="131" cy="176" r="31"/>
+          <circle cx="166" cy="166" r="29"/>
         </g>
 
-        <g fill="#ffffff" opacity="0.22">
-          <circle cx="96" cy="106" r="6"/>
-          <circle cx="121" cy="100" r="6"/>
-          <circle cx="145" cy="108" r="6"/>
-          <circle cx="108" cy="130" r="6"/>
+        <g fill="#ffffff" opacity="0.25">
+          <circle cx="88" cy="90" r="8"/>
+          <circle cx="122" cy="84" r="8"/>
+          <circle cx="154" cy="96" r="8"/>
+          <circle cx="103" cy="121" r="7"/>
         </g>
       </g>
     `;
@@ -277,23 +261,21 @@ function getFruitDetailSvg(type) {
   if (type === "orange") {
     return `
       <g>
-        <circle cx="128" cy="128" r="64" fill="#ffb433"/>
-        <circle cx="128" cy="128" r="58" fill="#ffd96a"/>
-        <circle cx="128" cy="128" r="64" fill="none" stroke="#ff9a16" stroke-width="6"/>
-        <circle cx="128" cy="128" r="58" fill="none" stroke="#fff3c9" stroke-width="4"/>
+        <circle cx="128" cy="128" r="94" fill="#ff9f22"/>
+        <circle cx="128" cy="128" r="82" fill="#ffd76a"/>
+        <circle cx="128" cy="128" r="94" fill="none" stroke="#f08418" stroke-width="8"/>
+        <circle cx="128" cy="128" r="78" fill="none" stroke="#fff4c6" stroke-width="5"/>
 
-        <g stroke="#fff7de" stroke-width="5" stroke-linecap="round">
-          <line x1="128" y1="128" x2="128" y2="75"/>
-          <line x1="128" y1="128" x2="173" y2="95"/>
-          <line x1="128" y1="128" x2="182" y2="128"/>
-          <line x1="128" y1="128" x2="173" y2="161"/>
-          <line x1="128" y1="128" x2="128" y2="181"/>
-          <line x1="128" y1="128" x2="83" y2="161"/>
-          <line x1="128" y1="128" x2="74" y2="128"/>
-          <line x1="128" y1="128" x2="83" y2="95"/>
+        <g stroke="#fff8df" stroke-width="6" stroke-linecap="round">
+          <line x1="128" y1="128" x2="128" y2="52"/>
+          <line x1="128" y1="128" x2="183" y2="73"/>
+          <line x1="128" y1="128" x2="204" y2="128"/>
+          <line x1="128" y1="128" x2="183" y2="183"/>
+          <line x1="128" y1="128" x2="128" y2="204"/>
+          <line x1="128" y1="128" x2="73" y2="183"/>
+          <line x1="128" y1="128" x2="52" y2="128"/>
+          <line x1="128" y1="128" x2="73" y2="73"/>
         </g>
-
-        <circle cx="103" cy="99" r="11" fill="#ffffff" opacity="0.24"/>
       </g>
     `;
   }
@@ -301,30 +283,28 @@ function getFruitDetailSvg(type) {
   if (type === "apple") {
     return `
       <g>
-        <path d="M128 78 C120 60 110 50 95 52" fill="none" stroke="#7a5237" stroke-width="8" stroke-linecap="round"/>
-        <ellipse cx="153" cy="57" rx="22" ry="11" fill="#72bf46" transform="rotate(-22 153 57)"/>
+        <path d="M128 62 C120 44 107 34 91 38" fill="none" stroke="#7a5237" stroke-width="9" stroke-linecap="round"/>
+        <ellipse cx="157" cy="42" rx="26" ry="13" fill="#70bf45" transform="rotate(-22 157 42)"/>
 
-        <path d="M128 87
-                 C95 87 74 112 76 144
-                 C78 181 100 202 128 204
-                 C156 202 178 181 180 144
-                 C182 112 161 87 128 87 Z"
+        <path d="M128 72
+                 C87 70 58 101 61 145
+                 C64 194 94 225 128 228
+                 C162 225 192 194 195 145
+                 C198 101 169 70 128 72 Z"
               fill="#f04d63"/>
 
-        <path d="M128 87
-                 C141 104 147 124 145 204
-                 C156 202 178 181 180 144
-                 C182 112 161 87 128 87 Z"
-              fill="#d93b52" opacity="0.45"/>
+        <path d="M128 72
+                 C146 96 152 132 151 226
+                 C176 216 193 186 195 145
+                 C198 101 169 70 128 72 Z"
+              fill="#d93b52" opacity="0.42"/>
 
-        <path d="M128 87
-                 C95 87 74 112 76 144
-                 C78 181 100 202 128 204
-                 C156 202 178 181 180 144
-                 C182 112 161 87 128 87 Z"
-              fill="none" stroke="#d22f47" stroke-width="4" opacity="0.5"/>
-
-        <ellipse cx="104" cy="113" rx="15" ry="10" fill="#ffffff" opacity="0.23"/>
+        <path d="M128 72
+                 C87 70 58 101 61 145
+                 C64 194 94 225 128 228
+                 C162 225 192 194 195 145
+                 C198 101 169 70 128 72 Z"
+              fill="none" stroke="#d12e46" stroke-width="5" opacity="0.55"/>
       </g>
     `;
   }
@@ -332,26 +312,26 @@ function getFruitDetailSvg(type) {
   if (type === "peach") {
     return `
       <g>
-        <ellipse cx="152" cy="58" rx="21" ry="11" fill="#79c64b" transform="rotate(-24 152 58)"/>
-        <path d="M128 80
-                 C97 80 73 107 75 144
-                 C77 183 99 206 128 208
-                 C157 206 179 183 181 144
-                 C183 107 159 80 128 80 Z"
+        <ellipse cx="155" cy="47" rx="25" ry="12" fill="#79c64b" transform="rotate(-24 155 47)"/>
+
+        <path d="M128 65
+                 C89 65 58 99 61 146
+                 C64 195 96 227 128 230
+                 C160 227 192 195 195 146
+                 C198 99 167 65 128 65 Z"
               fill="#ffb07f"/>
 
-        <path d="M129 86 C110 107 108 146 120 198" fill="none" stroke="#e98f6c" stroke-width="5" opacity="0.75"/>
+        <ellipse cx="104" cy="154" rx="44" ry="55" fill="#ff8f88" opacity="0.35"/>
+        <ellipse cx="158" cy="132" rx="34" ry="42" fill="#ffd2a8" opacity="0.22"/>
 
-        <ellipse cx="107" cy="151" rx="34" ry="42" fill="#ff8f88" opacity="0.35"/>
-        <ellipse cx="153" cy="136" rx="24" ry="30" fill="#ffd2a8" opacity="0.20"/>
-        <path d="M128 80
-                 C97 80 73 107 75 144
-                 C77 183 99 206 128 208
-                 C157 206 179 183 181 144
-                 C183 107 159 80 128 80 Z"
-              fill="none" stroke="#ef9c74" stroke-width="4" opacity="0.5"/>
+        <path d="M130 76 C106 108 104 162 121 218" fill="none" stroke="#e98f6c" stroke-width="6" opacity="0.78"/>
 
-        <ellipse cx="102" cy="112" rx="14" ry="8" fill="#ffffff" opacity="0.23"/>
+        <path d="M128 65
+                 C89 65 58 99 61 146
+                 C64 195 96 227 128 230
+                 C160 227 192 195 195 146
+                 C198 99 167 65 128 65 Z"
+              fill="none" stroke="#ef9c74" stroke-width="5" opacity="0.5"/>
       </g>
     `;
   }
@@ -359,32 +339,30 @@ function getFruitDetailSvg(type) {
   if (type === "pineapple") {
     return `
       <g>
-        <path d="M100 71 L113 34 L128 66 L143 34 L156 71 L175 45 L164 95 L92 95 L81 45 Z" fill="#70bf45"/>
+        <path d="M98 62 L112 22 L128 57 L144 22 L158 62 L181 37 L166 98 L90 98 L75 37 Z" fill="#6fc043"/>
 
-        <path d="M128 90
-                 C97 90 80 110 83 146
-                 C86 182 105 205 128 207
-                 C151 205 170 182 173 146
-                 C176 110 159 90 128 90 Z"
-              fill="#f2c43f"/>
+        <path d="M128 83
+                 C88 83 65 111 69 154
+                 C73 198 98 226 128 229
+                 C158 226 183 198 187 154
+                 C191 111 168 83 128 83 Z"
+              fill="#f3c43f"/>
 
-        <path d="M128 90
-                 C97 90 80 110 83 146
-                 C86 182 105 205 128 207
-                 C151 205 170 182 173 146
-                 C176 110 159 90 128 90 Z"
-              fill="none" stroke="#dca72a" stroke-width="4" opacity="0.55"/>
+        <path d="M128 83
+                 C88 83 65 111 69 154
+                 C73 198 98 226 128 229
+                 C158 226 183 198 187 154
+                 C191 111 168 83 128 83 Z"
+              fill="none" stroke="#dca72a" stroke-width="5" opacity="0.58"/>
 
-        <g stroke="#c48e20" stroke-width="4" opacity="0.55">
-          <path d="M92 111 L164 186"/>
-          <path d="M86 136 L151 203"/>
-          <path d="M106 94 L176 167"/>
-          <path d="M164 111 L92 186"/>
-          <path d="M171 136 L105 203"/>
-          <path d="M150 94 L80 167"/>
+        <g stroke="#bd891f" stroke-width="5" opacity="0.55">
+          <path d="M82 111 L172 209"/>
+          <path d="M68 144 L145 229"/>
+          <path d="M111 83 L190 170"/>
+          <path d="M174 111 L84 209"/>
+          <path d="M188 144 L111 229"/>
+          <path d="M145 83 L66 170"/>
         </g>
-
-        <ellipse cx="104" cy="117" rx="13" ry="8" fill="#ffffff" opacity="0.20"/>
       </g>
     `;
   }
@@ -392,33 +370,21 @@ function getFruitDetailSvg(type) {
   if (type === "watermelon") {
     return `
       <g>
-        <path d="M60 154
-                 A70 70 0 0 1 196 154
-                 L179 176
-                 A47 47 0 0 0 77 176 Z"
-              fill="#32c06b"/>
+        <circle cx="128" cy="128" r="96" fill="#2fbf71"/>
+        <circle cx="128" cy="128" r="84" fill="#eaffc8"/>
+        <circle cx="128" cy="128" r="73" fill="#ff5a68"/>
 
-        <path d="M71 154
-                 A59 59 0 0 1 185 154
-                 L171 170
-                 A40 40 0 0 0 85 170 Z"
-              fill="#fff6de"/>
-
-        <path d="M81 153
-                 A50 50 0 0 1 175 153
-                 L165 164
-                 A34 34 0 0 0 91 164 Z"
-              fill="#ff5a68"/>
-
-        <g fill="#2d2d2d">
-          <ellipse cx="104" cy="140" rx="4" ry="7" transform="rotate(-16 104 140)"/>
-          <ellipse cx="126" cy="132" rx="4" ry="7" transform="rotate(-4 126 132)"/>
-          <ellipse cx="149" cy="138" rx="4" ry="7" transform="rotate(15 149 138)"/>
-          <ellipse cx="116" cy="151" rx="4" ry="7" transform="rotate(-14 116 151)"/>
-          <ellipse cx="140" cy="153" rx="4" ry="7" transform="rotate(10 140 153)"/>
+        <g fill="#263238">
+          <ellipse cx="98" cy="113" rx="5" ry="9" transform="rotate(-18 98 113)"/>
+          <ellipse cx="126" cy="103" rx="5" ry="9"/>
+          <ellipse cx="156" cy="115" rx="5" ry="9" transform="rotate(18 156 115)"/>
+          <ellipse cx="111" cy="148" rx="5" ry="9" transform="rotate(-14 111 148)"/>
+          <ellipse cx="145" cy="151" rx="5" ry="9" transform="rotate(14 145 151)"/>
+          <ellipse cx="128" cy="176" rx="5" ry="9"/>
         </g>
 
-        <ellipse cx="113" cy="124" rx="16" ry="9" fill="#ffffff" opacity="0.20"/>
+        <circle cx="128" cy="128" r="96" fill="none" stroke="#249d5c" stroke-width="8" opacity="0.55"/>
+        <path d="M74 70 C96 50 135 42 171 58" fill="none" stroke="#8af2b4" stroke-width="8" opacity="0.3" stroke-linecap="round"/>
       </g>
     `;
   }
@@ -426,18 +392,18 @@ function getFruitDetailSvg(type) {
   if (type === "coconut") {
     return `
       <g>
-        <circle cx="128" cy="134" r="68" fill="#8c5b39"/>
-        <circle cx="128" cy="134" r="57" fill="#fff7ec"/>
-        <circle cx="128" cy="134" r="68" fill="none" stroke="#714728" stroke-width="7" opacity="0.6"/>
-        <circle cx="128" cy="134" r="57" fill="none" stroke="#f1e2cb" stroke-width="4" opacity="0.7"/>
+        <circle cx="128" cy="128" r="96" fill="#8c5b39"/>
+        <circle cx="128" cy="128" r="80" fill="#fff7ec"/>
+        <circle cx="128" cy="128" r="96" fill="none" stroke="#6f4529" stroke-width="8" opacity="0.65"/>
+        <circle cx="128" cy="128" r="80" fill="none" stroke="#ecdcc4" stroke-width="6" opacity="0.8"/>
 
-        <g fill="#9d7454" opacity="0.55">
-          <circle cx="109" cy="114" r="5"/>
-          <circle cx="127" cy="108" r="5"/>
-          <circle cx="145" cy="114" r="5"/>
+        <g fill="#8e6647" opacity="0.62">
+          <circle cx="105" cy="104" r="6"/>
+          <circle cx="128" cy="96" r="6"/>
+          <circle cx="151" cy="104" r="6"/>
         </g>
 
-        <ellipse cx="104" cy="118" rx="15" ry="9" fill="#ffffff" opacity="0.24"/>
+        <path d="M82 82 C104 64 139 57 172 70" fill="none" stroke="#ffffff" stroke-width="8" opacity="0.18" stroke-linecap="round"/>
       </g>
     `;
   }
@@ -445,25 +411,25 @@ function getFruitDetailSvg(type) {
   if (type === "melon") {
     return `
       <g>
-        <circle cx="128" cy="128" r="67" fill="#8fd669"/>
-        <circle cx="128" cy="128" r="58" fill="#d7f3a5"/>
-        <ellipse cx="128" cy="136" rx="24" ry="17" fill="#efe4c8" opacity="0.92"/>
+        <circle cx="128" cy="128" r="96" fill="#7fd25d"/>
+        <circle cx="128" cy="128" r="82" fill="#d9f5a1"/>
+        <ellipse cx="128" cy="139" rx="36" ry="26" fill="#efe4c8" opacity="0.95"/>
 
-        <g fill="#b58b45" opacity="0.72">
-          <ellipse cx="117" cy="132" rx="3" ry="5" transform="rotate(-18 117 132)"/>
-          <ellipse cx="126" cy="138" rx="3" ry="5" transform="rotate(-4 126 138)"/>
-          <ellipse cx="135" cy="133" rx="3" ry="5" transform="rotate(14 135 133)"/>
-          <ellipse cx="143" cy="138" rx="3" ry="5" transform="rotate(20 143 138)"/>
+        <g fill="#b58b45" opacity="0.75">
+          <ellipse cx="109" cy="135" rx="4" ry="7" transform="rotate(-18 109 135)"/>
+          <ellipse cx="123" cy="143" rx="4" ry="7"/>
+          <ellipse cx="138" cy="136" rx="4" ry="7" transform="rotate(14 138 136)"/>
+          <ellipse cx="151" cy="145" rx="4" ry="7" transform="rotate(20 151 145)"/>
         </g>
 
-        <g stroke="#ffffff" stroke-width="5" opacity="0.42">
-          <path d="M87 88 C110 110 110 145 88 171"/>
-          <path d="M109 74 C128 106 128 150 109 183"/>
-          <path d="M147 74 C128 106 128 150 147 183"/>
-          <path d="M169 88 C146 110 146 145 168 171"/>
+        <g stroke="#ffffff" stroke-width="6" opacity="0.42">
+          <path d="M72 78 C108 109 108 153 74 190"/>
+          <path d="M105 54 C129 100 129 154 105 205"/>
+          <path d="M151 54 C127 100 127 154 151 205"/>
+          <path d="M184 78 C148 109 148 153 182 190"/>
         </g>
 
-        <circle cx="128" cy="128" r="67" fill="none" stroke="#6ebf53" stroke-width="6" opacity="0.55"/>
+        <circle cx="128" cy="128" r="96" fill="none" stroke="#61b94d" stroke-width="8" opacity="0.55"/>
       </g>
     `;
   }
@@ -471,41 +437,41 @@ function getFruitDetailSvg(type) {
   if (type === "dragonfruit") {
     return `
       <g>
-        <path d="M128 82
-                 C98 82 75 105 76 141
-                 C77 177 100 204 128 206
-                 C156 204 179 177 180 141
-                 C181 105 158 82 128 82 Z"
+        <path d="M128 58
+                 C88 58 58 94 60 141
+                 C62 192 95 226 128 230
+                 C161 226 194 192 196 141
+                 C198 94 168 58 128 58 Z"
               fill="#ff4ea2"/>
 
-        <path d="M128 94
-                 C104 94 87 112 88 141
-                 C89 171 106 191 128 193
-                 C150 191 167 171 168 141
-                 C169 112 152 94 128 94 Z"
+        <path d="M128 76
+                 C99 76 77 105 78 141
+                 C79 179 101 207 128 210
+                 C155 207 177 179 178 141
+                 C179 105 157 76 128 76 Z"
               fill="#fff9fb"/>
 
         <g fill="#252525">
-          <circle cx="107" cy="119" r="2.7"/>
-          <circle cx="126" cy="113" r="2.7"/>
-          <circle cx="145" cy="121" r="2.7"/>
-          <circle cx="115" cy="139" r="2.7"/>
-          <circle cx="136" cy="145" r="2.7"/>
-          <circle cx="125" cy="163" r="2.7"/>
-          <circle cx="148" cy="159" r="2.7"/>
+          <circle cx="103" cy="111" r="3"/>
+          <circle cx="126" cy="102" r="3"/>
+          <circle cx="151" cy="115" r="3"/>
+          <circle cx="112" cy="139" r="3"/>
+          <circle cx="141" cy="149" r="3"/>
+          <circle cx="124" cy="172" r="3"/>
+          <circle cx="156" cy="173" r="3"/>
         </g>
 
-        <ellipse cx="83" cy="124" rx="22" ry="10" fill="#73c84b" transform="rotate(-34 83 124)"/>
-        <ellipse cx="173" cy="113" rx="22" ry="10" fill="#73c84b" transform="rotate(34 173 113)"/>
-        <ellipse cx="92" cy="160" rx="20" ry="9" fill="#73c84b" transform="rotate(22 92 160)"/>
-        <ellipse cx="163" cy="164" rx="20" ry="9" fill="#73c84b" transform="rotate(-22 163 164)"/>
+        <ellipse cx="70" cy="124" rx="24" ry="11" fill="#73c84b" transform="rotate(-34 70 124)"/>
+        <ellipse cx="186" cy="113" rx="24" ry="11" fill="#73c84b" transform="rotate(34 186 113)"/>
+        <ellipse cx="81" cy="170" rx="23" ry="10" fill="#73c84b" transform="rotate(22 81 170)"/>
+        <ellipse cx="175" cy="174" rx="23" ry="10" fill="#73c84b" transform="rotate(-22 175 174)"/>
 
-        <path d="M128 82
-                 C98 82 75 105 76 141
-                 C77 177 100 204 128 206
-                 C156 204 179 177 180 141
-                 C181 105 158 82 128 82 Z"
-              fill="none" stroke="#e33d8d" stroke-width="4" opacity="0.5"/>
+        <path d="M128 58
+                 C88 58 58 94 60 141
+                 C62 192 95 226 128 230
+                 C161 226 194 192 196 141
+                 C198 94 168 58 128 58 Z"
+              fill="none" stroke="#e33d8d" stroke-width="5" opacity="0.5"/>
       </g>
     `;
   }
@@ -866,7 +832,17 @@ function drawFruitIcon(targetCtx, x, y, radius, level) {
   const img = fruitImages[level];
 
   if (img && img.complete) {
-    targetCtx.drawImage(img, x - radius, y - radius, radius * 2, radius * 2);
+    const visualScale = 1.04;
+    const size = radius * 2 * visualScale;
+
+    targetCtx.drawImage(
+      img,
+      x - size / 2,
+      y - size / 2,
+      size,
+      size
+    );
+
     return;
   }
 
