@@ -41,7 +41,6 @@ const fruits = [
   { name: "Dragon Fruit", radius: 110, score: 5120, skin: "#f04e98", core: "#fff4f9", type: "dragonfruit" }
 ];
 
-let fruitImages = [];
 let balls = [];
 let currentFruit;
 let nextFruitLevel;
@@ -68,6 +67,9 @@ let soundReady = false;
 
 /**
  * Faster drop + stable non-overlap physics
+ * Key update:
+ * Fruits are drawn directly on canvas according to the collision radius.
+ * This fixes the previous "large empty gaps" caused by SVG transparent margins.
  */
 const gravity = 0.46;
 const friction = 0.88;
@@ -150,342 +152,8 @@ function vibrate(ms) {
   }
 }
 
-function makeFruitSvg(fruit) {
-  const detail = getFruitDetailSvg(fruit.type);
-
-  return `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-    <defs>
-      <filter id="fruitShadow" x="-25%" y="-25%" width="150%" height="150%">
-        <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0fa3b1" flood-opacity="0.18"/>
-      </filter>
-
-      <radialGradient id="gloss" cx="35%" cy="24%" r="70%">
-        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.82"/>
-        <stop offset="30%" stop-color="#ffffff" stop-opacity="0.18"/>
-        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-      </radialGradient>
-    </defs>
-
-    <ellipse cx="128" cy="224" rx="70" ry="12" fill="#59dbe0" opacity="0.16"/>
-
-    <g filter="url(#fruitShadow)">
-      ${detail}
-      <ellipse cx="92" cy="78" rx="30" ry="17" fill="url(#gloss)" transform="rotate(-20 92 78)"/>
-      <circle cx="76" cy="103" r="6" fill="#ffffff" opacity="0.18"/>
-    </g>
-  </svg>`;
-}
-
-function getFruitDetailSvg(type) {
-  if (type === "cherry") {
-    return `
-      <g>
-        <path d="M114 85 C112 58 124 41 145 34" fill="none" stroke="#4f8a38" stroke-width="9" stroke-linecap="round"/>
-        <path d="M139 86 C151 59 171 46 192 53" fill="none" stroke="#4f8a38" stroke-width="9" stroke-linecap="round"/>
-        <ellipse cx="192" cy="53" rx="22" ry="11" fill="#7ccc50" transform="rotate(-22 192 53)"/>
-
-        <circle cx="101" cy="148" r="48" fill="#ef4265"/>
-        <circle cx="154" cy="139" r="49" fill="#dc234f"/>
-
-        <circle cx="85" cy="128" r="14" fill="#ffffff" opacity="0.28"/>
-        <circle cx="139" cy="118" r="13" fill="#ffffff" opacity="0.24"/>
-
-        <circle cx="101" cy="148" r="48" fill="none" stroke="#c81d43" stroke-width="5" opacity="0.5"/>
-        <circle cx="154" cy="139" r="49" fill="none" stroke="#b7193e" stroke-width="5" opacity="0.5"/>
-      </g>
-    `;
-  }
-
-  if (type === "strawberry") {
-    return `
-      <g>
-        <path d="M78 57 L103 82 L128 55 L153 82 L178 57 L164 95 L92 95 Z" fill="#68b944"/>
-
-        <path d="M128 78
-                 C89 78 62 107 66 149
-                 C70 194 101 224 128 229
-                 C155 224 186 194 190 149
-                 C194 107 167 78 128 78 Z"
-              fill="#ff4f6d"/>
-
-        <path d="M128 78
-                 C89 78 62 107 66 149
-                 C70 194 101 224 128 229
-                 C155 224 186 194 190 149
-                 C194 107 167 78 128 78 Z"
-              fill="none" stroke="#d93b58" stroke-width="5" opacity="0.5"/>
-
-        <g fill="#ffe7a5">
-          <ellipse cx="99" cy="116" rx="4.5" ry="7" transform="rotate(-18 99 116)"/>
-          <ellipse cx="128" cy="108" rx="4.5" ry="7"/>
-          <ellipse cx="158" cy="116" rx="4.5" ry="7" transform="rotate(18 158 116)"/>
-          <ellipse cx="89" cy="150" rx="4.5" ry="7" transform="rotate(-18 89 150)"/>
-          <ellipse cx="119" cy="145" rx="4.5" ry="7"/>
-          <ellipse cx="151" cy="150" rx="4.5" ry="7" transform="rotate(18 151 150)"/>
-          <ellipse cx="103" cy="185" rx="4.5" ry="7" transform="rotate(-18 103 185)"/>
-          <ellipse cx="132" cy="190" rx="4.5" ry="7"/>
-          <ellipse cx="160" cy="180" rx="4.5" ry="7" transform="rotate(18 160 180)"/>
-        </g>
-      </g>
-    `;
-  }
-
-  if (type === "grape") {
-    return `
-      <g>
-        <path d="M133 70 C135 54 144 45 158 40" fill="none" stroke="#689b38" stroke-width="8" stroke-linecap="round"/>
-        <ellipse cx="162" cy="42" rx="25" ry="12" fill="#76c84d" transform="rotate(-24 162 42)"/>
-
-        <g fill="#7f4cd3" stroke="#6430b4" stroke-width="4">
-          <circle cx="99" cy="101" r="29"/>
-          <circle cx="133" cy="94" r="30"/>
-          <circle cx="166" cy="105" r="29"/>
-          <circle cx="113" cy="132" r="30"/>
-          <circle cx="148" cy="134" r="30"/>
-          <circle cx="96" cy="168" r="29"/>
-          <circle cx="131" cy="176" r="31"/>
-          <circle cx="166" cy="166" r="29"/>
-        </g>
-
-        <g fill="#ffffff" opacity="0.25">
-          <circle cx="88" cy="90" r="8"/>
-          <circle cx="122" cy="84" r="8"/>
-          <circle cx="154" cy="96" r="8"/>
-          <circle cx="103" cy="121" r="7"/>
-        </g>
-      </g>
-    `;
-  }
-
-  if (type === "orange") {
-    return `
-      <g>
-        <circle cx="128" cy="128" r="94" fill="#ff9f22"/>
-        <circle cx="128" cy="128" r="82" fill="#ffd76a"/>
-        <circle cx="128" cy="128" r="94" fill="none" stroke="#f08418" stroke-width="8"/>
-        <circle cx="128" cy="128" r="78" fill="none" stroke="#fff4c6" stroke-width="5"/>
-
-        <g stroke="#fff8df" stroke-width="6" stroke-linecap="round">
-          <line x1="128" y1="128" x2="128" y2="52"/>
-          <line x1="128" y1="128" x2="183" y2="73"/>
-          <line x1="128" y1="128" x2="204" y2="128"/>
-          <line x1="128" y1="128" x2="183" y2="183"/>
-          <line x1="128" y1="128" x2="128" y2="204"/>
-          <line x1="128" y1="128" x2="73" y2="183"/>
-          <line x1="128" y1="128" x2="52" y2="128"/>
-          <line x1="128" y1="128" x2="73" y2="73"/>
-        </g>
-      </g>
-    `;
-  }
-
-  if (type === "apple") {
-    return `
-      <g>
-        <path d="M128 62 C120 44 107 34 91 38" fill="none" stroke="#7a5237" stroke-width="9" stroke-linecap="round"/>
-        <ellipse cx="157" cy="42" rx="26" ry="13" fill="#70bf45" transform="rotate(-22 157 42)"/>
-
-        <path d="M128 72
-                 C87 70 58 101 61 145
-                 C64 194 94 225 128 228
-                 C162 225 192 194 195 145
-                 C198 101 169 70 128 72 Z"
-              fill="#f04d63"/>
-
-        <path d="M128 72
-                 C146 96 152 132 151 226
-                 C176 216 193 186 195 145
-                 C198 101 169 70 128 72 Z"
-              fill="#d93b52" opacity="0.42"/>
-
-        <path d="M128 72
-                 C87 70 58 101 61 145
-                 C64 194 94 225 128 228
-                 C162 225 192 194 195 145
-                 C198 101 169 70 128 72 Z"
-              fill="none" stroke="#d12e46" stroke-width="5" opacity="0.55"/>
-      </g>
-    `;
-  }
-
-  if (type === "peach") {
-    return `
-      <g>
-        <ellipse cx="155" cy="47" rx="25" ry="12" fill="#79c64b" transform="rotate(-24 155 47)"/>
-
-        <path d="M128 65
-                 C89 65 58 99 61 146
-                 C64 195 96 227 128 230
-                 C160 227 192 195 195 146
-                 C198 99 167 65 128 65 Z"
-              fill="#ffb07f"/>
-
-        <ellipse cx="104" cy="154" rx="44" ry="55" fill="#ff8f88" opacity="0.35"/>
-        <ellipse cx="158" cy="132" rx="34" ry="42" fill="#ffd2a8" opacity="0.22"/>
-
-        <path d="M130 76 C106 108 104 162 121 218" fill="none" stroke="#e98f6c" stroke-width="6" opacity="0.78"/>
-
-        <path d="M128 65
-                 C89 65 58 99 61 146
-                 C64 195 96 227 128 230
-                 C160 227 192 195 195 146
-                 C198 99 167 65 128 65 Z"
-              fill="none" stroke="#ef9c74" stroke-width="5" opacity="0.5"/>
-      </g>
-    `;
-  }
-
-  if (type === "pineapple") {
-    return `
-      <g>
-        <path d="M98 62 L112 22 L128 57 L144 22 L158 62 L181 37 L166 98 L90 98 L75 37 Z" fill="#6fc043"/>
-
-        <path d="M128 83
-                 C88 83 65 111 69 154
-                 C73 198 98 226 128 229
-                 C158 226 183 198 187 154
-                 C191 111 168 83 128 83 Z"
-              fill="#f3c43f"/>
-
-        <path d="M128 83
-                 C88 83 65 111 69 154
-                 C73 198 98 226 128 229
-                 C158 226 183 198 187 154
-                 C191 111 168 83 128 83 Z"
-              fill="none" stroke="#dca72a" stroke-width="5" opacity="0.58"/>
-
-        <g stroke="#bd891f" stroke-width="5" opacity="0.55">
-          <path d="M82 111 L172 209"/>
-          <path d="M68 144 L145 229"/>
-          <path d="M111 83 L190 170"/>
-          <path d="M174 111 L84 209"/>
-          <path d="M188 144 L111 229"/>
-          <path d="M145 83 L66 170"/>
-        </g>
-      </g>
-    `;
-  }
-
-  if (type === "watermelon") {
-    return `
-      <g>
-        <circle cx="128" cy="128" r="96" fill="#2fbf71"/>
-        <circle cx="128" cy="128" r="84" fill="#eaffc8"/>
-        <circle cx="128" cy="128" r="73" fill="#ff5a68"/>
-
-        <g fill="#263238">
-          <ellipse cx="98" cy="113" rx="5" ry="9" transform="rotate(-18 98 113)"/>
-          <ellipse cx="126" cy="103" rx="5" ry="9"/>
-          <ellipse cx="156" cy="115" rx="5" ry="9" transform="rotate(18 156 115)"/>
-          <ellipse cx="111" cy="148" rx="5" ry="9" transform="rotate(-14 111 148)"/>
-          <ellipse cx="145" cy="151" rx="5" ry="9" transform="rotate(14 145 151)"/>
-          <ellipse cx="128" cy="176" rx="5" ry="9"/>
-        </g>
-
-        <circle cx="128" cy="128" r="96" fill="none" stroke="#249d5c" stroke-width="8" opacity="0.55"/>
-        <path d="M74 70 C96 50 135 42 171 58" fill="none" stroke="#8af2b4" stroke-width="8" opacity="0.3" stroke-linecap="round"/>
-      </g>
-    `;
-  }
-
-  if (type === "coconut") {
-    return `
-      <g>
-        <circle cx="128" cy="128" r="96" fill="#8c5b39"/>
-        <circle cx="128" cy="128" r="80" fill="#fff7ec"/>
-        <circle cx="128" cy="128" r="96" fill="none" stroke="#6f4529" stroke-width="8" opacity="0.65"/>
-        <circle cx="128" cy="128" r="80" fill="none" stroke="#ecdcc4" stroke-width="6" opacity="0.8"/>
-
-        <g fill="#8e6647" opacity="0.62">
-          <circle cx="105" cy="104" r="6"/>
-          <circle cx="128" cy="96" r="6"/>
-          <circle cx="151" cy="104" r="6"/>
-        </g>
-
-        <path d="M82 82 C104 64 139 57 172 70" fill="none" stroke="#ffffff" stroke-width="8" opacity="0.18" stroke-linecap="round"/>
-      </g>
-    `;
-  }
-
-  if (type === "melon") {
-    return `
-      <g>
-        <circle cx="128" cy="128" r="96" fill="#7fd25d"/>
-        <circle cx="128" cy="128" r="82" fill="#d9f5a1"/>
-        <ellipse cx="128" cy="139" rx="36" ry="26" fill="#efe4c8" opacity="0.95"/>
-
-        <g fill="#b58b45" opacity="0.75">
-          <ellipse cx="109" cy="135" rx="4" ry="7" transform="rotate(-18 109 135)"/>
-          <ellipse cx="123" cy="143" rx="4" ry="7"/>
-          <ellipse cx="138" cy="136" rx="4" ry="7" transform="rotate(14 138 136)"/>
-          <ellipse cx="151" cy="145" rx="4" ry="7" transform="rotate(20 151 145)"/>
-        </g>
-
-        <g stroke="#ffffff" stroke-width="6" opacity="0.42">
-          <path d="M72 78 C108 109 108 153 74 190"/>
-          <path d="M105 54 C129 100 129 154 105 205"/>
-          <path d="M151 54 C127 100 127 154 151 205"/>
-          <path d="M184 78 C148 109 148 153 182 190"/>
-        </g>
-
-        <circle cx="128" cy="128" r="96" fill="none" stroke="#61b94d" stroke-width="8" opacity="0.55"/>
-      </g>
-    `;
-  }
-
-  if (type === "dragonfruit") {
-    return `
-      <g>
-        <path d="M128 58
-                 C88 58 58 94 60 141
-                 C62 192 95 226 128 230
-                 C161 226 194 192 196 141
-                 C198 94 168 58 128 58 Z"
-              fill="#ff4ea2"/>
-
-        <path d="M128 76
-                 C99 76 77 105 78 141
-                 C79 179 101 207 128 210
-                 C155 207 177 179 178 141
-                 C179 105 157 76 128 76 Z"
-              fill="#fff9fb"/>
-
-        <g fill="#252525">
-          <circle cx="103" cy="111" r="3"/>
-          <circle cx="126" cy="102" r="3"/>
-          <circle cx="151" cy="115" r="3"/>
-          <circle cx="112" cy="139" r="3"/>
-          <circle cx="141" cy="149" r="3"/>
-          <circle cx="124" cy="172" r="3"/>
-          <circle cx="156" cy="173" r="3"/>
-        </g>
-
-        <ellipse cx="70" cy="124" rx="24" ry="11" fill="#73c84b" transform="rotate(-34 70 124)"/>
-        <ellipse cx="186" cy="113" rx="24" ry="11" fill="#73c84b" transform="rotate(34 186 113)"/>
-        <ellipse cx="81" cy="170" rx="23" ry="10" fill="#73c84b" transform="rotate(22 81 170)"/>
-        <ellipse cx="175" cy="174" rx="23" ry="10" fill="#73c84b" transform="rotate(-22 175 174)"/>
-
-        <path d="M128 58
-                 C88 58 58 94 60 141
-                 C62 192 95 226 128 230
-                 C161 226 194 192 196 141
-                 C198 94 168 58 128 58 Z"
-              fill="none" stroke="#e33d8d" stroke-width="5" opacity="0.5"/>
-      </g>
-    `;
-  }
-
-  return "";
-}
-
 function preloadFruitImages() {
-  fruitImages = fruits.map((fruit) => {
-    const img = new Image();
-    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(makeFruitSvg(fruit));
-    img.onload = () => updateNextFruit();
-    return img;
-  });
+  updateNextFruit();
 }
 
 function getDifficultyStage() {
@@ -829,31 +497,458 @@ function drawFruit(ball) {
 }
 
 function drawFruitIcon(targetCtx, x, y, radius, level) {
-  const img = fruitImages[level];
-
-  if (img && img.complete) {
-    const visualScale = 1.04;
-    const size = radius * 2 * visualScale;
-
-    targetCtx.drawImage(
-      img,
-      x - size / 2,
-      y - size / 2,
-      size,
-      size
-    );
-
-    return;
-  }
-
   const fruit = fruits[level];
+  const type = fruit.type;
 
   targetCtx.save();
+  targetCtx.translate(x, y);
+
+  drawFruitShadow(targetCtx, radius);
+
+  if (type === "cherry") drawCherry(targetCtx, radius);
+  else if (type === "strawberry") drawStrawberry(targetCtx, radius);
+  else if (type === "grape") drawGrape(targetCtx, radius);
+  else if (type === "orange") drawOrange(targetCtx, radius);
+  else if (type === "apple") drawApple(targetCtx, radius);
+  else if (type === "peach") drawPeach(targetCtx, radius);
+  else if (type === "pineapple") drawPineapple(targetCtx, radius);
+  else if (type === "watermelon") drawWatermelon(targetCtx, radius);
+  else if (type === "coconut") drawCoconut(targetCtx, radius);
+  else if (type === "melon") drawMelon(targetCtx, radius);
+  else if (type === "dragonfruit") drawDragonFruit(targetCtx, radius);
+  else {
+    targetCtx.beginPath();
+    targetCtx.arc(0, 0, radius, 0, Math.PI * 2);
+    targetCtx.fillStyle = fruit.skin;
+    targetCtx.fill();
+  }
+
+  targetCtx.restore();
+}
+
+function drawFruitShadow(targetCtx, r) {
+  targetCtx.save();
+  targetCtx.globalAlpha = 0.18;
+  targetCtx.fillStyle = "#28c7d2";
   targetCtx.beginPath();
-  targetCtx.arc(x, y, radius, 0, Math.PI * 2);
-  targetCtx.fillStyle = fruit.skin;
+  targetCtx.ellipse(0, r * 0.78, r * 0.58, r * 0.12, 0, 0, Math.PI * 2);
   targetCtx.fill();
   targetCtx.restore();
+}
+
+function radialFruitFill(targetCtx, r, color1, color2, color3) {
+  const gradient = targetCtx.createRadialGradient(-r * 0.32, -r * 0.38, r * 0.08, 0, 0, r);
+  gradient.addColorStop(0, color1);
+  gradient.addColorStop(0.42, color2);
+  gradient.addColorStop(1, color3);
+  return gradient;
+}
+
+function drawGloss(targetCtx, r, alpha = 0.26) {
+  targetCtx.save();
+  targetCtx.globalAlpha = alpha;
+  targetCtx.fillStyle = "#ffffff";
+  targetCtx.beginPath();
+  targetCtx.ellipse(-r * 0.34, -r * 0.38, r * 0.22, r * 0.13, -0.55, 0, Math.PI * 2);
+  targetCtx.fill();
+
+  targetCtx.globalAlpha = alpha * 0.55;
+  targetCtx.beginPath();
+  targetCtx.arc(-r * 0.50, -r * 0.12, r * 0.055, 0, Math.PI * 2);
+  targetCtx.fill();
+  targetCtx.restore();
+}
+
+function drawLeaf(targetCtx, x, y, size, rotation = -0.45) {
+  targetCtx.save();
+  targetCtx.translate(x, y);
+  targetCtx.rotate(rotation);
+  const gradient = targetCtx.createLinearGradient(-size, 0, size, 0);
+  gradient.addColorStop(0, "#4a9b37");
+  gradient.addColorStop(1, "#82d850");
+  targetCtx.fillStyle = gradient;
+  targetCtx.beginPath();
+  targetCtx.ellipse(0, 0, size, size * 0.45, 0, 0, Math.PI * 2);
+  targetCtx.fill();
+  targetCtx.restore();
+}
+
+function drawStem(targetCtx, x1, y1, x2, y2, width) {
+  targetCtx.save();
+  targetCtx.strokeStyle = "#7a5237";
+  targetCtx.lineWidth = width;
+  targetCtx.lineCap = "round";
+  targetCtx.beginPath();
+  targetCtx.moveTo(x1, y1);
+  targetCtx.quadraticCurveTo((x1 + x2) / 2, y1 - width * 2.4, x2, y2);
+  targetCtx.stroke();
+  targetCtx.restore();
+}
+
+function drawCherry(targetCtx, r) {
+  drawStem(targetCtx, -r * 0.08, -r * 0.50, r * 0.12, -r * 0.95, r * 0.11);
+  drawLeaf(targetCtx, r * 0.28, -r * 0.92, r * 0.22, -0.35);
+
+  targetCtx.beginPath();
+  targetCtx.arc(0, r * 0.05, r * 0.86, 0, Math.PI * 2);
+  targetCtx.fillStyle = radialFruitFill(targetCtx, r, "#ff9aae", "#f24e69", "#c91d44");
+  targetCtx.fill();
+  targetCtx.lineWidth = r * 0.07;
+  targetCtx.strokeStyle = "rgba(173, 22, 55, 0.42)";
+  targetCtx.stroke();
+
+  drawGloss(targetCtx, r, 0.30);
+}
+
+function drawStrawberry(targetCtx, r) {
+  targetCtx.beginPath();
+  targetCtx.moveTo(0, -r * 0.82);
+  targetCtx.bezierCurveTo(r * 0.70, -r * 0.82, r * 0.96, -r * 0.22, r * 0.80, r * 0.34);
+  targetCtx.bezierCurveTo(r * 0.66, r * 0.82, r * 0.24, r * 1.00, 0, r * 1.02);
+  targetCtx.bezierCurveTo(-r * 0.24, r * 1.00, -r * 0.66, r * 0.82, -r * 0.80, r * 0.34);
+  targetCtx.bezierCurveTo(-r * 0.96, -r * 0.22, -r * 0.70, -r * 0.82, 0, -r * 0.82);
+  targetCtx.closePath();
+  targetCtx.fillStyle = radialFruitFill(targetCtx, r, "#ff9bad", "#ff4f6d", "#cf2547");
+  targetCtx.fill();
+  targetCtx.lineWidth = r * 0.06;
+  targetCtx.strokeStyle = "rgba(190, 32, 62, 0.48)";
+  targetCtx.stroke();
+
+  targetCtx.fillStyle = "#ffe8a6";
+  const seeds = [
+    [-0.40, -0.35], [0.00, -0.42], [0.40, -0.35],
+    [-0.52, 0.02], [-0.16, -0.02], [0.20, 0.03], [0.53, 0.02],
+    [-0.34, 0.38], [0.04, 0.46], [0.38, 0.35]
+  ];
+  for (const [sx, sy] of seeds) {
+    targetCtx.save();
+    targetCtx.translate(sx * r, sy * r);
+    targetCtx.rotate(sx * 0.8);
+    targetCtx.beginPath();
+    targetCtx.ellipse(0, 0, r * 0.045, r * 0.075, 0, 0, Math.PI * 2);
+    targetCtx.fill();
+    targetCtx.restore();
+  }
+
+  targetCtx.fillStyle = "#62b943";
+  targetCtx.beginPath();
+  targetCtx.moveTo(-r * 0.55, -r * 0.78);
+  targetCtx.lineTo(-r * 0.24, -r * 0.55);
+  targetCtx.lineTo(0, -r * 0.86);
+  targetCtx.lineTo(r * 0.24, -r * 0.55);
+  targetCtx.lineTo(r * 0.55, -r * 0.78);
+  targetCtx.lineTo(r * 0.34, -r * 0.44);
+  targetCtx.lineTo(-r * 0.34, -r * 0.44);
+  targetCtx.closePath();
+  targetCtx.fill();
+
+  drawGloss(targetCtx, r, 0.22);
+}
+
+function drawGrape(targetCtx, r) {
+  drawStem(targetCtx, r * 0.02, -r * 0.58, r * 0.24, -r * 1.02, r * 0.09);
+  drawLeaf(targetCtx, r * 0.40, -r * 0.98, r * 0.22, -0.32);
+
+  const grapes = [
+    [-0.38, -0.35, 0.30], [0.00, -0.42, 0.32], [0.38, -0.34, 0.30],
+    [-0.22, -0.05, 0.32], [0.22, -0.03, 0.33],
+    [-0.38, 0.30, 0.30], [0.00, 0.38, 0.34], [0.38, 0.28, 0.30]
+  ];
+
+  for (const [gx, gy, gr] of grapes) {
+    targetCtx.beginPath();
+    targetCtx.arc(gx * r, gy * r, gr * r, 0, Math.PI * 2);
+    targetCtx.fillStyle = radialFruitFill(targetCtx, r * gr, "#c2a7ff", "#8352d8", "#6430b4");
+    targetCtx.fill();
+    targetCtx.lineWidth = r * 0.035;
+    targetCtx.strokeStyle = "rgba(93, 42, 163, 0.48)";
+    targetCtx.stroke();
+
+    targetCtx.save();
+    targetCtx.globalAlpha = 0.28;
+    targetCtx.fillStyle = "#ffffff";
+    targetCtx.beginPath();
+    targetCtx.arc(gx * r - gr * r * 0.35, gy * r - gr * r * 0.35, gr * r * 0.22, 0, Math.PI * 2);
+    targetCtx.fill();
+    targetCtx.restore();
+  }
+}
+
+function drawOrange(targetCtx, r) {
+  targetCtx.beginPath();
+  targetCtx.arc(0, 0, r * 0.95, 0, Math.PI * 2);
+  targetCtx.fillStyle = "#ff9f22";
+  targetCtx.fill();
+
+  targetCtx.beginPath();
+  targetCtx.arc(0, 0, r * 0.81, 0, Math.PI * 2);
+  targetCtx.fillStyle = "#ffd76a";
+  targetCtx.fill();
+
+  targetCtx.lineWidth = r * 0.06;
+  targetCtx.strokeStyle = "#fff5cb";
+  targetCtx.beginPath();
+  targetCtx.arc(0, 0, r * 0.75, 0, Math.PI * 2);
+  targetCtx.stroke();
+
+  targetCtx.strokeStyle = "#fff8df";
+  targetCtx.lineWidth = r * 0.045;
+  targetCtx.lineCap = "round";
+  for (let i = 0; i < 8; i++) {
+    const angle = (Math.PI * 2 / 8) * i;
+    targetCtx.beginPath();
+    targetCtx.moveTo(0, 0);
+    targetCtx.lineTo(Math.cos(angle) * r * 0.70, Math.sin(angle) * r * 0.70);
+    targetCtx.stroke();
+  }
+
+  targetCtx.lineWidth = r * 0.07;
+  targetCtx.strokeStyle = "#f08418";
+  targetCtx.beginPath();
+  targetCtx.arc(0, 0, r * 0.95, 0, Math.PI * 2);
+  targetCtx.stroke();
+
+  drawGloss(targetCtx, r, 0.18);
+}
+
+function drawApple(targetCtx, r) {
+  drawStem(targetCtx, 0, -r * 0.72, -r * 0.18, -r * 1.03, r * 0.09);
+  drawLeaf(targetCtx, r * 0.28, -r * 1.00, r * 0.24, -0.35);
+
+  targetCtx.beginPath();
+  targetCtx.moveTo(0, -r * 0.74);
+  targetCtx.bezierCurveTo(r * 0.52, -r * 0.92, r * 0.98, -r * 0.44, r * 0.92, r * 0.15);
+  targetCtx.bezierCurveTo(r * 0.86, r * 0.80, r * 0.38, r * 1.02, 0, r * 0.92);
+  targetCtx.bezierCurveTo(-r * 0.38, r * 1.02, -r * 0.86, r * 0.80, -r * 0.92, r * 0.15);
+  targetCtx.bezierCurveTo(-r * 0.98, -r * 0.44, -r * 0.52, -r * 0.92, 0, -r * 0.74);
+  targetCtx.closePath();
+
+  targetCtx.fillStyle = radialFruitFill(targetCtx, r, "#ff9aa6", "#f24d63", "#cf2c46");
+  targetCtx.fill();
+  targetCtx.lineWidth = r * 0.06;
+  targetCtx.strokeStyle = "rgba(194, 36, 58, 0.50)";
+  targetCtx.stroke();
+
+  targetCtx.save();
+  targetCtx.globalAlpha = 0.24;
+  targetCtx.fillStyle = "#b91f36";
+  targetCtx.beginPath();
+  targetCtx.ellipse(r * 0.28, r * 0.10, r * 0.22, r * 0.72, -0.05, 0, Math.PI * 2);
+  targetCtx.fill();
+  targetCtx.restore();
+
+  drawGloss(targetCtx, r, 0.25);
+}
+
+function drawPeach(targetCtx, r) {
+  drawLeaf(targetCtx, r * 0.30, -r * 0.92, r * 0.24, -0.38);
+
+  targetCtx.beginPath();
+  targetCtx.moveTo(0, -r * 0.86);
+  targetCtx.bezierCurveTo(r * 0.58, -r * 0.84, r * 0.96, -r * 0.28, r * 0.92, r * 0.24);
+  targetCtx.bezierCurveTo(r * 0.86, r * 0.78, r * 0.38, r * 1.02, 0, r * 0.96);
+  targetCtx.bezierCurveTo(-r * 0.38, r * 1.02, -r * 0.86, r * 0.78, -r * 0.92, r * 0.24);
+  targetCtx.bezierCurveTo(-r * 0.96, -r * 0.28, -r * 0.58, -r * 0.84, 0, -r * 0.86);
+  targetCtx.closePath();
+
+  targetCtx.fillStyle = radialFruitFill(targetCtx, r, "#ffd0a8", "#ffae7a", "#ef8d6a");
+  targetCtx.fill();
+  targetCtx.lineWidth = r * 0.055;
+  targetCtx.strokeStyle = "rgba(220, 128, 95, 0.50)";
+  targetCtx.stroke();
+
+  targetCtx.save();
+  targetCtx.globalAlpha = 0.45;
+  targetCtx.strokeStyle = "#e98f6c";
+  targetCtx.lineWidth = r * 0.07;
+  targetCtx.lineCap = "round";
+  targetCtx.beginPath();
+  targetCtx.moveTo(r * 0.08, -r * 0.72);
+  targetCtx.bezierCurveTo(-r * 0.14, -r * 0.25, -r * 0.08, r * 0.38, r * 0.02, r * 0.84);
+  targetCtx.stroke();
+  targetCtx.restore();
+
+  drawGloss(targetCtx, r, 0.22);
+}
+
+function drawPineapple(targetCtx, r) {
+  targetCtx.fillStyle = "#69bd43";
+  targetCtx.beginPath();
+  targetCtx.moveTo(-r * 0.40, -r * 0.62);
+  targetCtx.lineTo(-r * 0.26, -r * 1.05);
+  targetCtx.lineTo(0, -r * 0.70);
+  targetCtx.lineTo(r * 0.26, -r * 1.05);
+  targetCtx.lineTo(r * 0.40, -r * 0.62);
+  targetCtx.lineTo(r * 0.66, -r * 0.88);
+  targetCtx.lineTo(r * 0.52, -r * 0.45);
+  targetCtx.lineTo(-r * 0.52, -r * 0.45);
+  targetCtx.lineTo(-r * 0.66, -r * 0.88);
+  targetCtx.closePath();
+  targetCtx.fill();
+
+  targetCtx.beginPath();
+  targetCtx.ellipse(0, r * 0.16, r * 0.72, r * 0.86, 0, 0, Math.PI * 2);
+  targetCtx.fillStyle = radialFruitFill(targetCtx, r, "#ffe17a", "#f3c43f", "#dba426");
+  targetCtx.fill();
+  targetCtx.lineWidth = r * 0.055;
+  targetCtx.strokeStyle = "rgba(189, 137, 31, 0.58)";
+  targetCtx.stroke();
+
+  targetCtx.save();
+  targetCtx.strokeStyle = "rgba(162, 111, 18, 0.45)";
+  targetCtx.lineWidth = r * 0.045;
+  for (let i = -3; i <= 3; i++) {
+    targetCtx.beginPath();
+    targetCtx.moveTo(-r * 0.72 + i * r * 0.30, -r * 0.38);
+    targetCtx.lineTo(r * 0.52 + i * r * 0.30, r * 0.92);
+    targetCtx.stroke();
+
+    targetCtx.beginPath();
+    targetCtx.moveTo(r * 0.72 - i * r * 0.30, -r * 0.38);
+    targetCtx.lineTo(-r * 0.52 - i * r * 0.30, r * 0.92);
+    targetCtx.stroke();
+  }
+  targetCtx.restore();
+
+  drawGloss(targetCtx, r, 0.16);
+}
+
+function drawWatermelon(targetCtx, r) {
+  targetCtx.beginPath();
+  targetCtx.arc(0, 0, r * 0.96, 0, Math.PI * 2);
+  targetCtx.fillStyle = "#2fbf71";
+  targetCtx.fill();
+
+  targetCtx.save();
+  targetCtx.strokeStyle = "rgba(23, 130, 70, 0.45)";
+  targetCtx.lineWidth = r * 0.08;
+  for (let i = -2; i <= 2; i++) {
+    targetCtx.beginPath();
+    targetCtx.ellipse(i * r * 0.22, 0, r * 0.28, r * 0.93, 0, 0, Math.PI * 2);
+    targetCtx.stroke();
+  }
+  targetCtx.restore();
+
+  targetCtx.beginPath();
+  targetCtx.arc(0, 0, r * 0.76, 0, Math.PI * 2);
+  targetCtx.fillStyle = "#eaffc8";
+  targetCtx.fill();
+
+  targetCtx.beginPath();
+  targetCtx.arc(0, 0, r * 0.66, 0, Math.PI * 2);
+  targetCtx.fillStyle = "#ff5a68";
+  targetCtx.fill();
+
+  targetCtx.fillStyle = "#263238";
+  const seeds = [[-0.32, -0.18], [0.0, -0.28], [0.34, -0.14], [-0.20, 0.22], [0.22, 0.26]];
+  for (const [sx, sy] of seeds) {
+    targetCtx.save();
+    targetCtx.translate(sx * r, sy * r);
+    targetCtx.rotate(sx);
+    targetCtx.beginPath();
+    targetCtx.ellipse(0, 0, r * 0.045, r * 0.075, 0, 0, Math.PI * 2);
+    targetCtx.fill();
+    targetCtx.restore();
+  }
+
+  drawGloss(targetCtx, r, 0.15);
+}
+
+function drawCoconut(targetCtx, r) {
+  targetCtx.beginPath();
+  targetCtx.arc(0, 0, r * 0.96, 0, Math.PI * 2);
+  targetCtx.fillStyle = radialFruitFill(targetCtx, r, "#b98258", "#8c5b39", "#6f4529");
+  targetCtx.fill();
+  targetCtx.lineWidth = r * 0.07;
+  targetCtx.strokeStyle = "rgba(99, 61, 36, 0.58)";
+  targetCtx.stroke();
+
+  targetCtx.beginPath();
+  targetCtx.arc(0, 0, r * 0.78, 0, Math.PI * 2);
+  targetCtx.fillStyle = "#fff7ec";
+  targetCtx.fill();
+  targetCtx.lineWidth = r * 0.055;
+  targetCtx.strokeStyle = "#ead8bf";
+  targetCtx.stroke();
+
+  targetCtx.fillStyle = "rgba(111, 69, 41, 0.65)";
+  for (const [sx, sy] of [[-0.26, -0.24], [0, -0.32], [0.26, -0.24]]) {
+    targetCtx.beginPath();
+    targetCtx.arc(sx * r, sy * r, r * 0.06, 0, Math.PI * 2);
+    targetCtx.fill();
+  }
+
+  drawGloss(targetCtx, r, 0.14);
+}
+
+function drawMelon(targetCtx, r) {
+  targetCtx.beginPath();
+  targetCtx.arc(0, 0, r * 0.96, 0, Math.PI * 2);
+  targetCtx.fillStyle = radialFruitFill(targetCtx, r, "#e0f7a5", "#8bd66b", "#61b94d");
+  targetCtx.fill();
+  targetCtx.lineWidth = r * 0.07;
+  targetCtx.strokeStyle = "rgba(97, 185, 77, 0.55)";
+  targetCtx.stroke();
+
+  targetCtx.strokeStyle = "rgba(255,255,255,0.50)";
+  targetCtx.lineWidth = r * 0.055;
+  for (const offset of [-0.56, -0.25, 0.25, 0.56]) {
+    targetCtx.beginPath();
+    targetCtx.ellipse(offset * r, 0, r * 0.25, r * 0.92, 0, 0, Math.PI * 2);
+    targetCtx.stroke();
+  }
+
+  targetCtx.beginPath();
+  targetCtx.ellipse(0, r * 0.10, r * 0.34, r * 0.24, 0, 0, Math.PI * 2);
+  targetCtx.fillStyle = "#efe4c8";
+  targetCtx.fill();
+
+  targetCtx.fillStyle = "rgba(181,139,69,0.75)";
+  for (const [sx, sy] of [[-0.16, 0.06], [0.0, 0.12], [0.18, 0.05], [0.30, 0.13]]) {
+    targetCtx.beginPath();
+    targetCtx.ellipse(sx * r, sy * r, r * 0.035, r * 0.06, 0.2, 0, Math.PI * 2);
+    targetCtx.fill();
+  }
+
+  drawGloss(targetCtx, r, 0.16);
+}
+
+function drawDragonFruit(targetCtx, r) {
+  targetCtx.beginPath();
+  targetCtx.moveTo(0, -r * 0.96);
+  targetCtx.bezierCurveTo(r * 0.68, -r * 0.92, r * 0.98, -r * 0.30, r * 0.92, r * 0.22);
+  targetCtx.bezierCurveTo(r * 0.86, r * 0.78, r * 0.36, r * 1.02, 0, r * 0.98);
+  targetCtx.bezierCurveTo(-r * 0.36, r * 1.02, -r * 0.86, r * 0.78, -r * 0.92, r * 0.22);
+  targetCtx.bezierCurveTo(-r * 0.98, -r * 0.30, -r * 0.68, -r * 0.92, 0, -r * 0.96);
+  targetCtx.closePath();
+  targetCtx.fillStyle = radialFruitFill(targetCtx, r, "#ff9ed0", "#ff4ea2", "#e33d8d");
+  targetCtx.fill();
+  targetCtx.lineWidth = r * 0.055;
+  targetCtx.strokeStyle = "rgba(202, 44, 126, 0.55)";
+  targetCtx.stroke();
+
+  drawLeaf(targetCtx, -r * 0.76, -r * 0.10, r * 0.22, -0.6);
+  drawLeaf(targetCtx, r * 0.76, -r * 0.22, r * 0.22, 0.6);
+  drawLeaf(targetCtx, -r * 0.62, r * 0.40, r * 0.20, 0.45);
+  drawLeaf(targetCtx, r * 0.62, r * 0.44, r * 0.20, -0.45);
+
+  targetCtx.beginPath();
+  targetCtx.ellipse(0, r * 0.02, r * 0.58, r * 0.68, 0, 0, Math.PI * 2);
+  targetCtx.fillStyle = "#fff9fb";
+  targetCtx.fill();
+
+  targetCtx.fillStyle = "#252525";
+  const seeds = [
+    [-0.33, -0.30], [0.0, -0.38], [0.31, -0.25],
+    [-0.18, -0.02], [0.20, 0.06], [-0.04, 0.28], [0.36, 0.34]
+  ];
+  for (const [sx, sy] of seeds) {
+    targetCtx.beginPath();
+    targetCtx.arc(sx * r, sy * r, r * 0.027, 0, Math.PI * 2);
+    targetCtx.fill();
+  }
+
+  drawGloss(targetCtx, r, 0.15);
 }
 
 function keepFruitInside(ball) {
