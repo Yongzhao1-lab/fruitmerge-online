@@ -156,144 +156,357 @@ function makeFruitSvg(fruit) {
   return `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
     <defs>
-      <radialGradient id="g" cx="35%" cy="28%" r="75%">
-        <stop offset="0%" stop-color="#ffffff"/>
-        <stop offset="18%" stop-color="${fruit.core}"/>
-        <stop offset="100%" stop-color="${fruit.skin}"/>
-      </radialGradient>
-      <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-        <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#29a8b8" flood-opacity="0.18"/>
+      <filter id="fruitShadow" x="-30%" y="-30%" width="160%" height="160%">
+        <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#35b8d6" flood-opacity="0.22"/>
       </filter>
+
+      <radialGradient id="badgeBg" cx="50%" cy="35%" r="80%">
+        <stop offset="0%" stop-color="#fffdf6"/>
+        <stop offset="100%" stop-color="#ffe8b8"/>
+      </radialGradient>
+
+      <radialGradient id="shineGrad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+      </radialGradient>
+
+      <linearGradient id="coolShadow" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#5de1ff" stop-opacity="0.22"/>
+        <stop offset="100%" stop-color="#00c6c9" stop-opacity="0.08"/>
+      </linearGradient>
     </defs>
 
-    <ellipse cx="128" cy="224" rx="70" ry="13" fill="#38cfd8" opacity="0.15"/>
-    <circle cx="128" cy="128" r="92" fill="url(#g)" filter="url(#shadow)"/>
-    <circle cx="96" cy="84" r="22" fill="#ffffff" opacity="0.52"/>
-    <circle cx="85" cy="112" r="8" fill="#ffffff" opacity="0.35"/>
+    <ellipse cx="128" cy="222" rx="72" ry="14" fill="url(#coolShadow)"/>
 
-    ${detail}
+    <g filter="url(#fruitShadow)">
+      <circle cx="128" cy="128" r="95" fill="url(#badgeBg)"/>
+      <circle cx="128" cy="128" r="92" fill="none" stroke="#fffef9" stroke-width="5" opacity="0.95"/>
+      <circle cx="128" cy="128" r="86" fill="#fff7e8" opacity="0.55"/>
 
-    <circle cx="101" cy="137" r="7" fill="#263238"/>
-    <circle cx="155" cy="137" r="7" fill="#263238"/>
-    <path d="M112 161 Q128 174 144 161" fill="none" stroke="#263238" stroke-width="5" stroke-linecap="round"/>
-    <circle cx="83" cy="154" r="10" fill="#ffffff" opacity="0.26"/>
-    <circle cx="173" cy="154" r="10" fill="#ffffff" opacity="0.26"/>
+      ${detail}
 
-    <path d="M57 73 C72 45 106 31 139 36" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" opacity="0.32"/>
-    <path d="M193 76 C215 102 221 132 212 164" fill="none" stroke="#bdfaff" stroke-width="7" stroke-linecap="round" opacity="0.36"/>
+      <ellipse cx="92" cy="74" rx="30" ry="17" fill="url(#shineGrad)" transform="rotate(-18 92 74)"/>
+      <circle cx="72" cy="96" r="7" fill="#ffffff" opacity="0.22"/>
+      <circle cx="176" cy="70" r="5" fill="#ffffff" opacity="0.18"/>
+      <circle cx="188" cy="160" r="4" fill="#ffffff" opacity="0.14"/>
+    </g>
   </svg>`;
 }
 
 function getFruitDetailSvg(type) {
   if (type === "cherry") {
     return `
-      <path d="M130 57 C136 34 156 25 174 32" fill="none" stroke="#4b8a3d" stroke-width="8" stroke-linecap="round"/>
-      <ellipse cx="176" cy="32" rx="19" ry="10" fill="#6fbd44" transform="rotate(-25 176 32)"/>
+      <g>
+        <path d="M118 88 C114 66 122 50 140 42" fill="none" stroke="#4f8a38" stroke-width="8" stroke-linecap="round"/>
+        <path d="M138 88 C146 63 165 50 184 56" fill="none" stroke="#4f8a38" stroke-width="8" stroke-linecap="round"/>
+        <ellipse cx="180" cy="55" rx="20" ry="10" fill="#79c64b" transform="rotate(-24 180 55)"/>
+
+        <circle cx="106" cy="145" r="35" fill="#ef4565"/>
+        <circle cx="150" cy="136" r="35" fill="#d9234f"/>
+
+        <circle cx="94" cy="127" r="10" fill="#ffffff" opacity="0.32"/>
+        <circle cx="139" cy="118" r="10" fill="#ffffff" opacity="0.26"/>
+
+        <circle cx="106" cy="145" r="35" fill="none" stroke="#c71c42" stroke-width="4" opacity="0.4"/>
+        <circle cx="150" cy="136" r="35" fill="none" stroke="#b8183b" stroke-width="4" opacity="0.4"/>
+      </g>
     `;
   }
 
   if (type === "strawberry") {
     return `
-      <path d="M82 50 L105 68 L128 48 L151 68 L174 50 L164 82 L92 82 Z" fill="#6fbd44"/>
-      <g fill="#fff3b0" opacity="0.9">
-        <circle cx="96" cy="109" r="4"/><circle cx="128" cy="104" r="4"/><circle cx="160" cy="109" r="4"/>
-        <circle cx="106" cy="143" r="4"/><circle cx="148" cy="143" r="4"/>
-        <circle cx="128" cy="176" r="4"/>
+      <g>
+        <path d="M82 77 L103 95 L128 74 L153 95 L174 77 L164 102 L92 102 Z" fill="#67b83f"/>
+        <path d="M128 88
+                 C92 88 76 112 78 145
+                 C80 181 104 204 128 209
+                 C152 204 176 181 178 145
+                 C180 112 164 88 128 88 Z"
+              fill="#ff4f6d"/>
+        <path d="M128 88
+                 C92 88 76 112 78 145
+                 C80 181 104 204 128 209
+                 C152 204 176 181 178 145
+                 C180 112 164 88 128 88 Z"
+              fill="none" stroke="#d93c58" stroke-width="4" opacity="0.45"/>
+
+        <g fill="#ffe7a3">
+          <ellipse cx="101" cy="118" rx="4" ry="6" transform="rotate(-18 101 118)"/>
+          <ellipse cx="126" cy="112" rx="4" ry="6" transform="rotate(0 126 112)"/>
+          <ellipse cx="152" cy="118" rx="4" ry="6" transform="rotate(18 152 118)"/>
+          <ellipse cx="94" cy="145" rx="4" ry="6" transform="rotate(-18 94 145)"/>
+          <ellipse cx="120" cy="140" rx="4" ry="6" transform="rotate(0 120 140)"/>
+          <ellipse cx="146" cy="145" rx="4" ry="6" transform="rotate(18 146 145)"/>
+          <ellipse cx="104" cy="172" rx="4" ry="6" transform="rotate(-18 104 172)"/>
+          <ellipse cx="130" cy="176" rx="4" ry="6" transform="rotate(0 130 176)"/>
+          <ellipse cx="152" cy="170" rx="4" ry="6" transform="rotate(18 152 170)"/>
+        </g>
+
+        <ellipse cx="106" cy="116" rx="14" ry="9" fill="#ffffff" opacity="0.20"/>
       </g>
     `;
   }
 
   if (type === "grape") {
     return `
-      <g fill="#6f42c1" opacity="0.85" stroke="#d7c8ff" stroke-width="3">
-        <circle cx="104" cy="109" r="24"/><circle cx="137" cy="106" r="24"/><circle cx="154" cy="134" r="24"/>
-        <circle cx="119" cy="139" r="24"/><circle cx="101" cy="166" r="23"/><circle cx="139" cy="168" r="23"/>
+      <g>
+        <ellipse cx="146" cy="56" rx="22" ry="11" fill="#79c64b" transform="rotate(-26 146 56)"/>
+        <path d="M132 70 C132 58 137 52 145 48" fill="none" stroke="#6d9c39" stroke-width="7" stroke-linecap="round"/>
+
+        <g fill="#7f4cd3" stroke="#6b36c5" stroke-width="3">
+          <circle cx="103" cy="114" r="21"/>
+          <circle cx="128" cy="108" r="21"/>
+          <circle cx="153" cy="114" r="21"/>
+          <circle cx="114" cy="136" r="21"/>
+          <circle cx="140" cy="138" r="21"/>
+          <circle cx="102" cy="160" r="20"/>
+          <circle cx="128" cy="164" r="21"/>
+          <circle cx="154" cy="160" r="20"/>
+        </g>
+
+        <g fill="#ffffff" opacity="0.22">
+          <circle cx="96" cy="106" r="6"/>
+          <circle cx="121" cy="100" r="6"/>
+          <circle cx="145" cy="108" r="6"/>
+          <circle cx="108" cy="130" r="6"/>
+        </g>
       </g>
-      <ellipse cx="148" cy="53" rx="22" ry="11" fill="#6fbd44" transform="rotate(-25 148 53)"/>
     `;
   }
 
   if (type === "orange") {
     return `
-      <circle cx="128" cy="128" r="62" fill="#ffb733" opacity="0.72"/>
-      <g stroke="#fff7c7" stroke-width="5" opacity="0.72">
-        <line x1="128" y1="128" x2="128" y2="72"/>
-        <line x1="128" y1="128" x2="178" y2="100"/>
-        <line x1="128" y1="128" x2="178" y2="158"/>
-        <line x1="128" y1="128" x2="128" y2="184"/>
-        <line x1="128" y1="128" x2="78" y2="158"/>
-        <line x1="128" y1="128" x2="78" y2="100"/>
+      <g>
+        <circle cx="128" cy="128" r="64" fill="#ffb433"/>
+        <circle cx="128" cy="128" r="58" fill="#ffd96a"/>
+        <circle cx="128" cy="128" r="64" fill="none" stroke="#ff9a16" stroke-width="6"/>
+        <circle cx="128" cy="128" r="58" fill="none" stroke="#fff3c9" stroke-width="4"/>
+
+        <g stroke="#fff7de" stroke-width="5" stroke-linecap="round">
+          <line x1="128" y1="128" x2="128" y2="75"/>
+          <line x1="128" y1="128" x2="173" y2="95"/>
+          <line x1="128" y1="128" x2="182" y2="128"/>
+          <line x1="128" y1="128" x2="173" y2="161"/>
+          <line x1="128" y1="128" x2="128" y2="181"/>
+          <line x1="128" y1="128" x2="83" y2="161"/>
+          <line x1="128" y1="128" x2="74" y2="128"/>
+          <line x1="128" y1="128" x2="83" y2="95"/>
+        </g>
+
+        <circle cx="103" cy="99" r="11" fill="#ffffff" opacity="0.24"/>
       </g>
     `;
   }
 
   if (type === "apple") {
     return `
-      <path d="M128 68 C119 51 108 44 94 47" fill="none" stroke="#7b4f2f" stroke-width="8" stroke-linecap="round"/>
-      <ellipse cx="151" cy="50" rx="25" ry="13" fill="#6fbd44" transform="rotate(-24 151 50)"/>
+      <g>
+        <path d="M128 78 C120 60 110 50 95 52" fill="none" stroke="#7a5237" stroke-width="8" stroke-linecap="round"/>
+        <ellipse cx="153" cy="57" rx="22" ry="11" fill="#72bf46" transform="rotate(-22 153 57)"/>
+
+        <path d="M128 87
+                 C95 87 74 112 76 144
+                 C78 181 100 202 128 204
+                 C156 202 178 181 180 144
+                 C182 112 161 87 128 87 Z"
+              fill="#f04d63"/>
+
+        <path d="M128 87
+                 C141 104 147 124 145 204
+                 C156 202 178 181 180 144
+                 C182 112 161 87 128 87 Z"
+              fill="#d93b52" opacity="0.45"/>
+
+        <path d="M128 87
+                 C95 87 74 112 76 144
+                 C78 181 100 202 128 204
+                 C156 202 178 181 180 144
+                 C182 112 161 87 128 87 Z"
+              fill="none" stroke="#d22f47" stroke-width="4" opacity="0.5"/>
+
+        <ellipse cx="104" cy="113" rx="15" ry="10" fill="#ffffff" opacity="0.23"/>
+      </g>
     `;
   }
 
   if (type === "peach") {
     return `
-      <ellipse cx="151" cy="55" rx="25" ry="13" fill="#6fbd44" transform="rotate(-24 151 55)"/>
-      <path d="M139 67 C104 98 103 156 134 191" fill="none" stroke="#d26d58" stroke-width="6" stroke-linecap="round" opacity="0.45"/>
+      <g>
+        <ellipse cx="152" cy="58" rx="21" ry="11" fill="#79c64b" transform="rotate(-24 152 58)"/>
+        <path d="M128 80
+                 C97 80 73 107 75 144
+                 C77 183 99 206 128 208
+                 C157 206 179 183 181 144
+                 C183 107 159 80 128 80 Z"
+              fill="#ffb07f"/>
+
+        <path d="M129 86 C110 107 108 146 120 198" fill="none" stroke="#e98f6c" stroke-width="5" opacity="0.75"/>
+
+        <ellipse cx="107" cy="151" rx="34" ry="42" fill="#ff8f88" opacity="0.35"/>
+        <ellipse cx="153" cy="136" rx="24" ry="30" fill="#ffd2a8" opacity="0.20"/>
+        <path d="M128 80
+                 C97 80 73 107 75 144
+                 C77 183 99 206 128 208
+                 C157 206 179 183 181 144
+                 C183 107 159 80 128 80 Z"
+              fill="none" stroke="#ef9c74" stroke-width="4" opacity="0.5"/>
+
+        <ellipse cx="102" cy="112" rx="14" ry="8" fill="#ffffff" opacity="0.23"/>
+      </g>
     `;
   }
 
   if (type === "pineapple") {
     return `
-      <path d="M100 57 L112 25 L128 59 L144 25 L156 57 L176 35 L164 85 L92 85 L80 35 Z" fill="#6fbd44"/>
-      <g stroke="#b78322" stroke-width="4" opacity="0.42">
-        <path d="M78 104 L178 202"/><path d="M78 138 L145 206"/><path d="M106 86 L190 170"/>
-        <path d="M178 104 L78 202"/><path d="M178 138 L111 206"/><path d="M150 86 L66 170"/>
+      <g>
+        <path d="M100 71 L113 34 L128 66 L143 34 L156 71 L175 45 L164 95 L92 95 L81 45 Z" fill="#70bf45"/>
+
+        <path d="M128 90
+                 C97 90 80 110 83 146
+                 C86 182 105 205 128 207
+                 C151 205 170 182 173 146
+                 C176 110 159 90 128 90 Z"
+              fill="#f2c43f"/>
+
+        <path d="M128 90
+                 C97 90 80 110 83 146
+                 C86 182 105 205 128 207
+                 C151 205 170 182 173 146
+                 C176 110 159 90 128 90 Z"
+              fill="none" stroke="#dca72a" stroke-width="4" opacity="0.55"/>
+
+        <g stroke="#c48e20" stroke-width="4" opacity="0.55">
+          <path d="M92 111 L164 186"/>
+          <path d="M86 136 L151 203"/>
+          <path d="M106 94 L176 167"/>
+          <path d="M164 111 L92 186"/>
+          <path d="M171 136 L105 203"/>
+          <path d="M150 94 L80 167"/>
+        </g>
+
+        <ellipse cx="104" cy="117" rx="13" ry="8" fill="#ffffff" opacity="0.20"/>
       </g>
     `;
   }
 
   if (type === "watermelon") {
     return `
-      <circle cx="128" cy="132" r="66" fill="#ff6070"/>
-      <circle cx="128" cy="132" r="74" fill="none" stroke="#eaffc8" stroke-width="10"/>
-      <g fill="#263238">
-        <ellipse cx="105" cy="120" rx="5" ry="8" transform="rotate(-20 105 120)"/>
-        <ellipse cx="137" cy="113" rx="5" ry="8" transform="rotate(10 137 113)"/>
-        <ellipse cx="153" cy="150" rx="5" ry="8" transform="rotate(25 153 150)"/>
-        <ellipse cx="112" cy="158" rx="5" ry="8" transform="rotate(-10 112 158)"/>
+      <g>
+        <path d="M60 154
+                 A70 70 0 0 1 196 154
+                 L179 176
+                 A47 47 0 0 0 77 176 Z"
+              fill="#32c06b"/>
+
+        <path d="M71 154
+                 A59 59 0 0 1 185 154
+                 L171 170
+                 A40 40 0 0 0 85 170 Z"
+              fill="#fff6de"/>
+
+        <path d="M81 153
+                 A50 50 0 0 1 175 153
+                 L165 164
+                 A34 34 0 0 0 91 164 Z"
+              fill="#ff5a68"/>
+
+        <g fill="#2d2d2d">
+          <ellipse cx="104" cy="140" rx="4" ry="7" transform="rotate(-16 104 140)"/>
+          <ellipse cx="126" cy="132" rx="4" ry="7" transform="rotate(-4 126 132)"/>
+          <ellipse cx="149" cy="138" rx="4" ry="7" transform="rotate(15 149 138)"/>
+          <ellipse cx="116" cy="151" rx="4" ry="7" transform="rotate(-14 116 151)"/>
+          <ellipse cx="140" cy="153" rx="4" ry="7" transform="rotate(10 140 153)"/>
+        </g>
+
+        <ellipse cx="113" cy="124" rx="16" ry="9" fill="#ffffff" opacity="0.20"/>
       </g>
     `;
   }
 
   if (type === "coconut") {
     return `
-      <circle cx="128" cy="128" r="61" fill="#fff3df"/>
-      <circle cx="128" cy="128" r="72" fill="none" stroke="#70442c" stroke-width="12" opacity="0.42"/>
-      <g fill="#70442c" opacity="0.55">
-        <circle cx="107" cy="112" r="5"/><circle cx="128" cy="105" r="5"/><circle cx="149" cy="112" r="5"/>
+      <g>
+        <circle cx="128" cy="134" r="68" fill="#8c5b39"/>
+        <circle cx="128" cy="134" r="57" fill="#fff7ec"/>
+        <circle cx="128" cy="134" r="68" fill="none" stroke="#714728" stroke-width="7" opacity="0.6"/>
+        <circle cx="128" cy="134" r="57" fill="none" stroke="#f1e2cb" stroke-width="4" opacity="0.7"/>
+
+        <g fill="#9d7454" opacity="0.55">
+          <circle cx="109" cy="114" r="5"/>
+          <circle cx="127" cy="108" r="5"/>
+          <circle cx="145" cy="114" r="5"/>
+        </g>
+
+        <ellipse cx="104" cy="118" rx="15" ry="9" fill="#ffffff" opacity="0.24"/>
       </g>
     `;
   }
 
   if (type === "melon") {
     return `
-      <g stroke="#ffffff" stroke-width="6" opacity="0.65">
-        <path d="M83 70 C116 106 116 150 83 190"/>
-        <path d="M110 58 C136 104 136 150 110 202"/>
-        <path d="M146 58 C120 104 120 150 146 202"/>
-        <path d="M173 70 C140 106 140 150 173 190"/>
+      <g>
+        <circle cx="128" cy="128" r="67" fill="#8fd669"/>
+        <circle cx="128" cy="128" r="58" fill="#d7f3a5"/>
+        <ellipse cx="128" cy="136" rx="24" ry="17" fill="#efe4c8" opacity="0.92"/>
+
+        <g fill="#b58b45" opacity="0.72">
+          <ellipse cx="117" cy="132" rx="3" ry="5" transform="rotate(-18 117 132)"/>
+          <ellipse cx="126" cy="138" rx="3" ry="5" transform="rotate(-4 126 138)"/>
+          <ellipse cx="135" cy="133" rx="3" ry="5" transform="rotate(14 135 133)"/>
+          <ellipse cx="143" cy="138" rx="3" ry="5" transform="rotate(20 143 138)"/>
+        </g>
+
+        <g stroke="#ffffff" stroke-width="5" opacity="0.42">
+          <path d="M87 88 C110 110 110 145 88 171"/>
+          <path d="M109 74 C128 106 128 150 109 183"/>
+          <path d="M147 74 C128 106 128 150 147 183"/>
+          <path d="M169 88 C146 110 146 145 168 171"/>
+        </g>
+
+        <circle cx="128" cy="128" r="67" fill="none" stroke="#6ebf53" stroke-width="6" opacity="0.55"/>
       </g>
     `;
   }
 
   if (type === "dragonfruit") {
     return `
-      <circle cx="128" cy="128" r="63" fill="#fff4f9"/>
-      <g fill="#202020">
-        <circle cx="103" cy="107" r="3"/><circle cx="132" cy="101" r="3"/><circle cx="159" cy="118" r="3"/>
-        <circle cx="111" cy="143" r="3"/><circle cx="145" cy="151" r="3"/><circle cx="128" cy="178" r="3"/>
+      <g>
+        <path d="M128 82
+                 C98 82 75 105 76 141
+                 C77 177 100 204 128 206
+                 C156 204 179 177 180 141
+                 C181 105 158 82 128 82 Z"
+              fill="#ff4ea2"/>
+
+        <path d="M128 94
+                 C104 94 87 112 88 141
+                 C89 171 106 191 128 193
+                 C150 191 167 171 168 141
+                 C169 112 152 94 128 94 Z"
+              fill="#fff9fb"/>
+
+        <g fill="#252525">
+          <circle cx="107" cy="119" r="2.7"/>
+          <circle cx="126" cy="113" r="2.7"/>
+          <circle cx="145" cy="121" r="2.7"/>
+          <circle cx="115" cy="139" r="2.7"/>
+          <circle cx="136" cy="145" r="2.7"/>
+          <circle cx="125" cy="163" r="2.7"/>
+          <circle cx="148" cy="159" r="2.7"/>
+        </g>
+
+        <ellipse cx="83" cy="124" rx="22" ry="10" fill="#73c84b" transform="rotate(-34 83 124)"/>
+        <ellipse cx="173" cy="113" rx="22" ry="10" fill="#73c84b" transform="rotate(34 173 113)"/>
+        <ellipse cx="92" cy="160" rx="20" ry="9" fill="#73c84b" transform="rotate(22 92 160)"/>
+        <ellipse cx="163" cy="164" rx="20" ry="9" fill="#73c84b" transform="rotate(-22 163 164)"/>
+
+        <path d="M128 82
+                 C98 82 75 105 76 141
+                 C77 177 100 204 128 206
+                 C156 204 179 177 180 141
+                 C181 105 158 82 128 82 Z"
+              fill="none" stroke="#e33d8d" stroke-width="4" opacity="0.5"/>
       </g>
-      <ellipse cx="74" cy="141" rx="22" ry="10" fill="#6fbd44" transform="rotate(-35 74 141)"/>
-      <ellipse cx="183" cy="112" rx="22" ry="10" fill="#6fbd44" transform="rotate(35 183 112)"/>
     `;
   }
 
