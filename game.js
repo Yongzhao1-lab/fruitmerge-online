@@ -9,14 +9,17 @@ const gameOverOverlay = document.getElementById("gameOverOverlay");
 const finalScoreElement = document.getElementById("finalScore");
 
 const fruits = [
-  { name: "Cherry", emoji: "🍒", radius: 18, score: 5 },
-  { name: "Strawberry", emoji: "🍓", radius: 24, score: 10 },
-  { name: "Grape", emoji: "🍇", radius: 30, score: 20 },
-  { name: "Orange", emoji: "🍊", radius: 36, score: 40 },
-  { name: "Apple", emoji: "🍎", radius: 44, score: 80 },
-  { name: "Peach", emoji: "🍑", radius: 52, score: 160 },
-  { name: "Pineapple", emoji: "🍍", radius: 62, score: 320 },
-  { name: "Watermelon", emoji: "🍉", radius: 74, score: 640 }
+  { name: "Cherry", emoji: "🍒", radius: 16, score: 5 },
+  { name: "Strawberry", emoji: "🍓", radius: 21, score: 10 },
+  { name: "Grape", emoji: "🍇", radius: 26, score: 20 },
+  { name: "Orange", emoji: "🍊", radius: 31, score: 40 },
+  { name: "Apple", emoji: "🍎", radius: 37, score: 80 },
+  { name: "Peach", emoji: "🍑", radius: 43, score: 160 },
+  { name: "Pineapple", emoji: "🍍", radius: 50, score: 320 },
+  { name: "Watermelon", emoji: "🍉", radius: 58, score: 640 },
+  { name: "Coconut", emoji: "🥥", radius: 67, score: 1280 },
+  { name: "Melon", emoji: "🍈", radius: 76, score: 2560 },
+  { name: "Big Watermelon", emoji: "🍉", radius: 86, score: 5120 }
 ];
 
 let balls = [];
@@ -27,14 +30,16 @@ let score = 0;
 let isGameOver = false;
 let canDrop = true;
 
-const gravity = 0.32;
-const friction = 0.985;
-const bounce = 0.35;
+const gravity = 0.34;
+const friction = 0.982;
+const bounce = 0.28;
 const dropLineY = 90;
 const spawnY = 48;
 
+// 关键修改：开局只随机前 3 种小水果
+// 这样不会太快出现大水果，合成到最终水果更难
 function randomStartLevel() {
-  return Math.floor(Math.random() * 4);
+  return Math.floor(Math.random() * 3);
 }
 
 function createFruit(x, y, level) {
@@ -48,7 +53,7 @@ function createFruit(x, y, level) {
     level,
     radius: fruit.radius,
     emoji: fruit.emoji,
-    settledTime: 0
+    dangerFrames: 0
   };
 }
 
@@ -88,6 +93,11 @@ function drawBackground() {
   ctx.lineTo(canvas.width, dropLineY);
   ctx.stroke();
   ctx.setLineDash([]);
+
+  ctx.fillStyle = "rgba(255, 122, 26, 0.75)";
+  ctx.font = "12px Arial";
+  ctx.textAlign = "left";
+  ctx.fillText("Danger Line", 10, dropLineY - 10);
 }
 
 function drawFruit(ball) {
@@ -113,7 +123,7 @@ function drawFruit(ball) {
   ctx.lineWidth = 4;
   ctx.stroke();
 
-  ctx.font = `${Math.max(20, ball.radius * 1.15)}px Arial`;
+  ctx.font = `${Math.max(18, ball.radius * 1.08)}px Arial`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(ball.emoji, ball.x, ball.y + 2);
@@ -142,9 +152,9 @@ function updatePhysics() {
     if (ball.y + ball.radius > canvas.height) {
       ball.y = canvas.height - ball.radius;
       ball.vy *= -bounce;
-      ball.vx *= 0.95;
+      ball.vx *= 0.94;
 
-      if (Math.abs(ball.vy) < 0.6) {
+      if (Math.abs(ball.vy) < 0.7) {
         ball.vy = 0;
       }
     }
@@ -180,7 +190,7 @@ function handleCollisions() {
         b.x += nx * overlap * 0.5;
         b.y += ny * overlap * 0.5;
 
-        const push = 0.18;
+        const push = 0.12;
         a.vx -= nx * push;
         a.vy -= ny * push;
         b.vx += nx * push;
@@ -199,8 +209,8 @@ function mergeFruits(indexA, indexB, a, b) {
     newLevel
   );
 
-  newFruit.vy = -3;
-  newFruit.vx = (Math.random() - 0.5) * 1.5;
+  newFruit.vy = -2.5;
+  newFruit.vx = (Math.random() - 0.5) * 1.2;
 
   balls.splice(indexB, 1);
   balls.splice(indexA, 1);
@@ -210,19 +220,25 @@ function mergeFruits(indexA, indexB, a, b) {
   scoreElement.textContent = score;
 }
 
+// 关键修改：Game Over 不再只依赖“完全静止”
+// 只要有水果持续停留/挤压在警戒线以上，就会结束
 function checkGameOver() {
   for (const ball of balls) {
     const fruitTop = ball.y - ball.radius;
-    const isAboveDangerLine = fruitTop < dropLineY;
-    const isAlmostStill = Math.abs(ball.vx) < 0.8 && Math.abs(ball.vy) < 0.8;
+    const fruitCenter = ball.y;
 
-    if (isAboveDangerLine && isAlmostStill) {
-      ball.settledTime += 1;
+    const isClearlyAboveLine = fruitTop < dropLineY - 4;
+    const isCenterNearDangerZone = fruitCenter < dropLineY + 35;
+    const isNotJustDroppedFruit = fruitCenter > spawnY + 20;
+
+    if ((isClearlyAboveLine || isCenterNearDangerZone) && isNotJustDroppedFruit) {
+      ball.dangerFrames += 1;
     } else {
-      ball.settledTime = 0;
+      ball.dangerFrames = Math.max(0, ball.dangerFrames - 2);
     }
 
-    if (ball.settledTime > 45) {
+    // 约 1 秒左右触发，避免玩家觉得游戏永远不结束
+    if (ball.dangerFrames > 60) {
       endGame();
       break;
     }
@@ -230,6 +246,8 @@ function checkGameOver() {
 }
 
 function endGame() {
+  if (isGameOver) return;
+
   isGameOver = true;
   finalScoreElement.textContent = score;
   gameOverOverlay.classList.remove("hidden");
@@ -268,7 +286,7 @@ function dropFruit() {
 
   setTimeout(() => {
     canDrop = true;
-  }, 450);
+  }, 420);
 }
 
 function updateMousePosition(clientX) {
