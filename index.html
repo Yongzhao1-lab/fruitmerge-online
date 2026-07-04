@@ -10,7 +10,6 @@
   <meta name="robots" content="index, follow" />
 
   <link rel="canonical" href="https://fruitmerge.online/" />
-
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="theme-color" content="#ff7a1a" />
 
@@ -92,7 +91,7 @@
 <body>
   <header class="site-header">
     <a class="logo" href="/" aria-label="Fruit Merge Online Home">
-      <span class="logo-mark">🍉</span>
+      <img class="logo-icon" src="/favicon.svg" alt="Fruit Merge Online logo" />
       <span>Fruit Merge Online</span>
     </a>
 
@@ -151,31 +150,55 @@
           </div>
 
           <div class="info-card next-card">
-            <span class="info-label">Next Fruit</span>
-            <canvas id="nextFruitCanvas" width="52" height="52" aria-label="Next fruit preview"></canvas>
-            <span id="nextFruitName" class="next-fruit-name">Cherry</span>
+            <span class="info-label">Next Fruits</span>
+            <div class="next-preview">
+              <div>
+                <canvas id="nextFruitCanvas0" width="44" height="44"></canvas>
+                <small>Next</small>
+              </div>
+              <div>
+                <canvas id="nextFruitCanvas1" width="38" height="38"></canvas>
+                <small>2nd</small>
+              </div>
+              <div>
+                <canvas id="nextFruitCanvas2" width="34" height="34"></canvas>
+                <small>3rd</small>
+              </div>
+            </div>
           </div>
 
           <button id="restartButton" class="restart-button">Restart</button>
+          <button id="focusButton" class="focus-button">Focus Mode</button>
         </div>
 
-        <div class="game-box">
-          <canvas id="gameCanvas" width="360" height="520" aria-label="Fruit Merge Online game area"></canvas>
+        <div class="game-box-wrap">
+          <div class="game-box">
+            <canvas id="gameCanvas" width="420" height="600" aria-label="Fruit Merge Online game area"></canvas>
 
-          <div id="startOverlay" class="game-overlay">
-            <div class="overlay-badge">🍓 🍊 🍉</div>
-            <h3>Ready to Merge?</h3>
-            <p>Drop fruits, match the same fruits, and keep everything below the danger line.</p>
-            <button id="startButton">Start Game</button>
-          </div>
+            <div id="startOverlay" class="game-overlay">
+              <div class="overlay-badge">🍓 🍊 🍉</div>
+              <h3>Ready to Merge?</h3>
+              <p>Drop fruits, match the same fruits, and keep everything below the danger line.</p>
+              <button id="startButton">Start Game</button>
+            </div>
 
-          <div id="gameOverOverlay" class="game-over hidden">
-            <div class="overlay-badge">🍉</div>
-            <h3>Game Over</h3>
-            <p>Your final score: <span id="finalScore">0</span></p>
-            <p>Best score: <span id="finalBestScore">0</span></p>
-            <button id="playAgainButton">Play Again</button>
+            <div id="gameOverOverlay" class="game-over hidden">
+              <div class="overlay-badge">🍉</div>
+              <h3>Game Over</h3>
+              <p>Your final score: <span id="finalScore">0</span></p>
+              <p>Best score: <span id="finalBestScore">0</span></p>
+              <p id="gameOverMessage" class="game-over-message"></p>
+              <div class="game-over-actions">
+                <button id="playAgainButton">Play Again</button>
+                <button id="shareScoreButton" class="share-button">Share Score</button>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <div class="evolution-panel">
+          <p class="evolution-title">Fruit Evolution</p>
+          <div id="evolutionBar" class="evolution-bar"></div>
         </div>
       </div>
 
