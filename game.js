@@ -66,11 +66,21 @@ let screenShake = 0;
 let audioContext = null;
 let soundReady = false;
 
-const gravity = 0.31;
-const friction = 0.94;
-const bounce = 0.12;
+/**
+ * Stable stack physics
+ * This version makes fruits feel heavier and reduces large collision movement.
+ */
+const gravity = 0.34;
+const friction = 0.90;
+const bounce = 0.04;
 const dropLineY = 98;
 const spawnY = 54;
+
+const maxHorizontalSpeed = 0.75;
+const maxVerticalSpeed = 3.8;
+const collisionRestitution = 0.02;
+const collisionCorrection = 0.34;
+const maxCorrectionPerFrame = 2.4;
 
 function initAudio() {
   if (soundReady) return;
@@ -662,7 +672,16 @@ function updatePhysics() {
     ball.y += ball.vy;
 
     ball.vx *= friction;
-    ball.vx = clamp(ball.vx, -1.2, 1.2);
+
+    if (Math.abs(ball.vx) < 0.015) {
+      ball.vx = 0;
+    }
+
+    if (Math.abs(ball.vy) < 0.015) {
+      ball.vy = 0;
+    }
+
+    ball.vx = clamp(ball.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
 
     if (ball.x - ball.radius < 0) {
       ball.x = ball.radius;
@@ -677,14 +696,18 @@ function updatePhysics() {
     if (ball.y + ball.radius > canvas.height) {
       ball.y = canvas.height - ball.radius;
       ball.vy *= -bounce;
-      ball.vx *= 0.85;
+      ball.vx *= 0.55;
 
-      if (Math.abs(ball.vy) < 0.5) {
+      if (Math.abs(ball.vy) < 0.55) {
         ball.vy = 0;
+      }
+
+      if (Math.abs(ball.vx) < 0.05) {
+        ball.vx = 0;
       }
     }
 
-    ball.vy = clamp(ball.vy, -1.5, 4);
+    ball.vy = clamp(ball.vy, -1.2, maxVerticalSpeed);
   }
 
   updateEffects();
@@ -698,12 +721,19 @@ function handleCollisions() {
       const a = balls[i];
       const b = balls[j];
 
-      const dx = b.x - a.x;
-      const dy = b.y - a.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
+      let dx = b.x - a.x;
+      let dy = b.y - a.y;
+      let distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < 0.001) {
+        distance = 0.001;
+        dx = 0.001;
+        dy = 0;
+      }
+
       const minDistance = a.radius + b.radius;
 
-      if (distance > 0 && distance < minDistance) {
+      if (distance < minDistance) {
         if (a.level === b.level && a.level < fruits.length - 1 && distance < minDistance - 2) {
           mergeFruits(i, j, a, b);
           return;
@@ -713,23 +743,54 @@ function handleCollisions() {
         const nx = dx / distance;
         const ny = dy / distance;
 
-        a.x -= nx * overlap * 0.18;
-        a.y -= ny * overlap * 0.08;
-        b.x += nx * overlap * 0.18;
-        b.y += ny * overlap * 0.08;
+        const massA = a.radius * a.radius;
+        const massB = b.radius * b.radius;
+        const totalMass = massA + massB;
 
-        const push = 0.025;
+        const moveA = massB / totalMass;
+        const moveB = massA / totalMass;
 
-        a.vx -= nx * push;
-        b.vx += nx * push;
+        const correctionAmount = Math.min(
+          overlap * collisionCorrection,
+          maxCorrectionPerFrame
+        );
 
-        a.vy -= ny * push * 0.25;
-        b.vy += ny * push * 0.25;
+        a.x -= nx * correctionAmount * moveA;
+        b.x += nx * correctionAmount * moveB;
 
-        a.vx = clamp(a.vx, -1.2, 1.2);
-        b.vx = clamp(b.vx, -1.2, 1.2);
-        a.vy = clamp(a.vy, -1.5, 1.5);
-        b.vy = clamp(b.vy, -1.5, 1.5);
+        a.y -= ny * correctionAmount * moveA * 0.45;
+        b.y += ny * correctionAmount * moveB * 0.45;
+
+        const relativeVx = b.vx - a.vx;
+        const relativeVy = b.vy - a.vy;
+        const velocityAlongNormal = relativeVx * nx + relativeVy * ny;
+
+        if (velocityAlongNormal < 0) {
+          const impulse = -(1 + collisionRestitution) * velocityAlongNormal;
+          const impulseStrength = impulse * 0.08;
+
+          a.vx -= nx * impulseStrength * moveA;
+          b.vx += nx * impulseStrength * moveB;
+
+          a.vy -= ny * impulseStrength * moveA * 0.35;
+          b.vy += ny * impulseStrength * moveB * 0.35;
+        }
+
+        a.vx *= 0.82;
+        b.vx *= 0.82;
+
+        if (a.y + a.radius > canvas.height - 4) {
+          a.vx *= 0.65;
+        }
+
+        if (b.y + b.radius > canvas.height - 4) {
+          b.vx *= 0.65;
+        }
+
+        a.vx = clamp(a.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
+        b.vx = clamp(b.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
+        a.vy = clamp(a.vy, -1.2, maxVerticalSpeed);
+        b.vy = clamp(b.vy, -1.2, maxVerticalSpeed);
       }
     }
   }
@@ -745,9 +806,9 @@ function mergeFruits(indexA, indexB, a, b) {
     newLevel
   );
 
-  newFruit.vy = -1.2;
-  newFruit.vx = (Math.random() - 0.5) * 0.5;
-  newFruit.popFrames = 14;
+  newFruit.vx = (a.vx + b.vx) * 0.18;
+  newFruit.vy = Math.min((a.vy + b.vy) * 0.12, 0.15);
+  newFruit.popFrames = 10;
 
   balls.splice(indexB, 1);
   balls.splice(indexA, 1);
@@ -769,9 +830,9 @@ function mergeFruits(indexA, indexB, a, b) {
 
   if (newLevel >= 7) {
     addFloatingText(newFruit.x, newFruit.y - newFruit.radius - 24, "Cool Merge!");
-    screenShake = 6;
+    screenShake = 4;
     playBigMergeSound();
-    vibrate(35);
+    vibrate(25);
   }
 
   if (score > bestScore) {
