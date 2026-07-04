@@ -41,17 +41,8 @@ const evolutionBar = document.getElementById("evolutionBar");
 const leaderboardList = document.getElementById("leaderboardList");
 const gameOverLeaderboard = document.getElementById("gameOverLeaderboard");
 
-/**
- * Fruit sprite sheet.
- * Upload your image to:
- * /assets/fruits/fruit-sheet.png
- */
-const SPRITE_SHEET_SRC = "/assets/fruits/fruit-sheet.png?v=20260704-final-sheet";
-
-const spriteSheetImage = new Image();
-const fruitSprites = new Map();
-
-let spriteSheetReady = false;
+const ASSET_BASE = "/assets/fruits/";
+const ASSET_VERSION = "v=20260704-single-fruits-final";
 
 const fruits = [
   {
@@ -59,112 +50,114 @@ const fruits = [
     radius: 16,
     score: 5,
     type: "cherry",
+    asset: "cherry.png",
     color: "#e93652",
     emoji: "🍒",
-    visualScale: 1.28,
-    sprite: { x: 20, y: 0, w: 320, h: 285 }
+    visualScale: 1.08
   },
   {
     name: "Strawberry",
     radius: 21,
     score: 10,
     type: "strawberry",
+    asset: "strawberry.png",
     color: "#ef3f5c",
     emoji: "🍓",
-    visualScale: 1.22,
-    sprite: { x: 345, y: 0, w: 300, h: 285 }
+    visualScale: 1.05
   },
   {
     name: "Grape",
     radius: 27,
     score: 20,
     type: "grape",
+    asset: "grape.png",
     color: "#7650d6",
     emoji: "🍇",
-    visualScale: 1.18,
-    sprite: { x: 650, y: 0, w: 305, h: 285 }
+    visualScale: 1.04
   },
   {
     name: "Orange",
     radius: 34,
     score: 40,
     type: "orange",
+    asset: "orange.png",
     color: "#ff9f20",
     emoji: "🍊",
-    visualScale: 1.12,
-    sprite: { x: 955, y: 0, w: 280, h: 285 }
+    visualScale: 1.00
   },
   {
     name: "Apple",
     radius: 42,
     score: 80,
     type: "apple",
+    asset: "apple.png",
     color: "#e6384f",
     emoji: "🍎",
-    visualScale: 1.13,
-    sprite: { x: 1240, y: 0, w: 295, h: 295 }
+    visualScale: 1.00
   },
   {
     name: "Peach",
     radius: 51,
     score: 160,
     type: "peach",
+    asset: "peach.png",
     color: "#ffb07f",
     emoji: "🍑",
-    visualScale: 1.13,
-    sprite: { x: 30, y: 330, w: 310, h: 315 }
+    visualScale: 1.00
   },
   {
     name: "Pineapple",
     radius: 61,
     score: 320,
     type: "pineapple",
+    asset: "pineapple.png",
     color: "#f0bd3a",
     emoji: "🍍",
-    visualScale: 1.14,
-    sprite: { x: 340, y: 330, w: 320, h: 315 }
+    visualScale: 1.00
   },
   {
     name: "Watermelon",
     radius: 72,
     score: 640,
     type: "watermelon",
+    asset: "watermelon.png",
     color: "#31bd69",
     emoji: "🍉",
-    visualScale: 1.14,
-    sprite: { x: 640, y: 325, w: 315, h: 320 }
+    visualScale: 1.00
   },
   {
-    name: "Coconut",
+    name: "Mango",
     radius: 84,
     score: 1280,
-    type: "coconut",
-    color: "#8a5a3b",
-    emoji: "🥥",
-    visualScale: 1.10,
-    sprite: { x: 950, y: 325, w: 300, h: 320 }
+    type: "mango",
+    asset: "mango.png",
+    color: "#ff9f22",
+    emoji: "🥭",
+    visualScale: 0.98
   },
   {
     name: "Melon",
     radius: 96,
     score: 2560,
     type: "melon",
+    asset: "melon.png",
     color: "#9bd66c",
     emoji: "🍈",
-    visualScale: 1.10,
-    sprite: { x: 1238, y: 325, w: 298, h: 320 }
+    visualScale: 0.98
   },
   {
     name: "Dragon Fruit",
     radius: 110,
     score: 5120,
     type: "dragonfruit",
+    asset: "dragonfruit.png",
     color: "#f04e98",
     emoji: "🐉",
-    visualScale: 1.12,
-    sprite: { x: 585, y: 675, w: 370, h: 295 }
+    visualScale: 0.98
   }
 ];
+
+const fruitImages = new Map();
 
 let balls = [];
 let currentFruit;
@@ -192,10 +185,7 @@ let soundReady = false;
 
 /**
  * Final physics:
- * - Faster falling speed.
- * - Less excessive bouncing.
- * - Tighter collision feeling.
- * - Suitable for 1-2 minute casual rounds.
+ * Faster falling speed, tighter collision, less bouncing.
  */
 const gravity = 0.62;
 const friction = 0.9;
@@ -293,172 +283,38 @@ function vibrate(ms) {
 }
 
 function preloadFruitImages() {
-  spriteSheetImage.onload = () => {
-    spriteSheetReady = true;
-    buildFruitSprites();
-    updateNextFruit();
-  };
-
-  spriteSheetImage.onerror = () => {
-    spriteSheetReady = false;
-    updateNextFruit();
-  };
-
-  spriteSheetImage.src = SPRITE_SHEET_SRC;
-}
-
-function buildFruitSprites() {
-  fruitSprites.clear();
-
   fruits.forEach((fruit, index) => {
-    const { x, y, w, h } = fruit.sprite;
+    const image = new Image();
+    image.decoding = "async";
 
-    const rawCanvas = document.createElement("canvas");
-    rawCanvas.width = w;
-    rawCanvas.height = h;
-
-    const rawCtx = rawCanvas.getContext("2d", { willReadFrequently: true });
-    rawCtx.drawImage(spriteSheetImage, x, y, w, h, 0, 0, w, h);
-
-    removeSpriteBackground(rawCanvas, rawCtx);
-
-    const trimmedCanvas = trimTransparentCanvas(rawCanvas);
-
-    fruitSprites.set(index, {
-      canvas: trimmedCanvas,
-      width: trimmedCanvas.width,
-      height: trimmedCanvas.height
+    fruitImages.set(index, {
+      image,
+      loaded: false,
+      failed: false
     });
+
+    image.onload = () => {
+      fruitImages.set(index, {
+        image,
+        loaded: true,
+        failed: false
+      });
+
+      updateNextFruit();
+    };
+
+    image.onerror = () => {
+      fruitImages.set(index, {
+        image: null,
+        loaded: false,
+        failed: true
+      });
+
+      updateNextFruit();
+    };
+
+    image.src = `${ASSET_BASE}${fruit.asset}?${ASSET_VERSION}`;
   });
-}
-
-function removeSpriteBackground(canvas, canvasCtx) {
-  const width = canvas.width;
-  const height = canvas.height;
-  const imageData = canvasCtx.getImageData(0, 0, width, height);
-  const data = imageData.data;
-
-  const bg = getAverageCornerColor(data, width, height);
-
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
-
-    const distance = Math.sqrt(
-      Math.pow(r - bg.r, 2) +
-      Math.pow(g - bg.g, 2) +
-      Math.pow(b - bg.b, 2)
-    );
-
-    const isLightBlueBackground =
-      r > 180 &&
-      g > 195 &&
-      b > 205 &&
-      b >= r - 6 &&
-      g >= r - 16;
-
-    const isNearCornerBackground = distance < 54 && isLightBlueBackground;
-    const isSoftEdgeBackground = distance < 82 && isLightBlueBackground;
-
-    if (isNearCornerBackground) {
-      data[i + 3] = 0;
-    } else if (isSoftEdgeBackground) {
-      const alphaRatio = (distance - 54) / 28;
-      data[i + 3] = Math.floor(data[i + 3] * alphaRatio);
-    }
-  }
-
-  canvasCtx.putImageData(imageData, 0, 0);
-}
-
-function getAverageCornerColor(data, width, height) {
-  const samplePoints = [
-    [2, 2],
-    [width - 3, 2],
-    [2, height - 3],
-    [width - 3, height - 3],
-    [Math.floor(width / 2), 2],
-    [2, Math.floor(height / 2)],
-    [width - 3, Math.floor(height / 2)]
-  ];
-
-  let r = 0;
-  let g = 0;
-  let b = 0;
-
-  samplePoints.forEach(([x, y]) => {
-    const index = (y * width + x) * 4;
-    r += data[index];
-    g += data[index + 1];
-    b += data[index + 2];
-  });
-
-  return {
-    r: r / samplePoints.length,
-    g: g / samplePoints.length,
-    b: b / samplePoints.length
-  };
-}
-
-function trimTransparentCanvas(sourceCanvas) {
-  const sourceCtx = sourceCanvas.getContext("2d", { willReadFrequently: true });
-  const width = sourceCanvas.width;
-  const height = sourceCanvas.height;
-  const imageData = sourceCtx.getImageData(0, 0, width, height);
-  const data = imageData.data;
-
-  let minX = width;
-  let minY = height;
-  let maxX = 0;
-  let maxY = 0;
-
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const alpha = data[(y * width + x) * 4 + 3];
-
-      if (alpha > 18) {
-        if (x < minX) minX = x;
-        if (y < minY) minY = y;
-        if (x > maxX) maxX = x;
-        if (y > maxY) maxY = y;
-      }
-    }
-  }
-
-  if (minX > maxX || minY > maxY) {
-    return sourceCanvas;
-  }
-
-  const padding = 4;
-
-  minX = Math.max(0, minX - padding);
-  minY = Math.max(0, minY - padding);
-  maxX = Math.min(width - 1, maxX + padding);
-  maxY = Math.min(height - 1, maxY + padding);
-
-  const trimmedWidth = maxX - minX + 1;
-  const trimmedHeight = maxY - minY + 1;
-
-  const trimmedCanvas = document.createElement("canvas");
-  trimmedCanvas.width = trimmedWidth;
-  trimmedCanvas.height = trimmedHeight;
-
-  const trimmedCtx = trimmedCanvas.getContext("2d");
-
-  trimmedCtx.drawImage(
-    sourceCanvas,
-    minX,
-    minY,
-    trimmedWidth,
-    trimmedHeight,
-    0,
-    0,
-    trimmedWidth,
-    trimmedHeight
-  );
-
-  return trimmedCanvas;
 }
 
 function getDifficultyStage() {
@@ -815,15 +671,15 @@ function drawFruit(ball) {
 
 function drawFruitIcon(targetCtx, x, y, radius, level) {
   const fruit = fruits[level];
-  const sprite = fruitSprites.get(level);
+  const imageRecord = fruitImages.get(level);
 
   targetCtx.save();
   targetCtx.translate(x, y);
 
   drawFruitShadow(targetCtx, radius);
 
-  if (spriteSheetReady && sprite && sprite.canvas) {
-    drawSpriteFruit(targetCtx, sprite.canvas, radius, fruit);
+  if (imageRecord && imageRecord.loaded && imageRecord.image) {
+    drawImageFruit(targetCtx, imageRecord.image, radius, fruit);
   } else {
     drawFallbackFruit(targetCtx, radius, fruit);
   }
@@ -831,9 +687,9 @@ function drawFruitIcon(targetCtx, x, y, radius, level) {
   targetCtx.restore();
 }
 
-function drawSpriteFruit(targetCtx, spriteCanvas, radius, fruit) {
+function drawImageFruit(targetCtx, image, radius, fruit) {
   const maxSize = radius * 2 * fruit.visualScale;
-  const aspect = spriteCanvas.width / spriteCanvas.height;
+  const aspect = image.naturalWidth / image.naturalHeight;
 
   let drawWidth;
   let drawHeight;
@@ -847,7 +703,7 @@ function drawSpriteFruit(targetCtx, spriteCanvas, radius, fruit) {
   }
 
   targetCtx.drawImage(
-    spriteCanvas,
+    image,
     -drawWidth / 2,
     -drawHeight / 2,
     drawWidth,
