@@ -1,24 +1,44 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-const scoreElement = document.getElementById("score");
 
-let score = 0;
+const scoreElement = document.getElementById("score");
+const nextFruitElement = document.getElementById("nextFruit");
+const restartButton = document.getElementById("restartButton");
+const playAgainButton = document.getElementById("playAgainButton");
+const gameOverOverlay = document.getElementById("gameOverOverlay");
+const finalScoreElement = document.getElementById("finalScore");
 
 const fruits = [
-  { name: "Cherry", radius: 16, color: "#ff3b3b" },
-  { name: "Orange", radius: 22, color: "#ff9f1a" },
-  { name: "Lemon", radius: 28, color: "#ffd93d" },
-  { name: "Apple", radius: 36, color: "#7ed957" },
-  { name: "Peach", radius: 44, color: "#ffb3c6" },
-  { name: "Watermelon", radius: 56, color: "#2ecc71" }
+  { name: "Cherry", emoji: "🍒", radius: 18, score: 10 },
+  { name: "Strawberry", emoji: "🍓", radius: 24, score: 20 },
+  { name: "Grape", emoji: "🍇", radius: 30, score: 40 },
+  { name: "Orange", emoji: "🍊", radius: 36, score: 80 },
+  { name: "Apple", emoji: "🍎", radius: 44, score: 160 },
+  { name: "Peach", emoji: "🍑", radius: 52, score: 320 },
+  { name: "Pineapple", emoji: "🍍", radius: 62, score: 640 },
+  { name: "Watermelon", emoji: "🍉", radius: 74, score: 1280 }
 ];
 
 let balls = [];
-let currentFruit = createFruit(canvas.width / 2, 40, 0);
+let currentFruit;
+let nextFruitLevel;
 let mouseX = canvas.width / 2;
+let score = 0;
+let isGameOver = false;
+let canDrop = true;
+
+const gravity = 0.32;
+const friction = 0.985;
+const bounce = 0.35;
+const dropLineY = 90;
+
+function randomStartLevel() {
+  return Math.floor(Math.random() * 4);
+}
 
 function createFruit(x, y, level) {
   const fruit = fruits[level];
+
   return {
     x,
     y,
@@ -26,49 +46,114 @@ function createFruit(x, y, level) {
     vy: 0,
     level,
     radius: fruit.radius,
-    color: fruit.color,
-    dropped: false
+    emoji: fruit.emoji,
+    settledTime: 0
   };
 }
 
-function drawFruit(fruit) {
-  ctx.beginPath();
-  ctx.arc(fruit.x, fruit.y, fruit.radius, 0, Math.PI * 2);
-  ctx.fillStyle = fruit.color;
-  ctx.fill();
-  ctx.strokeStyle = "#ffffff";
+function initGame() {
+  balls = [];
+  score = 0;
+  isGameOver = false;
+  canDrop = true;
+  mouseX = canvas.width / 2;
+
+  scoreElement.textContent = score;
+  gameOverOverlay.classList.add("hidden");
+
+  nextFruitLevel = randomStartLevel();
+  currentFruit = createFruit(mouseX, 42, randomStartLevel());
+  updateNextFruit();
+}
+
+function updateNextFruit() {
+  nextFruitElement.textContent = fruits[nextFruitLevel].emoji;
+}
+
+function drawBackground() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "#fff3dc";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = "#ff7a1a";
   ctx.lineWidth = 3;
+  ctx.setLineDash([8, 8]);
+  ctx.beginPath();
+  ctx.moveTo(0, dropLineY);
+  ctx.lineTo(canvas.width, dropLineY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = "rgba(255,122,26,0.12)";
+  ctx.fillRect(0, 0, canvas.width, dropLineY);
+}
+
+function drawFruit(ball) {
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+
+  const gradient = ctx.createRadialGradient(
+    ball.x - ball.radius / 3,
+    ball.y - ball.radius / 3,
+    ball.radius / 5,
+    ball.x,
+    ball.y,
+    ball.radius
+  );
+
+  gradient.addColorStop(0, "#ffffff");
+  gradient.addColorStop(1, "#ffd27a");
+
+  ctx.fillStyle = gradient;
+  ctx.fill();
+
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 4;
   ctx.stroke();
 
-  ctx.fillStyle = "#222";
-  ctx.font = "12px Arial";
+  ctx.font = `${Math.max(20, ball.radius * 1.15)}px Arial`;
   ctx.textAlign = "center";
-  ctx.fillText(fruits[fruit.level].name[0], fruit.x, fruit.y + 4);
+  ctx.textBaseline = "middle";
+  ctx.fillText(ball.emoji, ball.x, ball.y + 2);
 }
 
 function updatePhysics() {
-  balls.forEach(ball => {
-    ball.vy += 0.35;
+  if (isGameOver) return;
+
+  for (const ball of balls) {
+    ball.vy += gravity;
     ball.x += ball.vx;
     ball.y += ball.vy;
 
+    ball.vx *= friction;
+
     if (ball.x - ball.radius < 0) {
       ball.x = ball.radius;
-      ball.vx *= -0.4;
+      ball.vx *= -bounce;
     }
 
     if (ball.x + ball.radius > canvas.width) {
       ball.x = canvas.width - ball.radius;
-      ball.vx *= -0.4;
+      ball.vx *= -bounce;
     }
 
     if (ball.y + ball.radius > canvas.height) {
       ball.y = canvas.height - ball.radius;
-      ball.vy *= -0.35;
+      ball.vy *= -bounce;
       ball.vx *= 0.95;
-    }
-  });
 
+      if (Math.abs(ball.vy) < 0.6) {
+        ball.vy = 0;
+      }
+    }
+  }
+
+  handleCollisions();
+  checkGameOver();
+}
+
+function handleCollisions() {
   for (let i = 0; i < balls.length; i++) {
     for (let j = i + 1; j < balls.length; j++) {
       const a = balls[i];
@@ -79,19 +164,9 @@ function updatePhysics() {
       const distance = Math.sqrt(dx * dx + dy * dy);
       const minDistance = a.radius + b.radius;
 
-      if (distance < minDistance) {
+      if (distance > 0 && distance < minDistance) {
         if (a.level === b.level && a.level < fruits.length - 1) {
-          const newLevel = a.level + 1;
-          const newFruit = createFruit((a.x + b.x) / 2, (a.y + b.y) / 2, newLevel);
-          newFruit.dropped = true;
-          newFruit.vy = -2;
-
-          balls.splice(j, 1);
-          balls.splice(i, 1);
-          balls.push(newFruit);
-
-          score += (newLevel + 1) * 10;
-          scoreElement.textContent = score;
+          mergeFruits(i, j, a, b);
           return;
         }
 
@@ -99,67 +174,130 @@ function updatePhysics() {
         const nx = dx / distance;
         const ny = dy / distance;
 
-        a.x -= nx * overlap / 2;
-        a.y -= ny * overlap / 2;
-        b.x += nx * overlap / 2;
-        b.y += ny * overlap / 2;
+        a.x -= nx * overlap * 0.5;
+        a.y -= ny * overlap * 0.5;
+        b.x += nx * overlap * 0.5;
+        b.y += ny * overlap * 0.5;
 
-        a.vx -= nx * 0.2;
-        b.vx += nx * 0.2;
+        const push = 0.18;
+        a.vx -= nx * push;
+        a.vy -= ny * push;
+        b.vx += nx * push;
+        b.vy += ny * push;
       }
     }
   }
 }
 
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+function mergeFruits(indexA, indexB, a, b) {
+  const newLevel = a.level + 1;
+  const newFruit = createFruit(
+    (a.x + b.x) / 2,
+    (a.y + b.y) / 2,
+    newLevel
+  );
 
-  ctx.fillStyle = "#fff3dc";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  newFruit.vy = -3;
+  newFruit.vx = (Math.random() - 0.5) * 1.5;
 
-  ctx.strokeStyle = "#ff7a1a";
-  ctx.setLineDash([8, 8]);
-  ctx.beginPath();
-  ctx.moveTo(0, 90);
-  ctx.lineTo(canvas.width, 90);
-  ctx.stroke();
-  ctx.setLineDash([]);
+  balls.splice(indexB, 1);
+  balls.splice(indexA, 1);
+  balls.push(newFruit);
 
-  balls.forEach(drawFruit);
-
-  currentFruit.x = mouseX;
-  drawFruit(currentFruit);
+  score += fruits[newLevel].score;
+  scoreElement.textContent = score;
 }
 
-function loop() {
+function checkGameOver() {
+  for (const ball of balls) {
+    const isNearTop = ball.y - ball.radius < dropLineY;
+    const isAlmostStill = Math.abs(ball.vx) < 0.3 && Math.abs(ball.vy) < 0.3;
+
+    if (isNearTop && isAlmostStill) {
+      ball.settledTime += 1;
+    } else {
+      ball.settledTime = 0;
+    }
+
+    if (ball.settledTime > 90) {
+      endGame();
+      break;
+    }
+  }
+}
+
+function endGame() {
+  isGameOver = true;
+  finalScoreElement.textContent = score;
+  gameOverOverlay.classList.remove("hidden");
+}
+
+function draw() {
+  drawBackground();
+
+  for (const ball of balls) {
+    drawFruit(ball);
+  }
+
+  if (!isGameOver && currentFruit) {
+    currentFruit.x = mouseX;
+    drawFruit(currentFruit);
+  }
+}
+
+function gameLoop() {
   updatePhysics();
   draw();
-  requestAnimationFrame(loop);
+  requestAnimationFrame(gameLoop);
 }
 
 function dropFruit() {
-  const fruit = createFruit(mouseX, 40, Math.floor(Math.random() * 3));
-  fruit.dropped = true;
+  if (isGameOver || !canDrop) return;
+
+  canDrop = false;
+
+  const fruit = createFruit(mouseX, 42, currentFruit.level);
   balls.push(fruit);
-  currentFruit = createFruit(mouseX, 40, Math.floor(Math.random() * 3));
+
+  currentFruit = createFruit(mouseX, 42, nextFruitLevel);
+  nextFruitLevel = randomStartLevel();
+  updateNextFruit();
+
+  setTimeout(() => {
+    canDrop = true;
+  }, 450);
+}
+
+function updateMousePosition(clientX) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+
+  mouseX = (clientX - rect.left) * scaleX;
+
+  const radius = currentFruit ? currentFruit.radius : 20;
+  mouseX = Math.max(radius, Math.min(canvas.width - radius, mouseX));
 }
 
 canvas.addEventListener("mousemove", (event) => {
-  const rect = canvas.getBoundingClientRect();
-  mouseX = event.clientX - rect.left;
-  mouseX = Math.max(currentFruit.radius, Math.min(canvas.width - currentFruit.radius, mouseX));
+  updateMousePosition(event.clientX);
 });
 
-canvas.addEventListener("click", dropFruit);
+canvas.addEventListener("click", () => {
+  dropFruit();
+});
 
 canvas.addEventListener("touchmove", (event) => {
   event.preventDefault();
-  const rect = canvas.getBoundingClientRect();
-  const touch = event.touches[0];
-  mouseX = touch.clientX - rect.left;
-  mouseX = Math.max(currentFruit.radius, Math.min(canvas.width - currentFruit.radius, mouseX));
-});
+  updateMousePosition(event.touches[0].clientX);
+}, { passive: false });
 
-canvas.addEventListener("touchend", dropFruit);
+canvas.addEventListener("touchend", (event) => {
+  event.preventDefault();
+  dropFruit();
+}, { passive: false });
 
-loop();
+restartButton.addEventListener("click", initGame);
+playAgainButton.addEventListener("click", initGame);
+
+initGame();
+gameLoop();
