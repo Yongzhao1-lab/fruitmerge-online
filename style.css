@@ -42,14 +42,11 @@ a {
   letter-spacing: -0.3px;
 }
 
-.logo-mark {
+.logo-icon {
   width: 34px;
   height: 34px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
   border-radius: 50%;
+  background: #fff;
   box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
@@ -92,7 +89,6 @@ a {
   position: absolute;
   border-radius: 50%;
   opacity: 0.28;
-  filter: blur(0.2px);
 }
 
 .hero-fruit-1 {
@@ -165,10 +161,6 @@ a {
   background: #ff7a1a;
   color: #fff;
   box-shadow: 0 12px 28px rgba(255, 122, 26, 0.32);
-}
-
-.play-button:hover {
-  background: #e86600;
 }
 
 .secondary-button {
@@ -267,27 +259,32 @@ a {
 }
 
 .next-card {
-  min-width: 140px;
+  min-width: 190px;
 }
 
-#nextFruitCanvas {
-  width: 46px;
-  height: 46px;
-  display: block;
-  margin: 0 auto 2px;
+.next-preview {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  gap: 8px;
 }
 
-.next-fruit-name {
+.next-preview canvas {
+  background: transparent;
+  border-radius: 50%;
+}
+
+.next-preview small {
   display: block;
-  font-size: 11px;
-  color: #666;
-  line-height: 1.2;
-  min-height: 14px;
+  font-size: 10px;
+  color: #777;
 }
 
 .restart-button,
+.focus-button,
 #startButton,
-#playAgainButton {
+#playAgainButton,
+.share-button {
   border: none;
   padding: 13px 22px;
   border-radius: 999px;
@@ -298,10 +295,22 @@ a {
   box-shadow: 0 8px 18px rgba(255, 122, 26, 0.25);
 }
 
+.focus-button {
+  background: #222;
+}
+
 .restart-button:hover,
+.focus-button:hover,
 #startButton:hover,
-#playAgainButton:hover {
-  background: #e86600;
+#playAgainButton:hover,
+.share-button:hover {
+  opacity: 0.9;
+}
+
+.game-box-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .game-box {
@@ -359,6 +368,18 @@ canvas {
   color: #444;
 }
 
+.game-over-message {
+  font-weight: 900;
+  color: #ff7a1a !important;
+}
+
+.game-over-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .hidden {
   display: none;
 }
@@ -367,6 +388,49 @@ canvas {
   color: #666;
   font-size: 14px;
   margin-top: 14px;
+}
+
+.evolution-panel {
+  width: 100%;
+  max-width: 760px;
+  margin-top: 4px;
+}
+
+.evolution-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 900;
+  color: #ff7a1a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.evolution-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.evolution-item {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #ffd2a3;
+  color: #aaa;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.evolution-item.unlocked {
+  color: #222;
+  border-color: #ff8a2a;
+  box-shadow: 0 4px 12px rgba(255,122,26,0.15);
+}
+
+.evolution-item.current {
+  background: #ff7a1a;
+  color: #fff;
 }
 
 .content-section {
@@ -472,8 +536,32 @@ footer {
   font-size: 14px;
 }
 
-.footer-links a:hover {
-  text-decoration: underline;
+body.focus-mode {
+  background: #161616;
+}
+
+body.focus-mode .site-header,
+body.focus-mode .hero,
+body.focus-mode main > section:not(#game),
+body.focus-mode footer {
+  display: none;
+}
+
+body.focus-mode .game-section {
+  min-height: 100vh;
+  padding: 24px 10px;
+  background: radial-gradient(circle at top, #333, #111);
+}
+
+body.focus-mode .game-section h2,
+body.focus-mode .section-kicker,
+body.focus-mode .game-tip,
+body.focus-mode .evolution-title {
+  color: #fff;
+}
+
+body.focus-mode .game-box {
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
 }
 
 @media (max-width: 860px) {
@@ -509,34 +597,26 @@ footer {
     display: grid;
     grid-template-columns: 1fr 1fr;
     width: 100%;
-    max-width: 390px;
+    max-width: 420px;
   }
 
   .next-card {
     min-width: 0;
-  }
-
-  .restart-button {
     grid-column: span 2;
+  }
+
+  .restart-button,
+  .focus-button {
     width: 100%;
-  }
-
-  .info-card {
-    min-width: 0;
-    padding: 10px 8px;
-  }
-
-  .info-card strong {
-    font-size: 22px;
   }
 
   .game-box {
     width: 100%;
-    max-width: 390px;
+    max-width: 450px;
     padding: 10px;
   }
 
-  canvas {
+  canvas#gameCanvas {
     width: 100%;
     height: auto;
   }
