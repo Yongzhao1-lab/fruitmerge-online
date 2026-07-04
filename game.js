@@ -67,18 +67,16 @@ let audioContext = null;
 let soundReady = false;
 
 /**
- * Stable non-overlap physics
- * This version keeps fruits heavy and stable, but uses stronger multi-pass
- * separation so fruits do not visibly overlap or sink into each other.
+ * Faster drop + stable non-overlap physics
  */
-const gravity = 0.34;
+const gravity = 0.46;
 const friction = 0.88;
 const bounce = 0.03;
 const dropLineY = 98;
 const spawnY = 54;
 
 const maxHorizontalSpeed = 0.65;
-const maxVerticalSpeed = 3.8;
+const maxVerticalSpeed = 5.2;
 
 const collisionSolverIterations = 5;
 const collisionRestitution = 0.01;
@@ -336,10 +334,10 @@ function getDangerLimit() {
 
 function getDropCooldown() {
   const stage = getDifficultyStage();
-  if (stage === 0) return 420;
-  if (stage === 1) return 380;
-  if (stage === 2) return 340;
-  return 300;
+  if (stage === 0) return 360;
+  if (stage === 1) return 330;
+  if (stage === 2) return 300;
+  return 270;
 }
 
 function randomStartLevel() {
@@ -1056,6 +1054,7 @@ function dropFruit() {
   canDrop = false;
 
   const fruit = createFruit(mouseX, spawnY, currentFruit.level);
+  fruit.vy = 1.15;
   balls.push(fruit);
 
   playDropSound();
