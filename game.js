@@ -24,19 +24,20 @@ const gameOverMessageElement = document.getElementById("gameOverMessage");
 const evolutionBar = document.getElementById("evolutionBar");
 
 const fruits = [
-  { name: "Cherry", radius: 16, score: 5, skin: "#e84545", core: "#ff6b6b", type: "cherry" },
-  { name: "Strawberry", radius: 21, score: 10, skin: "#e83e5a", core: "#ff6b7f", type: "strawberry" },
-  { name: "Grape", radius: 27, score: 20, skin: "#7b4bc7", core: "#a883e8", type: "grape" },
-  { name: "Orange", radius: 34, score: 40, skin: "#ff9a1f", core: "#ffc65c", type: "orange" },
-  { name: "Apple", radius: 42, score: 80, skin: "#e94f64", core: "#ff7b8a", type: "apple" },
-  { name: "Peach", radius: 51, score: 160, skin: "#ff9b6a", core: "#ffc48f", type: "peach" },
-  { name: "Pineapple", radius: 61, score: 320, skin: "#f0b93a", core: "#ffd66b", type: "pineapple" },
-  { name: "Watermelon", radius: 72, score: 640, skin: "#2fbf71", core: "#f2505e", type: "watermelon" },
-  { name: "Coconut", radius: 84, score: 1280, skin: "#8a5a3b", core: "#f7f0df", type: "coconut" },
-  { name: "Melon", radius: 96, score: 2560, skin: "#8bd66b", core: "#c6ef84", type: "melon" },
+  { name: "Cherry", radius: 16, score: 5, skin: "#e84545", core: "#ff7f8b", type: "cherry" },
+  { name: "Strawberry", radius: 21, score: 10, skin: "#e83e5a", core: "#ff8a9c", type: "strawberry" },
+  { name: "Grape", radius: 27, score: 20, skin: "#7b4bc7", core: "#b694ff", type: "grape" },
+  { name: "Orange", radius: 34, score: 40, skin: "#ff9a1f", core: "#ffd36b", type: "orange" },
+  { name: "Apple", radius: 42, score: 80, skin: "#e94f64", core: "#ff8b98", type: "apple" },
+  { name: "Peach", radius: 51, score: 160, skin: "#ff9b6a", core: "#ffc7a1", type: "peach" },
+  { name: "Pineapple", radius: 61, score: 320, skin: "#f0b93a", core: "#ffe17a", type: "pineapple" },
+  { name: "Watermelon", radius: 72, score: 640, skin: "#2fbf71", core: "#ff6070", type: "watermelon" },
+  { name: "Coconut", radius: 84, score: 1280, skin: "#8a5a3b", core: "#fff3df", type: "coconut" },
+  { name: "Melon", radius: 96, score: 2560, skin: "#8bd66b", core: "#d7f59d", type: "melon" },
   { name: "Dragon Fruit", radius: 110, score: 5120, skin: "#f04e98", core: "#fff4f9", type: "dragonfruit" }
 ];
 
+let fruitImages = [];
 let balls = [];
 let currentFruit;
 let nextFruitLevel;
@@ -63,6 +64,167 @@ const friction = 0.94;
 const bounce = 0.12;
 const dropLineY = 98;
 const spawnY = 54;
+
+function makeFruitSvg(fruit) {
+  const detail = getFruitDetailSvg(fruit.type);
+
+  return `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+    <defs>
+      <radialGradient id="g" cx="35%" cy="28%" r="75%">
+        <stop offset="0%" stop-color="#ffffff"/>
+        <stop offset="18%" stop-color="${fruit.core}"/>
+        <stop offset="100%" stop-color="${fruit.skin}"/>
+      </radialGradient>
+      <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+        <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#29a8b8" flood-opacity="0.18"/>
+      </filter>
+    </defs>
+
+    <ellipse cx="128" cy="224" rx="70" ry="13" fill="#38cfd8" opacity="0.15"/>
+
+    <circle cx="128" cy="128" r="92" fill="url(#g)" filter="url(#shadow)"/>
+    <circle cx="96" cy="84" r="22" fill="#ffffff" opacity="0.52"/>
+    <circle cx="85" cy="112" r="8" fill="#ffffff" opacity="0.35"/>
+
+    ${detail}
+
+    <circle cx="101" cy="137" r="7" fill="#263238"/>
+    <circle cx="155" cy="137" r="7" fill="#263238"/>
+    <path d="M112 161 Q128 174 144 161" fill="none" stroke="#263238" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="83" cy="154" r="10" fill="#ffffff" opacity="0.26"/>
+    <circle cx="173" cy="154" r="10" fill="#ffffff" opacity="0.26"/>
+
+    <path d="M57 73 C72 45 106 31 139 36" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round" opacity="0.32"/>
+    <path d="M193 76 C215 102 221 132 212 164" fill="none" stroke="#bdfaff" stroke-width="7" stroke-linecap="round" opacity="0.36"/>
+  </svg>`;
+}
+
+function getFruitDetailSvg(type) {
+  if (type === "cherry") {
+    return `
+      <path d="M130 57 C136 34 156 25 174 32" fill="none" stroke="#4b8a3d" stroke-width="8" stroke-linecap="round"/>
+      <ellipse cx="176" cy="32" rx="19" ry="10" fill="#6fbd44" transform="rotate(-25 176 32)"/>
+    `;
+  }
+
+  if (type === "strawberry") {
+    return `
+      <path d="M82 50 L105 68 L128 48 L151 68 L174 50 L164 82 L92 82 Z" fill="#6fbd44"/>
+      <g fill="#fff3b0" opacity="0.9">
+        <circle cx="96" cy="109" r="4"/><circle cx="128" cy="104" r="4"/><circle cx="160" cy="109" r="4"/>
+        <circle cx="106" cy="143" r="4"/><circle cx="148" cy="143" r="4"/>
+        <circle cx="128" cy="176" r="4"/>
+      </g>
+    `;
+  }
+
+  if (type === "grape") {
+    return `
+      <g fill="#6f42c1" opacity="0.85" stroke="#d7c8ff" stroke-width="3">
+        <circle cx="104" cy="109" r="24"/><circle cx="137" cy="106" r="24"/><circle cx="154" cy="134" r="24"/>
+        <circle cx="119" cy="139" r="24"/><circle cx="101" cy="166" r="23"/><circle cx="139" cy="168" r="23"/>
+      </g>
+      <ellipse cx="148" cy="53" rx="22" ry="11" fill="#6fbd44" transform="rotate(-25 148 53)"/>
+    `;
+  }
+
+  if (type === "orange") {
+    return `
+      <circle cx="128" cy="128" r="62" fill="#ffb733" opacity="0.72"/>
+      <g stroke="#fff7c7" stroke-width="5" opacity="0.72">
+        <line x1="128" y1="128" x2="128" y2="72"/>
+        <line x1="128" y1="128" x2="178" y2="100"/>
+        <line x1="128" y1="128" x2="178" y2="158"/>
+        <line x1="128" y1="128" x2="128" y2="184"/>
+        <line x1="128" y1="128" x2="78" y2="158"/>
+        <line x1="128" y1="128" x2="78" y2="100"/>
+      </g>
+    `;
+  }
+
+  if (type === "apple") {
+    return `
+      <path d="M128 68 C119 51 108 44 94 47" fill="none" stroke="#7b4f2f" stroke-width="8" stroke-linecap="round"/>
+      <ellipse cx="151" cy="50" rx="25" ry="13" fill="#6fbd44" transform="rotate(-24 151 50)"/>
+      <ellipse cx="95" cy="94" rx="22" ry="11" fill="#ffffff" opacity="0.35" transform="rotate(-35 95 94)"/>
+    `;
+  }
+
+  if (type === "peach") {
+    return `
+      <ellipse cx="151" cy="55" rx="25" ry="13" fill="#6fbd44" transform="rotate(-24 151 55)"/>
+      <path d="M139 67 C104 98 103 156 134 191" fill="none" stroke="#d26d58" stroke-width="6" stroke-linecap="round" opacity="0.45"/>
+    `;
+  }
+
+  if (type === "pineapple") {
+    return `
+      <path d="M100 57 L112 25 L128 59 L144 25 L156 57 L176 35 L164 85 L92 85 L80 35 Z" fill="#6fbd44"/>
+      <g stroke="#b78322" stroke-width="4" opacity="0.42">
+        <path d="M78 104 L178 202"/><path d="M78 138 L145 206"/><path d="M106 86 L190 170"/>
+        <path d="M178 104 L78 202"/><path d="M178 138 L111 206"/><path d="M150 86 L66 170"/>
+      </g>
+    `;
+  }
+
+  if (type === "watermelon") {
+    return `
+      <circle cx="128" cy="132" r="66" fill="#ff6070"/>
+      <circle cx="128" cy="132" r="74" fill="none" stroke="#eaffc8" stroke-width="10"/>
+      <g fill="#263238">
+        <ellipse cx="105" cy="120" rx="5" ry="8" transform="rotate(-20 105 120)"/>
+        <ellipse cx="137" cy="113" rx="5" ry="8" transform="rotate(10 137 113)"/>
+        <ellipse cx="153" cy="150" rx="5" ry="8" transform="rotate(25 153 150)"/>
+        <ellipse cx="112" cy="158" rx="5" ry="8" transform="rotate(-10 112 158)"/>
+      </g>
+    `;
+  }
+
+  if (type === "coconut") {
+    return `
+      <circle cx="128" cy="128" r="61" fill="#fff3df"/>
+      <circle cx="128" cy="128" r="72" fill="none" stroke="#70442c" stroke-width="12" opacity="0.42"/>
+      <g fill="#70442c" opacity="0.55">
+        <circle cx="107" cy="112" r="5"/><circle cx="128" cy="105" r="5"/><circle cx="149" cy="112" r="5"/>
+      </g>
+    `;
+  }
+
+  if (type === "melon") {
+    return `
+      <g stroke="#ffffff" stroke-width="6" opacity="0.65">
+        <path d="M83 70 C116 106 116 150 83 190"/>
+        <path d="M110 58 C136 104 136 150 110 202"/>
+        <path d="M146 58 C120 104 120 150 146 202"/>
+        <path d="M173 70 C140 106 140 150 173 190"/>
+      </g>
+    `;
+  }
+
+  if (type === "dragonfruit") {
+    return `
+      <circle cx="128" cy="128" r="63" fill="#fff4f9"/>
+      <g fill="#202020">
+        <circle cx="103" cy="107" r="3"/><circle cx="132" cy="101" r="3"/><circle cx="159" cy="118" r="3"/>
+        <circle cx="111" cy="143" r="3"/><circle cx="145" cy="151" r="3"/><circle cx="128" cy="178" r="3"/>
+      </g>
+      <ellipse cx="74" cy="141" rx="22" ry="10" fill="#6fbd44" transform="rotate(-35 74 141)"/>
+      <ellipse cx="183" cy="112" rx="22" ry="10" fill="#6fbd44" transform="rotate(35 183 112)"/>
+    `;
+  }
+
+  return "";
+}
+
+function preloadFruitImages() {
+  fruitImages = fruits.map((fruit) => {
+    const img = new Image();
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(makeFruitSvg(fruit));
+    img.onload = () => updateNextFruit();
+    return img;
+  });
+}
 
 function getDifficultyStage() {
   if (survivalTime < 30) return 0;
@@ -202,8 +364,9 @@ function setupRound(showStartScreen = true) {
 }
 
 function updateNextFruit() {
-  const fruit = fruits[nextFruitLevel];
+  if (typeof nextFruitLevel !== "number") return;
 
+  const fruit = fruits[nextFruitLevel];
   nextFruitNameElement.textContent = fruit.name;
   nextCtx.clearRect(0, 0, nextFruitCanvas.width, nextFruitCanvas.height);
 
@@ -211,7 +374,7 @@ function updateNextFruit() {
     nextCtx,
     nextFruitCanvas.width / 2,
     nextFruitCanvas.height / 2,
-    18,
+    21,
     nextFruitLevel
   );
 }
@@ -247,15 +410,15 @@ function drawBackground() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const warningAlpha = 0.12 + dangerRatio * 0.28;
+  const warningAlpha = 0.08 + dangerRatio * 0.3;
 
-  ctx.fillStyle = "#fff3dc";
+  ctx.fillStyle = "#ecfbff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = `rgba(255, 80, 40, ${warningAlpha})`;
+  ctx.fillStyle = `rgba(255, 80, 60, ${warningAlpha})`;
   ctx.fillRect(0, 0, canvas.width, dropLineY);
 
-  ctx.strokeStyle = dangerRatio > 0.35 ? "#ff3b1f" : "#ff7a1a";
+  ctx.strokeStyle = dangerRatio > 0.35 ? "#ff4c3d" : "#18c7b8";
   ctx.lineWidth = dangerRatio > 0.35 ? 4 : 3;
   ctx.setLineDash([8, 8]);
 
@@ -266,7 +429,7 @@ function drawBackground() {
 
   ctx.setLineDash([]);
 
-  ctx.fillStyle = dangerRatio > 0.35 ? "#ff3b1f" : "rgba(255, 122, 26, 0.82)";
+  ctx.fillStyle = dangerRatio > 0.35 ? "#ff4c3d" : "#00a99d";
   ctx.font = dangerRatio > 0.35 ? "bold 13px Arial" : "13px Arial";
   ctx.textAlign = "left";
   ctx.textBaseline = "middle";
@@ -287,8 +450,8 @@ function drawDangerCountdown(dangerRatio) {
   else if (dangerRatio > 0.5) number = 2;
 
   ctx.save();
-  ctx.globalAlpha = 0.18 + dangerRatio * 0.4;
-  ctx.fillStyle = "#ff3b1f";
+  ctx.globalAlpha = 0.18 + dangerRatio * 0.38;
+  ctx.fillStyle = "#ff4c3d";
   ctx.font = "bold 78px Arial";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
@@ -300,7 +463,7 @@ function drawAimLine() {
   if (!isGameStarted || isGameOver || !currentFruit) return;
 
   ctx.save();
-  ctx.strokeStyle = "rgba(255, 122, 26, 0.45)";
+  ctx.strokeStyle = "rgba(24, 199, 184, 0.45)";
   ctx.lineWidth = 2;
   ctx.setLineDash([6, 8]);
 
@@ -311,7 +474,7 @@ function drawAimLine() {
 
   ctx.setLineDash([]);
 
-  ctx.fillStyle = "rgba(255, 122, 26, 0.18)";
+  ctx.fillStyle = "rgba(24, 199, 184, 0.18)";
   ctx.beginPath();
   ctx.arc(mouseX, canvas.height - 16, 12, 0, Math.PI * 2);
   ctx.fill();
@@ -330,202 +493,19 @@ function drawFruit(ball) {
 }
 
 function drawFruitIcon(targetCtx, x, y, radius, level) {
+  const img = fruitImages[level];
+
+  if (img && img.complete) {
+    targetCtx.drawImage(img, x - radius, y - radius, radius * 2, radius * 2);
+    return;
+  }
+
   const fruit = fruits[level];
 
   targetCtx.save();
-
   targetCtx.beginPath();
   targetCtx.arc(x, y, radius, 0, Math.PI * 2);
-
-  const gradient = targetCtx.createRadialGradient(
-    x - radius * 0.35,
-    y - radius * 0.35,
-    radius * 0.1,
-    x,
-    y,
-    radius
-  );
-
-  gradient.addColorStop(0, "#ffffff");
-  gradient.addColorStop(0.18, fruit.core);
-  gradient.addColorStop(1, fruit.skin);
-
-  targetCtx.fillStyle = gradient;
-  targetCtx.fill();
-
-  targetCtx.strokeStyle = "#ffffff";
-  targetCtx.lineWidth = Math.max(3, radius * 0.08);
-  targetCtx.stroke();
-
-  drawFruitDetails(targetCtx, x, y, radius, fruit.type);
-
-  targetCtx.restore();
-}
-
-function drawFruitDetails(targetCtx, x, y, radius, type) {
-  targetCtx.save();
-
-  if (type === "cherry") {
-    drawLeaf(targetCtx, x + radius * 0.2, y - radius * 0.75, radius * 0.22);
-  }
-
-  if (type === "strawberry") {
-    drawLeaf(targetCtx, x, y - radius * 0.65, radius * 0.25);
-    drawSeeds(targetCtx, x, y, radius, "#ffe7a3");
-  }
-
-  if (type === "grape") {
-    targetCtx.fillStyle = "#6f42c1";
-    const spots = [[0, -0.25], [-0.25, 0], [0.25, 0], [0, 0.25], [-0.18, 0.28], [0.18, 0.28]];
-
-    for (const [sx, sy] of spots) {
-      targetCtx.beginPath();
-      targetCtx.arc(x + sx * radius, y + sy * radius, radius * 0.22, 0, Math.PI * 2);
-      targetCtx.fill();
-    }
-
-    drawLeaf(targetCtx, x + radius * 0.18, y - radius * 0.68, radius * 0.2);
-  }
-
-  if (type === "orange") {
-    targetCtx.strokeStyle = "rgba(255,255,255,0.6)";
-    targetCtx.lineWidth = Math.max(1, radius * 0.04);
-
-    for (let i = 0; i < 6; i++) {
-      const angle = (Math.PI * 2 / 6) * i;
-      targetCtx.beginPath();
-      targetCtx.moveTo(x, y);
-      targetCtx.lineTo(x + Math.cos(angle) * radius * 0.65, y + Math.sin(angle) * radius * 0.65);
-      targetCtx.stroke();
-    }
-  }
-
-  if (type === "apple") {
-    drawLeaf(targetCtx, x + radius * 0.18, y - radius * 0.72, radius * 0.25);
-  }
-
-  if (type === "peach") {
-    drawLeaf(targetCtx, x + radius * 0.15, y - radius * 0.72, radius * 0.24);
-    targetCtx.strokeStyle = "rgba(204,99,70,0.45)";
-    targetCtx.lineWidth = Math.max(2, radius * 0.04);
-    targetCtx.beginPath();
-    targetCtx.moveTo(x + radius * 0.12, y - radius * 0.55);
-    targetCtx.quadraticCurveTo(x - radius * 0.2, y, x + radius * 0.1, y + radius * 0.55);
-    targetCtx.stroke();
-  }
-
-  if (type === "pineapple") {
-    targetCtx.strokeStyle = "rgba(128,89,19,0.28)";
-    targetCtx.lineWidth = Math.max(1, radius * 0.025);
-
-    for (let i = -3; i <= 3; i++) {
-      targetCtx.beginPath();
-      targetCtx.moveTo(x - radius * 0.55, y + i * radius * 0.18);
-      targetCtx.lineTo(x + radius * 0.55, y + (i + 2) * radius * 0.18);
-      targetCtx.stroke();
-
-      targetCtx.beginPath();
-      targetCtx.moveTo(x + radius * 0.55, y + i * radius * 0.18);
-      targetCtx.lineTo(x - radius * 0.55, y + (i + 2) * radius * 0.18);
-      targetCtx.stroke();
-    }
-
-    drawLeaf(targetCtx, x, y - radius * 0.78, radius * 0.32);
-  }
-
-  if (type === "watermelon") {
-    targetCtx.beginPath();
-    targetCtx.arc(x, y, radius * 0.72, 0, Math.PI * 2);
-    targetCtx.fillStyle = "#f2505e";
-    targetCtx.fill();
-
-    targetCtx.strokeStyle = "#f8ffd9";
-    targetCtx.lineWidth = radius * 0.08;
-    targetCtx.stroke();
-
-    targetCtx.fillStyle = "#263238";
-
-    for (let i = 0; i < 6; i++) {
-      const angle = (Math.PI * 2 / 6) * i;
-      targetCtx.beginPath();
-      targetCtx.ellipse(
-        x + Math.cos(angle) * radius * 0.35,
-        y + Math.sin(angle) * radius * 0.35,
-        radius * 0.035,
-        radius * 0.065,
-        angle,
-        0,
-        Math.PI * 2
-      );
-      targetCtx.fill();
-    }
-  }
-
-  if (type === "coconut") {
-    targetCtx.beginPath();
-    targetCtx.arc(x, y, radius * 0.65, 0, Math.PI * 2);
-    targetCtx.fillStyle = "#f7f0df";
-    targetCtx.fill();
-  }
-
-  if (type === "melon") {
-    targetCtx.strokeStyle = "rgba(255,255,255,0.65)";
-    targetCtx.lineWidth = Math.max(2, radius * 0.035);
-
-    for (let i = -3; i <= 3; i++) {
-      targetCtx.beginPath();
-      targetCtx.moveTo(x + i * radius * 0.18, y - radius * 0.65);
-      targetCtx.quadraticCurveTo(x, y, x - i * radius * 0.18, y + radius * 0.65);
-      targetCtx.stroke();
-    }
-  }
-
-  if (type === "dragonfruit") {
-    targetCtx.beginPath();
-    targetCtx.arc(x, y, radius * 0.68, 0, Math.PI * 2);
-    targetCtx.fillStyle = "#fff4f9";
-    targetCtx.fill();
-
-    targetCtx.fillStyle = "#202020";
-
-    for (let i = 0; i < 16; i++) {
-      const angle = (Math.PI * 2 / 16) * i;
-      const dist = radius * (0.18 + (i % 4) * 0.09);
-      targetCtx.beginPath();
-      targetCtx.arc(
-        x + Math.cos(angle) * dist,
-        y + Math.sin(angle) * dist,
-        radius * 0.018,
-        0,
-        Math.PI * 2
-      );
-      targetCtx.fill();
-    }
-
-    drawLeaf(targetCtx, x - radius * 0.42, y + radius * 0.12, radius * 0.18);
-    drawLeaf(targetCtx, x + radius * 0.42, y - radius * 0.1, radius * 0.18);
-  }
-
-  targetCtx.restore();
-}
-
-function drawSeeds(targetCtx, x, y, radius, color) {
-  targetCtx.fillStyle = color;
-
-  for (let i = -1; i <= 1; i++) {
-    for (let j = -1; j <= 1; j++) {
-      targetCtx.beginPath();
-      targetCtx.arc(x + i * radius * 0.25, y + j * radius * 0.22, radius * 0.035, 0, Math.PI * 2);
-      targetCtx.fill();
-    }
-  }
-}
-
-function drawLeaf(targetCtx, x, y, size) {
-  targetCtx.save();
-  targetCtx.fillStyle = "#6fbd44";
-  targetCtx.beginPath();
-  targetCtx.ellipse(x, y, size * 0.55, size, -0.7, 0, Math.PI * 2);
+  targetCtx.fillStyle = fruit.skin;
   targetCtx.fill();
   targetCtx.restore();
 }
@@ -651,7 +631,7 @@ function mergeFruits(indexA, indexB, a, b) {
   addMergeBurst(newFruit.x, newFruit.y, newFruit.radius, fruits[newLevel].skin);
 
   if (newLevel >= 7) {
-    addFloatingText(newFruit.x, newFruit.y - newFruit.radius - 24, "Great Merge!");
+    addFloatingText(newFruit.x, newFruit.y - newFruit.radius - 24, "Cool Merge!");
     screenShake = 6;
   }
 
@@ -727,7 +707,7 @@ function drawEffects() {
   for (const text of floatingTexts) {
     ctx.save();
     ctx.globalAlpha = text.alpha;
-    ctx.fillStyle = "#ff7a1a";
+    ctx.fillStyle = "#00a99d";
     ctx.font = "bold 18px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -871,11 +851,15 @@ function shareScore() {
     return;
   }
 
-  navigator.clipboard.writeText(text).then(() => {
-    gameOverMessageElement.textContent = "Score copied! Share it with your friends.";
-  }).catch(() => {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      gameOverMessageElement.textContent = "Score copied! Share it with your friends.";
+    }).catch(() => {
+      gameOverMessageElement.textContent = text;
+    });
+  } else {
     gameOverMessageElement.textContent = text;
-  });
+  }
 }
 
 function clamp(value, min, max) {
@@ -922,6 +906,7 @@ playAgainButton.addEventListener("click", () => {
 
 shareScoreButton.addEventListener("click", shareScore);
 
+preloadFruitImages();
 setupEvolutionBar();
 setupRound(true);
 gameLoop();
