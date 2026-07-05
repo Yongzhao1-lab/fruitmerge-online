@@ -2,7 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 const GAME_WIDTH = Number(canvas.getAttribute("width")) || 420;
-const GAME_HEIGHT = Number(canvas.getAttribute("height")) || 600;
+const GAME_HEIGHT = Number(canvas.getAttribute("height")) || 560;
 
 function setupCanvasDpi() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -23,6 +23,7 @@ setupCanvasDpi();
 window.addEventListener("resize", setupCanvasDpi);
 
 const scoreElement = document.getElementById("score");
+const panelScoreElement = document.getElementById("panelScore");
 const timeElement = document.getElementById("time");
 const bestScoreElement = document.getElementById("bestScore");
 const nextFruitNameElement = document.getElementById("nextFruitName");
@@ -41,14 +42,14 @@ const finalBestScoreElement = document.getElementById("finalBestScore");
 const gameOverMessageElement = document.getElementById("gameOverMessage");
 const runTitleElement = document.getElementById("runTitle");
 
-const evolutionBar = document.getElementById("evolutionBar");
 const leaderboardList = document.getElementById("leaderboardList");
 const gameOverLeaderboard = document.getElementById("gameOverLeaderboard");
+const evolutionCircle = document.getElementById("evolutionCircle");
 
 let nextFruitCanvases = [];
 let nextFruitContexts = [];
 
-const ASSET_VERSION = "v=20260705-jitter-fix-final";
+const ASSET_VERSION = "v=20260706-arcade-layout-final";
 
 const fruits = [
   {
@@ -194,8 +195,8 @@ const friction = 0.965;
 const floorFriction = 0.94;
 const bounce = 0;
 
-const dropLineY = 98;
-const spawnY = 54;
+const dropLineY = 86;
+const spawnY = 46;
 
 const initialDropVelocity = 2.45;
 const maxHorizontalSpeed = 0.28;
@@ -229,51 +230,11 @@ function hideElement(element) {
 }
 
 function setupNextPreviewUi() {
-  const existingNext0 = document.getElementById("nextFruitCanvas0");
-  const legacyNext = document.getElementById("nextFruitCanvas");
+  const ids = ["nextFruitCanvas0", "nextFruitCanvas1", "nextFruitCanvas2"];
 
-  if (!existingNext0 && legacyNext) {
-    const wrapper = document.createElement("div");
-    wrapper.className = "next-preview auto-next-preview";
-
-    const sizes = [42, 36, 32];
-    const labels = ["Next", "2nd", "3rd"];
-
-    for (let i = 0; i < 3; i++) {
-      const item = document.createElement("div");
-
-      const previewCanvas = document.createElement("canvas");
-      previewCanvas.id = `nextFruitCanvas${i}`;
-      previewCanvas.width = sizes[i];
-      previewCanvas.height = sizes[i];
-      previewCanvas.style.width = `${sizes[i]}px`;
-      previewCanvas.style.height = `${sizes[i]}px`;
-
-      const label = document.createElement("small");
-      label.textContent = labels[i];
-
-      item.appendChild(previewCanvas);
-      item.appendChild(label);
-      wrapper.appendChild(item);
-    }
-
-    legacyNext.replaceWith(wrapper);
-  }
-
-  const ids = [
-    "nextFruitCanvas0",
-    "nextFruitCanvas1",
-    "nextFruitCanvas2",
-    "nextFruitCanvas"
-  ];
-
-  nextFruitCanvases = Array.from(
-    new Set(
-      ids
-        .map((id) => document.getElementById(id))
-        .filter(Boolean)
-    )
-  );
+  nextFruitCanvases = ids
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
 
   nextFruitContexts = nextFruitCanvases.map((item) => {
     const context = item.getContext("2d");
@@ -281,21 +242,6 @@ function setupNextPreviewUi() {
     context.imageSmoothingQuality = "high";
     return context;
   });
-}
-
-function polishRestartButton() {
-  if (!restartButton) return;
-
-  restartButton.style.width = "auto";
-  restartButton.style.height = "auto";
-  restartButton.style.minWidth = "92px";
-  restartButton.style.minHeight = "44px";
-  restartButton.style.padding = "12px 18px";
-  restartButton.style.borderRadius = "999px";
-  restartButton.style.fontSize = "14px";
-  restartButton.style.fontWeight = "800";
-  restartButton.style.boxShadow = "0 8px 20px rgba(255, 122, 80, 0.22)";
-  restartButton.style.transform = "none";
 }
 
 function initAudio() {
@@ -371,6 +317,7 @@ function loadFruitImage(index, fileIndex = 0) {
       loaded: false,
       failed: true
     });
+    updateEvolutionCircle();
     return;
   }
 
@@ -388,7 +335,9 @@ function loadFruitImage(index, fileIndex = 0) {
       loaded: true,
       failed: false
     });
+
     updateNextFruit();
+    updateEvolutionCircle();
   };
 
   image.onerror = () => {
@@ -401,6 +350,50 @@ function loadFruitImage(index, fileIndex = 0) {
 function preloadFruitImages() {
   fruits.forEach((_, index) => {
     loadFruitImage(index);
+  });
+}
+
+function setupEvolutionCircle() {
+  if (!evolutionCircle) return;
+
+  evolutionCircle.innerHTML = "";
+
+  fruits.forEach((fruit, index) => {
+    const item = document.createElement("div");
+    const angle = (360 / fruits.length) * index - 90;
+
+    item.className = "evolution-item";
+    item.dataset.level = String(index);
+    item.style.setProperty("--angle", `${angle}deg`);
+    item.title = fruit.name;
+
+    const img = document.createElement("img");
+    img.alt = fruit.name;
+    img.dataset.level = String(index);
+
+    item.appendChild(img);
+    evolutionCircle.appendChild(item);
+  });
+
+  updateEvolutionCircle();
+}
+
+function updateEvolutionCircle(currentLevel = highestUnlocked) {
+  if (!evolutionCircle) return;
+
+  const items = evolutionCircle.querySelectorAll(".evolution-item");
+
+  items.forEach((item) => {
+    const level = Number(item.dataset.level);
+    const img = item.querySelector("img");
+    const record = fruitImages.get(level);
+
+    item.classList.toggle("unlocked", level <= highestUnlocked);
+    item.classList.toggle("current", level === currentLevel);
+
+    if (img && record && record.loaded && record.image) {
+      img.src = record.image.src;
+    }
   });
 }
 
@@ -536,7 +529,6 @@ function updateSleepStates() {
 
     if (stable && supported) {
       ball.sleepFrames += 1;
-
       ball.vx *= 0.45;
       ball.vy *= 0.45;
 
@@ -559,34 +551,6 @@ function updateSleepStates() {
   }
 }
 
-function setupEvolutionBar() {
-  if (!evolutionBar) return;
-
-  evolutionBar.innerHTML = "";
-
-  fruits.forEach((fruit, index) => {
-    const item = document.createElement("span");
-    item.className = "evolution-item";
-    item.dataset.level = index;
-    item.textContent = fruit.name;
-    evolutionBar.appendChild(item);
-  });
-
-  updateEvolutionBar();
-}
-
-function updateEvolutionBar(currentLevel = highestUnlocked) {
-  if (!evolutionBar) return;
-
-  const items = evolutionBar.querySelectorAll(".evolution-item");
-
-  items.forEach((item) => {
-    const level = Number(item.dataset.level);
-    item.classList.toggle("unlocked", level <= highestUnlocked);
-    item.classList.toggle("current", level === currentLevel);
-  });
-}
-
 function setupRound(showStartScreen = true) {
   balls = [];
   floatingTexts = [];
@@ -601,6 +565,7 @@ function setupRound(showStartScreen = true) {
   screenShake = 0;
 
   setText(scoreElement, score);
+  setText(panelScoreElement, score);
   setText(timeElement, "00:00");
   setText(bestScoreElement, bestScore);
 
@@ -617,7 +582,7 @@ function setupRound(showStartScreen = true) {
   nextQueue = [randomStartLevel(), randomStartLevel(), randomStartLevel()];
 
   updateNextFruit();
-  updateEvolutionBar();
+  updateEvolutionCircle();
   renderLeaderboard();
 }
 
@@ -629,14 +594,12 @@ function updateNextFruit() {
 
   setText(nextFruitNameElement, fruit.name);
 
-  if (!nextFruitCanvases.length) return;
-
   nextFruitCanvases.forEach((nextCanvas, index) => {
     const nextCtx = nextFruitContexts[index];
     if (!nextCtx) return;
 
     const level = nextQueue[index] ?? nextQueue[0];
-    const size = index === 0 ? 20 : index === 1 ? 17 : 15;
+    const size = index === 0 ? 28 : 19;
 
     nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
     drawFruitIcon(nextCtx, nextCanvas.width / 2, nextCanvas.height / 2, size, level, false);
@@ -702,9 +665,9 @@ function renderLeaderboard() {
 
   if (leaderboardList) {
     if (!list.length) {
-      leaderboardList.innerHTML = `<div class="leaderboard-empty">No local runs yet. Play a round to create your first record.</div>`;
+      leaderboardList.innerHTML = `<div class="leaderboard-empty">No local runs yet.</div>`;
     } else {
-      leaderboardList.innerHTML = list.map((item, index) => createLeaderboardRow(item, index)).join("");
+      leaderboardList.innerHTML = list.slice(0, 3).map((item, index) => createLeaderboardRow(item, index)).join("");
     }
   }
 
@@ -723,7 +686,7 @@ function createLeaderboardRow(item, index) {
       <span class="leaderboard-rank">${index + 1}</span>
       <span class="leaderboard-main">
         <strong>${item.title || "Quick Run"}</strong>
-        <span>Time ${formatTime(item.time || 0)}</span>
+        <span>${formatTime(item.time || 0)}</span>
       </span>
       <span class="leaderboard-score">${item.score || 0}</span>
     </div>
@@ -750,19 +713,22 @@ function drawBackground() {
 
   ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-  ctx.fillStyle = "#ecfbff";
+  ctx.fillStyle = "rgba(255, 247, 191, 0.12)";
   ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-  const warningAlpha = dangerActive
-    ? 0.14 + dangerRatio * 0.34 + pulse * 0.08
-    : 0.08 + dangerRatio * 0.22;
+  ctx.fillStyle = "rgba(139, 238, 109, 0.12)";
+  ctx.fillRect(0, GAME_HEIGHT - 76, GAME_WIDTH, 76);
 
-  ctx.fillStyle = `rgba(255, 80, 60, ${warningAlpha})`;
+  const warningAlpha = dangerActive
+    ? 0.12 + dangerRatio * 0.26 + pulse * 0.06
+    : 0.02 + dangerRatio * 0.10;
+
+  ctx.fillStyle = `rgba(255, 92, 68, ${warningAlpha})`;
   ctx.fillRect(0, 0, GAME_WIDTH, dropLineY);
 
   ctx.strokeStyle = dangerActive
     ? `rgba(255, 76, 61, ${0.7 + pulse * 0.3})`
-    : "#18c7b8";
+    : "rgba(255, 213, 91, 0.72)";
 
   ctx.lineWidth = dangerActive ? 4 + pulse * 1.2 : 3;
   ctx.setLineDash([8, 8]);
@@ -774,8 +740,8 @@ function drawBackground() {
 
   ctx.setLineDash([]);
 
-  ctx.fillStyle = dangerActive ? "#ff4c3d" : "#00a99d";
-  ctx.font = dangerActive ? "bold 14px Arial" : "13px Arial";
+  ctx.fillStyle = dangerActive ? "#ff4c3d" : "#b66e1f";
+  ctx.font = dangerActive ? "bold 14px Arial" : "bold 13px Arial";
   ctx.textAlign = "left";
   ctx.textBaseline = "middle";
   ctx.fillText(dangerActive ? "Warning!" : "Danger Line", 12, dropLineY - 14);
@@ -795,9 +761,9 @@ function drawDangerCountdown(dangerRatio) {
   else if (dangerRatio > 0.5) number = 2;
 
   ctx.save();
-  ctx.globalAlpha = 0.18 + dangerRatio * 0.42;
+  ctx.globalAlpha = 0.16 + dangerRatio * 0.34;
   ctx.fillStyle = "#ff4c3d";
-  ctx.font = "bold 78px Arial";
+  ctx.font = "bold 76px Arial";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(String(number), GAME_WIDTH / 2, dropLineY + 72);
@@ -808,22 +774,16 @@ function drawAimLine() {
   if (!isGameStarted || isGameOver || !currentFruit) return;
 
   ctx.save();
-  ctx.strokeStyle = "rgba(24, 199, 184, 0.42)";
+  ctx.strokeStyle = "rgba(255, 213, 91, 0.55)";
   ctx.lineWidth = 2;
   ctx.setLineDash([6, 8]);
 
   ctx.beginPath();
   ctx.moveTo(mouseX, spawnY + currentFruit.radius + 8);
-  ctx.lineTo(mouseX, GAME_HEIGHT - 8);
+  ctx.lineTo(mouseX, GAME_HEIGHT - 10);
   ctx.stroke();
 
   ctx.setLineDash([]);
-
-  ctx.fillStyle = "rgba(24, 199, 184, 0.15)";
-  ctx.beginPath();
-  ctx.arc(mouseX, GAME_HEIGHT - 16, 12, 0, Math.PI * 2);
-  ctx.fill();
-
   ctx.restore();
 }
 
@@ -858,7 +818,7 @@ function drawFruitIcon(targetCtx, x, y, radius, level, showShadow = true) {
   let visualSize = Math.round(radius * 2 * (fruit.visualScale || 1));
 
   if (!showShadow) {
-    const maxPreviewSize = Math.floor(Math.min(canvasW, canvasH) * 0.82);
+    const maxPreviewSize = Math.floor(Math.min(canvasW, canvasH) * 0.86);
     visualSize = Math.min(visualSize, maxPreviewSize);
   }
 
@@ -867,26 +827,15 @@ function drawFruitIcon(targetCtx, x, y, radius, level, showShadow = true) {
 
   const padding = showShadow ? 4 : 1;
 
-  if (drawX < padding) {
-    drawX = padding;
-  }
-
-  if (drawX + visualSize > canvasW - padding) {
-    drawX = canvasW - padding - visualSize;
-  }
-
-  if (drawY < padding) {
-    drawY = padding;
-  }
-
-  if (drawY + visualSize > canvasH - padding) {
-    drawY = canvasH - padding - visualSize;
-  }
+  if (drawX < padding) drawX = padding;
+  if (drawX + visualSize > canvasW - padding) drawX = canvasW - padding - visualSize;
+  if (drawY < padding) drawY = padding;
+  if (drawY + visualSize > canvasH - padding) drawY = canvasH - padding - visualSize;
 
   if (showShadow) {
     targetCtx.save();
-    targetCtx.globalAlpha = 0.022;
-    targetCtx.fillStyle = "#22bfb8";
+    targetCtx.globalAlpha = 0.02;
+    targetCtx.fillStyle = "#9acb3b";
     targetCtx.beginPath();
     targetCtx.ellipse(
       Math.round(x),
@@ -965,13 +914,8 @@ function updatePhysics() {
 
     ball.vx *= friction;
 
-    if (Math.abs(ball.vx) < 0.008) {
-      ball.vx = 0;
-    }
-
-    if (Math.abs(ball.vy) < 0.008) {
-      ball.vy = 0;
-    }
+    if (Math.abs(ball.vx) < 0.008) ball.vx = 0;
+    if (Math.abs(ball.vy) < 0.008) ball.vy = 0;
 
     ball.vx = clamp(ball.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
     ball.vy = clamp(ball.vy, -1.0, maxVerticalSpeed);
@@ -1019,14 +963,10 @@ function handleCollisions() {
         if (distance >= minDistance) continue;
 
         const overlap = minDistance - distance;
-
-        if (overlap < collisionSlop) {
-          continue;
-        }
+        if (overlap < collisionSlop) continue;
 
         const nx = dx / distance;
         const ny = dy / distance;
-
         const effectiveOverlap = overlap - collisionSlop;
 
         const aSpeed = getFruitSpeed(a);
@@ -1034,13 +974,8 @@ function handleCollisions() {
         const totalSpeed = aSpeed + bSpeed;
 
         if (totalSpeed > wakeSpeedThreshold) {
-          if (!a.asleep || bSpeed > wakeSpeedThreshold) {
-            wakeFruit(a);
-          }
-
-          if (!b.asleep || aSpeed > wakeSpeedThreshold) {
-            wakeFruit(b);
-          }
+          if (!a.asleep || bSpeed > wakeSpeedThreshold) wakeFruit(a);
+          if (!b.asleep || aSpeed > wakeSpeedThreshold) wakeFruit(b);
         }
 
         const massA = a.radius * a.radius;
@@ -1060,12 +995,9 @@ function handleCollisions() {
           moveB = 0;
         }
 
-        if (a.asleep && b.asleep) {
-          continue;
-        }
+        if (a.asleep && b.asleep) continue;
 
         const moveTotal = moveA + moveB || 1;
-
         const correctionAmount = Math.min(
           effectiveOverlap * collisionCorrection,
           maxCorrectionPerFrame
@@ -1076,7 +1008,6 @@ function handleCollisions() {
 
         a.x -= correctionX * (moveA / moveTotal);
         b.x += correctionX * (moveB / moveTotal);
-
         a.y -= correctionY * (moveA / moveTotal);
         b.y += correctionY * (moveB / moveTotal);
 
@@ -1123,7 +1054,6 @@ function handleCollisions() {
 
         a.vx = clamp(a.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
         b.vx = clamp(b.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
-
         a.vy = clamp(a.vy, -1.0, maxVerticalSpeed);
         b.vy = clamp(b.vy, -1.0, maxVerticalSpeed);
 
@@ -1154,13 +1084,14 @@ function mergeFruits(indexA, indexB, a, b) {
 
   score += gainedScore;
   setText(scoreElement, score);
+  setText(panelScoreElement, score);
 
   if (newLevel > highestUnlocked) {
     highestUnlocked = newLevel;
     localStorage.setItem("fruitMergeHighestUnlocked", highestUnlocked);
   }
 
-  updateEvolutionBar(newLevel);
+  updateEvolutionCircle(newLevel);
   addFloatingText(newFruit.x, newFruit.y - newFruit.radius, `+${gainedScore}`);
   addMergeBurst(newFruit.x, newFruit.y, newFruit.radius, fruits[newLevel].color);
 
@@ -1245,10 +1176,13 @@ function drawEffects() {
   for (const text of floatingTexts) {
     ctx.save();
     ctx.globalAlpha = text.alpha;
-    ctx.fillStyle = "#00a99d";
+    ctx.fillStyle = "#fff6b8";
+    ctx.strokeStyle = "#9b5b1c";
+    ctx.lineWidth = 3;
     ctx.font = "bold 18px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
+    ctx.strokeText(text.text, text.x, text.y);
     ctx.fillText(text.text, text.x, text.y);
     ctx.restore();
   }
@@ -1311,8 +1245,6 @@ function endGame() {
     setText(gameOverMessageElement, `New Best! You beat your record by ${score - oldBest} points.`);
   } else if (survivalTime > oldBestTime) {
     setText(gameOverMessageElement, `New survival record: ${formatTime(survivalTime)}!`);
-  } else if (survivalTime >= 180) {
-    setText(gameOverMessageElement, "Expert run! You survived more than 3 minutes.");
   } else {
     setText(gameOverMessageElement, `Only ${Math.max(0, bestScore - score)} points away from your best score.`);
   }
@@ -1345,7 +1277,6 @@ function draw() {
   }
 
   drawEffects();
-
   ctx.restore();
 }
 
@@ -1475,8 +1406,7 @@ if (shareScoreButton) {
 }
 
 setupNextPreviewUi();
-polishRestartButton();
+setupEvolutionCircle();
 preloadFruitImages();
-setupEvolutionBar();
 setupRound(true);
 gameLoop();
