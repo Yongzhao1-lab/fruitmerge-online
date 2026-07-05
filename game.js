@@ -1410,3 +1410,253 @@ setupEvolutionCircle();
 preloadFruitImages();
 setupRound(true);
 gameLoop();
+/* === Audio + Clean Canvas Background Upgrade === */
+
+const musicToggleButton = document.getElementById("musicToggleButton");
+
+let backgroundMusicEnabled = localStorage.getItem("fruitMergeMusic") !== "off";
+let backgroundMusicTimer = null;
+let backgroundMusicStep = 0;
+
+function updateMusicButtonState() {
+  if (!musicToggleButton) return;
+
+  musicToggleButton.textContent = backgroundMusicEnabled ? "♪" : "♪";
+  musicToggleButton.classList.toggle("music-off", !backgroundMusicEnabled);
+  musicToggleButton.title = backgroundMusicEnabled ? "Music On" : "Music Off";
+}
+
+function playSoftMusicTone(frequency, duration, delay = 0, volume = 0.012) {
+  if (!audioContext) return;
+
+  const startTime = audioContext.currentTime + delay;
+
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(frequency, startTime);
+
+  gain.gain.setValueAtTime(0.0001, startTime);
+  gain.gain.exponentialRampToValueAtTime(volume, startTime + 0.04);
+  gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+  oscillator.connect(gain);
+  gain.connect(audioContext.destination);
+
+  oscillator.start(startTime);
+  oscillator.stop(startTime + duration + 0.04);
+}
+
+function playBackgroundMusicStep() {
+  if (!backgroundMusicEnabled || !audioContext) return;
+
+  const melody = [392, 440, 523.25, 440, 329.63, 392, 493.88, 392];
+  const bass = [196, 220, 261.63, 220];
+
+  const note = melody[backgroundMusicStep % melody.length];
+  const bassNote = bass[Math.floor(backgroundMusicStep / 2) % bass.length];
+
+  playSoftMusicTone(note, 0.42, 0, 0.010);
+  playSoftMusicTone(bassNote, 0.55, 0.02, 0.006);
+
+  backgroundMusicStep += 1;
+}
+
+function startBackgroundMusic() {
+  if (!backgroundMusicEnabled) return;
+
+  initAudio();
+
+  if (!audioContext) return;
+
+  if (audioContext.state === "suspended") {
+    audioContext.resume().catch(() => {});
+  }
+
+  if (backgroundMusicTimer) return;
+
+  playBackgroundMusicStep();
+
+  backgroundMusicTimer = setInterval(() => {
+    playBackgroundMusicStep();
+  }, 680);
+}
+
+function stopBackgroundMusic() {
+  if (backgroundMusicTimer) {
+    clearInterval(backgroundMusicTimer);
+    backgroundMusicTimer = null;
+  }
+}
+
+function toggleBackgroundMusic() {
+  backgroundMusicEnabled = !backgroundMusicEnabled;
+  localStorage.setItem("fruitMergeMusic", backgroundMusicEnabled ? "on" : "off");
+
+  if (backgroundMusicEnabled) {
+    startBackgroundMusic();
+  } else {
+    stopBackgroundMusic();
+  }
+
+  updateMusicButtonState();
+}
+
+if (musicToggleButton) {
+  musicToggleButton.addEventListener("click", () => {
+    initAudio();
+    toggleBackgroundMusic();
+  });
+}
+
+[startButton, restartButton, playAgainButton, canvas].forEach((element) => {
+  if (!element) return;
+
+  element.addEventListener("pointerdown", () => {
+    if (backgroundMusicEnabled) {
+      startBackgroundMusic();
+    }
+  });
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    stopBackgroundMusic();
+  } else if (backgroundMusicEnabled && isGameStarted && !isGameOver) {
+    startBackgroundMusic();
+  }
+});
+
+updateMusicButtonState();
+
+/*
+  Override drop sound:
+  More responsive click/drop feedback for desktop and mobile.
+*/
+function playDropSound() {
+  if (!audioContext) return;
+
+  playTone(620, 0.035, "triangle", 0.045);
+
+  setTimeout(() => {
+    playTone(320, 0.045, "sine", 0.026);
+  }, 28);
+}
+
+/*
+  Override merge sound:
+  Softer, cleaner, less harsh.
+*/
+function playMergeSound(level) {
+  const frequency = 460 + level * 38;
+
+  playTone(frequency, 0.06, "sine", 0.040);
+
+  setTimeout(() => {
+    playTone(frequency * 1.24, 0.08, "triangle", 0.024);
+  }, 42);
+}
+
+/*
+  Override game background:
+  Cleaner and higher contrast.
+  Text no longer overlaps with a noisy yellow background.
+*/
+function drawBackground() {
+  const dangerRatio = getMaxDangerRatio();
+  const time = performance.now();
+  const pulse = 0.5 + Math.sin(time / 120) * 0.5;
+  const dangerActive = dangerRatio > 0.35;
+
+  ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+  const bg = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
+  bg.addColorStop(0, "#f7fffb");
+  bg.addColorStop(0.42, "#effbf8");
+  bg.addColorStop(1, "#e6f7f1");
+
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+  ctx.fillStyle = "rgba(143, 219, 172, 0.15)";
+  ctx.fillRect(0, GAME_HEIGHT - 72, GAME_WIDTH, 72);
+
+  const topAlpha = dangerActive
+    ? 0.12 + dangerRatio * 0.24 + pulse * 0.06
+    : 0.045;
+
+  ctx.fillStyle = `rgba(255, 112, 88, ${topAlpha})`;
+  ctx.fillRect(0, 0, GAME_WIDTH, dropLineY);
+
+  ctx.strokeStyle = dangerActive
+    ? `rgba(255, 80, 65, ${0.78 + pulse * 0.22})`
+    : "rgba(29, 190, 170, 0.86)";
+
+  ctx.lineWidth = dangerActive ? 4 + pulse * 1.1 : 3;
+  ctx.setLineDash([8, 8]);
+
+  ctx.beginPath();
+  ctx.moveTo(0, dropLineY);
+  ctx.lineTo(GAME_WIDTH, dropLineY);
+  ctx.stroke();
+
+  ctx.setLineDash([]);
+
+  drawCanvasLabel(
+    dangerActive ? "Warning!" : "Danger Line",
+    12,
+    dropLineY - 18,
+    "left",
+    dangerActive
+  );
+
+  drawCanvasLabel(
+    getStageName(),
+    GAME_WIDTH - 12,
+    dropLineY - 18,
+    "right",
+    dangerActive
+  );
+
+  if (dangerActive && !isGameOver) {
+    drawDangerCountdown(dangerRatio);
+  }
+}
+
+function drawCanvasLabel(text, x, y, align = "left", danger = false) {
+  ctx.save();
+
+  ctx.font = "bold 13px Arial";
+  ctx.textBaseline = "middle";
+
+  const textWidth = ctx.measureText(text).width;
+  const paddingX = 8;
+  const boxWidth = textWidth + paddingX * 2;
+  const boxHeight = 22;
+
+  let boxX = x;
+
+  if (align === "right") {
+    boxX = x - boxWidth;
+    ctx.textAlign = "right";
+  } else {
+    ctx.textAlign = "left";
+  }
+
+  ctx.fillStyle = danger
+    ? "rgba(255, 255, 255, 0.92)"
+    : "rgba(255, 255, 255, 0.82)";
+
+  ctx.fillRect(boxX, y - boxHeight / 2, boxWidth, boxHeight);
+
+  ctx.fillStyle = danger ? "#ff4c3d" : "#078c83";
+
+  if (align === "right") {
+    ctx.fillText(text, x - paddingX, y);
+  } else {
+    ctx.fillText(text, x + paddingX, y);
+  }
+
+  ctx.restore();
+}
