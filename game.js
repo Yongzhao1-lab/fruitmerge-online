@@ -48,7 +48,7 @@ const gameOverLeaderboard = document.getElementById("gameOverLeaderboard");
 let nextFruitCanvases = [];
 let nextFruitContexts = [];
 
-const ASSET_VERSION = "v=20260705-soft-jelly";
+const ASSET_VERSION = "v=20260705-stable-physics";
 
 const fruits = [
   {
@@ -58,7 +58,7 @@ const fruits = [
     type: "cherry",
     files: ["cherry.png"],
     color: "#ff4a42",
-    visualScale: 1.46,
+    visualScale: 1.40,
     drawOffsetY: 0
   },
   {
@@ -68,7 +68,7 @@ const fruits = [
     type: "strawberry",
     files: ["strawberry.png"],
     color: "#ff5148",
-    visualScale: 1.34,
+    visualScale: 1.30,
     drawOffsetY: 0
   },
   {
@@ -78,7 +78,7 @@ const fruits = [
     type: "grape",
     files: ["grape.png"],
     color: "#a65bff",
-    visualScale: 1.26,
+    visualScale: 1.18,
     drawOffsetY: 1
   },
   {
@@ -88,7 +88,7 @@ const fruits = [
     type: "orange",
     files: ["orange.png"],
     color: "#ff9f2e",
-    visualScale: 1.20,
+    visualScale: 1.14,
     drawOffsetY: 0
   },
   {
@@ -98,7 +98,7 @@ const fruits = [
     type: "apple",
     files: ["apple.png"],
     color: "#f64340",
-    visualScale: 1.18,
+    visualScale: 1.12,
     drawOffsetY: 0
   },
   {
@@ -108,7 +108,7 @@ const fruits = [
     type: "peach",
     files: ["peach.png"],
     color: "#ff9872",
-    visualScale: 1.15,
+    visualScale: 1.10,
     drawOffsetY: 0
   },
   {
@@ -118,7 +118,7 @@ const fruits = [
     type: "pineapple",
     files: ["pineapple.png"],
     color: "#ffc238",
-    visualScale: 1.10,
+    visualScale: 1.02,
     drawOffsetY: -2
   },
   {
@@ -128,7 +128,7 @@ const fruits = [
     type: "watermelon",
     files: ["watermelon.png"],
     color: "#30c765",
-    visualScale: 1.08,
+    visualScale: 1.04,
     drawOffsetY: 0
   },
   {
@@ -138,7 +138,7 @@ const fruits = [
     type: "lemon",
     files: ["lemon.png", "mango.png"],
     color: "#ffe45b",
-    visualScale: 1.05,
+    visualScale: 1.02,
     drawOffsetY: 0
   },
   {
@@ -148,7 +148,7 @@ const fruits = [
     type: "melon",
     files: ["melon.png"],
     color: "#d9e66d",
-    visualScale: 1.03,
+    visualScale: 1.00,
     drawOffsetY: 0
   },
   {
@@ -158,7 +158,7 @@ const fruits = [
     type: "dragonfruit",
     files: ["dragonfruit.png", "dragon-fruit.png"],
     color: "#ff5098",
-    visualScale: 1.00,
+    visualScale: 0.98,
     drawOffsetY: 0
   }
 ];
@@ -189,25 +189,36 @@ let screenShake = 0;
 let audioContext = null;
 let soundReady = false;
 
-const gravity = 0.66;
-const friction = 0.92;
-const floorFriction = 0.76;
-const bounce = 0.025;
+/*
+  Stable physics version:
+  - lower bounce
+  - stronger floor friction
+  - sleep mechanism
+  - reduced endless micro-jitter
+*/
+const gravity = 0.64;
+const friction = 0.94;
+const floorFriction = 0.88;
+const bounce = 0;
 
 const dropLineY = 98;
 const spawnY = 54;
 
-const initialDropVelocity = 2.7;
-const maxHorizontalSpeed = 0.46;
-const maxVerticalSpeed = 8.2;
+const initialDropVelocity = 2.65;
+const maxHorizontalSpeed = 0.44;
+const maxVerticalSpeed = 8.0;
 
-const collisionSolverIterations = 10;
-const collisionRestitution = 0.003;
-const collisionCorrection = 0.45;
-const maxCorrectionPerFrame = 3.1;
+const collisionSolverIterations = 8;
+const collisionRestitution = 0;
+const collisionCorrection = 0.36;
+const maxCorrectionPerFrame = 2.4;
 
-const collisionTightness = 0.78;
-const mergeDistanceFactor = 0.86;
+const collisionTightness = 0.82;
+const mergeDistanceFactor = 0.88;
+
+const sleepSpeedLimit = 0.085;
+const sleepFramesRequired = 34;
+const wakeSpeedThreshold = 0.32;
 
 function setText(element, value) {
   if (element) element.textContent = value;
@@ -475,8 +486,73 @@ function createFruit(x, y, level) {
     radius: fruits[level].radius,
     dangerFrames: 0,
     age: 0,
-    popFrames: 0
+    popFrames: 0,
+    sleepFrames: 0,
+    asleep: false
   };
+}
+
+function getFruitSpeed(ball) {
+  return Math.abs(ball.vx) + Math.abs(ball.vy);
+}
+
+function wakeFruit(ball) {
+  ball.asleep = false;
+  ball.sleepFrames = 0;
+}
+
+function isFruitSupported(ball) {
+  if (ball.y + ball.radius >= GAME_HEIGHT - 1) {
+    return true;
+  }
+
+  for (const other of balls) {
+    if (other === ball) continue;
+
+    const dx = other.x - ball.x;
+    const dy = other.y - ball.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const supportDistance = (ball.radius + other.radius) * 0.92;
+
+    const isBelow = other.y > ball.y + ball.radius * 0.18;
+    const isCloseEnough = distance < supportDistance;
+    const otherStable = other.asleep || getFruitSpeed(other) < 0.10;
+
+    if (isBelow && isCloseEnough && otherStable) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function updateSleepStates() {
+  for (const ball of balls) {
+    if (ball.asleep) continue;
+    if (ball.age < 45) continue;
+    if (ball.popFrames > 0) continue;
+
+    const speed = getFruitSpeed(ball);
+    const stable = speed < sleepSpeedLimit;
+    const supported = isFruitSupported(ball);
+
+    if (stable && supported) {
+      ball.sleepFrames += 1;
+    } else {
+      ball.sleepFrames = Math.max(0, ball.sleepFrames - 2);
+    }
+
+    if (ball.sleepFrames > sleepFramesRequired) {
+      ball.asleep = true;
+      ball.sleepFrames = sleepFramesRequired;
+      ball.vx = 0;
+      ball.vy = 0;
+
+      if (ball.y + ball.radius > GAME_HEIGHT) {
+        ball.y = GAME_HEIGHT - ball.radius;
+      }
+    }
+  }
 }
 
 function setupEvolutionBar() {
@@ -751,7 +827,7 @@ function drawFruit(ball) {
   let scale = 1;
 
   if (ball.popFrames > 0) {
-    scale = 1 + ball.popFrames / 120;
+    scale = 1 + ball.popFrames / 130;
   }
 
   drawFruitIcon(ctx, ball.x, ball.y, ball.radius * scale, ball.level, true);
@@ -767,14 +843,14 @@ function drawFruitIcon(targetCtx, x, y, radius, level, showShadow = true) {
 
   if (showShadow) {
     targetCtx.save();
-    targetCtx.globalAlpha = 0.045;
+    targetCtx.globalAlpha = 0.035;
     targetCtx.fillStyle = "#22bfb8";
     targetCtx.beginPath();
     targetCtx.ellipse(
       Math.round(x),
       Math.round(y + radius * 0.68),
-      Math.round(radius * 0.52),
-      Math.max(2, Math.round(radius * 0.075)),
+      Math.round(radius * 0.48),
+      Math.max(2, Math.round(radius * 0.065)),
       0,
       0,
       Math.PI * 2
@@ -800,11 +876,13 @@ function keepFruitInside(ball) {
   if (ball.x - ball.radius < 0) {
     ball.x = ball.radius;
     ball.vx = Math.max(0, ball.vx) * bounce;
+    wakeFruit(ball);
   }
 
   if (ball.x + ball.radius > GAME_WIDTH) {
     ball.x = GAME_WIDTH - ball.radius;
     ball.vx = Math.min(0, ball.vx) * bounce;
+    wakeFruit(ball);
   }
 
   if (ball.y + ball.radius > GAME_HEIGHT) {
@@ -816,11 +894,11 @@ function keepFruitInside(ball) {
 
     ball.vx *= floorFriction;
 
-    if (Math.abs(ball.vy) < 0.50) {
+    if (Math.abs(ball.vy) < 0.48) {
       ball.vy = 0;
     }
 
-    if (Math.abs(ball.vx) < 0.030) {
+    if (Math.abs(ball.vx) < 0.025) {
       ball.vx = 0;
     }
   }
@@ -838,17 +916,23 @@ function updatePhysics() {
       ball.popFrames -= 1;
     }
 
+    if (ball.asleep) {
+      ball.vx = 0;
+      ball.vy = 0;
+      continue;
+    }
+
     ball.vy += gravity;
     ball.x += ball.vx;
     ball.y += ball.vy;
 
     ball.vx *= friction;
 
-    if (Math.abs(ball.vx) < 0.009) {
+    if (Math.abs(ball.vx) < 0.008) {
       ball.vx = 0;
     }
 
-    if (Math.abs(ball.vy) < 0.009) {
+    if (Math.abs(ball.vy) < 0.008) {
       ball.vy = 0;
     }
 
@@ -860,6 +944,7 @@ function updatePhysics() {
 
   updateEffects();
   handleCollisions();
+  updateSleepStates();
   checkGameOver();
 }
 
@@ -869,6 +954,10 @@ function handleCollisions() {
       for (let j = i + 1; j < balls.length; j++) {
         const a = balls[i];
         const b = balls[j];
+
+        if (a.asleep && b.asleep) {
+          continue;
+        }
 
         let dx = b.x - a.x;
         let dy = b.y - a.y;
@@ -895,6 +984,13 @@ function handleCollisions() {
         }
 
         if (distance < minDistance) {
+          const totalSpeed = getFruitSpeed(a) + getFruitSpeed(b);
+
+          if (totalSpeed > wakeSpeedThreshold) {
+            wakeFruit(a);
+            wakeFruit(b);
+          }
+
           const overlap = minDistance - distance;
           const nx = dx / distance;
           const ny = dy / distance;
@@ -903,19 +999,20 @@ function handleCollisions() {
           const massB = b.radius * b.radius;
           const totalMass = massA + massB;
 
-          const moveA = massB / totalMass;
-          const moveB = massA / totalMass;
+          const moveA = a.asleep ? 0 : massB / totalMass;
+          const moveB = b.asleep ? 0 : massA / totalMass;
+          const moveTotal = moveA + moveB || 1;
 
           const correctionAmount = Math.min(
             overlap * collisionCorrection,
             maxCorrectionPerFrame
           );
 
-          a.x -= nx * correctionAmount * moveA;
-          b.x += nx * correctionAmount * moveB;
+          a.x -= nx * correctionAmount * (moveA / moveTotal);
+          b.x += nx * correctionAmount * (moveB / moveTotal);
 
-          a.y -= ny * correctionAmount * moveA * 0.80;
-          b.y += ny * correctionAmount * moveB * 0.80;
+          a.y -= ny * correctionAmount * (moveA / moveTotal) * 0.78;
+          b.y += ny * correctionAmount * (moveB / moveTotal) * 0.78;
 
           const relativeVx = b.vx - a.vx;
           const relativeVy = b.vy - a.vy;
@@ -923,17 +1020,26 @@ function handleCollisions() {
 
           if (velocityAlongNormal < 0) {
             const impulse = -(1 + collisionRestitution) * velocityAlongNormal;
-            const impulseStrength = Math.min(impulse * 0.018, 0.10);
+            const impulseStrength = Math.min(impulse * 0.014, 0.08);
 
-            a.vx -= nx * impulseStrength * moveA;
-            b.vx += nx * impulseStrength * moveB;
+            if (!a.asleep) {
+              a.vx -= nx * impulseStrength * moveA;
+              a.vy -= ny * impulseStrength * moveA * 0.06;
+            }
 
-            a.vy -= ny * impulseStrength * moveA * 0.08;
-            b.vy += ny * impulseStrength * moveB * 0.08;
+            if (!b.asleep) {
+              b.vx += nx * impulseStrength * moveB;
+              b.vy += ny * impulseStrength * moveB * 0.06;
+            }
           }
 
-          a.vx *= 0.66;
-          b.vx *= 0.66;
+          if (!a.asleep) {
+            a.vx *= 0.62;
+          }
+
+          if (!b.asleep) {
+            b.vx *= 0.62;
+          }
 
           if (a.y + a.radius > GAME_HEIGHT - 6) {
             a.vx *= floorFriction;
@@ -967,8 +1073,8 @@ function mergeFruits(indexA, indexB, a, b) {
     newLevel
   );
 
-  newFruit.vx = (a.vx + b.vx) * 0.06;
-  newFruit.vy = Math.min((a.vy + b.vy) * 0.05, 0.10);
+  newFruit.vx = (a.vx + b.vx) * 0.04;
+  newFruit.vy = Math.min((a.vy + b.vy) * 0.04, 0.08);
   newFruit.popFrames = 8;
 
   balls.splice(indexB, 1);
@@ -1020,12 +1126,12 @@ function addMergeBurst(x, y, radius, color) {
     mergeBursts.push({
       x,
       y,
-      vx: Math.cos(angle) * (0.75 + radius * 0.006),
-      vy: Math.sin(angle) * (0.75 + radius * 0.006),
-      radius: Math.max(2, radius * 0.040),
+      vx: Math.cos(angle) * (0.65 + radius * 0.005),
+      vy: Math.sin(angle) * (0.65 + radius * 0.005),
+      radius: Math.max(2, radius * 0.036),
       color,
-      life: 22,
-      alpha: 0.78
+      life: 20,
+      alpha: 0.72
     });
   }
 }
@@ -1044,7 +1150,7 @@ function updateEffects() {
     burst.y += burst.vy;
     burst.vy += 0.02;
     burst.life -= 1;
-    burst.alpha = Math.max(0, burst.life / 22);
+    burst.alpha = Math.max(0, burst.life / 20);
   }
 
   mergeBursts = mergeBursts.filter((burst) => burst.life > 0);
@@ -1186,6 +1292,9 @@ function dropFruit() {
 
   const fruit = createFruit(mouseX, spawnY, currentFruit.level);
   fruit.vy = initialDropVelocity;
+  fruit.asleep = false;
+  fruit.sleepFrames = 0;
+
   balls.push(fruit);
 
   playDropSound();
