@@ -106,59 +106,70 @@
 
   <main>
     <section class="hero-section">
-      <div class="hero-copy">
-        <p class="kicker">PLAY NOW</p>
-        <h1>Fruit Merge Online</h1>
-        <p>
-          Drop fruits, merge matching fruits, unlock bigger fruits, and challenge your best score in this relaxing browser puzzle game.
-        </p>
-      </div>
+      <p class="kicker">PLAY NOW</p>
+      <h1>Fruit Merge Online</h1>
+      <p>
+        Drop fruits, merge matching fruits, unlock bigger fruits, and challenge your best score.
+      </p>
     </section>
 
     <section class="game-section" id="game">
-      <div class="game-shell">
-        <div class="game-topbar">
-          <div class="stat-card">
+      <div class="integrated-game">
+        <div class="game-bg-layer"></div>
+
+        <aside class="game-hud-left">
+          <div class="score-orb">
             <span>Score</span>
             <strong id="score">0</strong>
+            <small>BEST SCORE</small>
+            <b id="bestScore">0</b>
           </div>
 
-          <div class="stat-card">
-            <span>Time</span>
-            <strong id="time">00:00</strong>
-          </div>
+          <div class="run-card">
+            <div class="run-card-head">
+              <h2>My Score</h2>
+              <p>Current run</p>
+            </div>
 
-          <div class="stat-card">
-            <span>Best</span>
-            <strong id="bestScore">0</strong>
-          </div>
+            <div class="current-run-box">
+              <span>Now</span>
+              <strong id="panelScore">0</strong>
+            </div>
 
-          <div class="next-card">
-            <span>Next Fruits</span>
-            <div class="next-preview">
-              <div class="next-main">
-                <canvas id="nextFruitCanvas0" width="64" height="64"></canvas>
-                <small id="nextFruitName">Cherry</small>
-              </div>
-              <div>
-                <canvas id="nextFruitCanvas1" width="42" height="42"></canvas>
-                <small>2nd</small>
-              </div>
-              <div>
-                <canvas id="nextFruitCanvas2" width="42" height="42"></canvas>
-                <small>3rd</small>
+            <div class="time-line">
+              <span>Time</span>
+              <strong id="time">00:00</strong>
+            </div>
+
+            <div class="top-runs-title">Top Runs</div>
+
+            <div id="leaderboardList" class="leaderboard-list">
+              <div class="leaderboard-item">
+                <div class="leaderboard-rank">1</div>
+                <div class="leaderboard-main">
+                  <strong>No run yet</strong>
+                  <span>Start your first game</span>
+                </div>
+                <div class="leaderboard-score">0</div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="game-stage">
-          <div class="canvas-wrap">
+          <div class="small-actions">
+            <button type="button" id="musicToggleButton" aria-label="Toggle music">♪</button>
+            <button type="button" id="fullscreenButton" aria-label="Fullscreen">⛶</button>
+          </div>
+        </aside>
+
+        <section class="game-core" aria-label="Fruit Merge game area">
+          <div class="glass-top"></div>
+
+          <div class="canvas-frame">
             <canvas
               id="gameCanvas"
               width="420"
               height="560"
-              aria-label="Fruit Merge Online game area"
+              aria-label="Fruit Merge Online game canvas"
             ></canvas>
 
             <div id="startOverlay" class="game-overlay">
@@ -173,6 +184,7 @@
             <div id="gameOverPanel" class="game-over-panel hidden">
               <div class="game-over-card">
                 <p class="game-over-badge" id="gameOverBadge">Game Over</p>
+
                 <h2>Final Score</h2>
                 <div class="game-over-score" id="gameOverScore">0</div>
 
@@ -200,44 +212,42 @@
 
             <div id="gameOverOverlay" class="hidden" aria-hidden="true"></div>
           </div>
-        </div>
+        </section>
 
-        <div class="game-actions">
-          <button id="restartButton" type="button">Restart</button>
-          <button id="musicToggleButton" type="button">Music On</button>
-          <button id="shareCurrentButton" type="button">Share Score</button>
-          <button id="fullscreenButton" type="button">Fullscreen</button>
-        </div>
+        <aside class="game-hud-right">
+          <div class="next-orb">
+            <h2>Next</h2>
 
-        <div class="evolution-panel">
-          <div class="section-title-row compact">
-            <div>
-              <p class="section-kicker">FRUIT LEVELS</p>
-              <h2>Fruit Evolution</h2>
+            <div class="next-main">
+              <canvas id="nextFruitCanvas0" width="74" height="74"></canvas>
+              <span id="nextFruitName">Cherry</span>
             </div>
-          </div>
-          <div id="evolutionBar" class="evolution-bar" aria-label="Fruit evolution bar"></div>
-        </div>
 
-        <div class="leaderboard-panel">
-          <div class="section-title-row compact">
-            <div>
-              <p class="section-kicker">LOCAL RECORDS</p>
-              <h2>Top Runs</h2>
-            </div>
-          </div>
-
-          <div id="leaderboardList" class="leaderboard-list">
-            <div class="leaderboard-item">
-              <div class="leaderboard-rank">1</div>
-              <div class="leaderboard-main">
-                <strong>No run yet</strong>
-                <span>Start your first game</span>
+            <div class="next-mini-row">
+              <div>
+                <canvas id="nextFruitCanvas1" width="44" height="44"></canvas>
+                <small>2nd</small>
               </div>
-              <div class="leaderboard-score">0</div>
+              <div>
+                <canvas id="nextFruitCanvas2" width="44" height="44"></canvas>
+                <small>3rd</small>
+              </div>
             </div>
+
+            <button id="restartButton" class="restart-button" type="button" aria-label="Restart game">
+              ↻
+            </button>
           </div>
-        </div>
+
+          <div class="evolution-panel">
+            <h2>Circle of Evolution</h2>
+            <div id="evolutionBar" class="evolution-circle" aria-label="Fruit evolution circle"></div>
+          </div>
+
+          <button id="shareCurrentButton" class="share-current" type="button">
+            Share Score
+          </button>
+        </aside>
       </div>
     </section>
 
