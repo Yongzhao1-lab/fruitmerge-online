@@ -2534,3 +2534,162 @@ body {
 .leaderboard-list {
   margin-top: 0;
 }
+/* =========================================================
+   Fix Game Over Panel Clipping
+   解决结束后 Play Again / Share 按钮被遮挡的问题
+   ========================================================= */
+
+/* 旧的 gameOverOverlay 只保留兼容，不再显示，避免重复遮挡 */
+#gameOverOverlay {
+  display: none !important;
+}
+
+/* 中间区域允许结束弹窗正常显示 */
+.center-panel {
+  position: relative;
+  overflow: visible;
+}
+
+/* Game Over 面板固定在游戏框中间 */
+.game-over-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  pointer-events: auto;
+}
+
+.game-over-panel.hidden {
+  display: none !important;
+}
+
+/* 结束弹窗压缩高度，避免超出游戏框 */
+.game-over-card {
+  width: min(88%, 260px);
+  max-height: calc(100% - 24px);
+  overflow: hidden;
+  padding: 14px 14px 12px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #fff8e7 0%, #f2dfad 100%);
+  border: 1px solid rgba(150, 112, 42, 0.2);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
+  text-align: center;
+  color: #744818;
+}
+
+/* 结束弹窗里面不再显示排行榜，排行榜只保留在左侧 */
+#gameOverLeaderboard,
+.game-over-card .mini-leaderboard {
+  display: none !important;
+}
+
+.game-over-badge {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f8d96d 0%, #e9b83e 100%);
+  color: #70480d;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.game-over-card h3 {
+  margin: 0;
+  font-size: 15px;
+  color: #87521b;
+}
+
+.game-over-score {
+  margin: 7px 0 9px;
+  font-size: 32px;
+  line-height: 1;
+  font-weight: 900;
+  color: #854b12;
+}
+
+.game-over-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.game-over-meta div {
+  padding: 7px 6px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.48);
+}
+
+.game-over-meta span {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #92754e;
+}
+
+.game-over-meta strong {
+  font-size: 14px;
+  color: #7d4d17;
+}
+
+.game-over-tip {
+  margin-bottom: 10px;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 800;
+  color: #865924;
+}
+
+/* Play Again / Share 永远显示 */
+.game-over-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.game-over-actions button {
+  height: 38px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.game-over-actions .primary {
+  background: linear-gradient(180deg, #ffad86 0%, #ff8a63 100%);
+  color: #fff;
+  box-shadow: 0 6px 12px rgba(255, 130, 88, 0.26);
+}
+
+.game-over-actions .secondary {
+  background: rgba(255, 255, 255, 0.72);
+  color: #6d4a28;
+}
+
+/* 小屏或窗口高度不够时，再进一步压缩 */
+@media (max-height: 760px) {
+  .game-over-card {
+    width: min(88%, 240px);
+    padding: 12px;
+  }
+
+  .game-over-score {
+    font-size: 28px;
+    margin: 6px 0 8px;
+  }
+
+  .game-over-tip {
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+
+  .game-over-actions button {
+    height: 36px;
+  }
+}
