@@ -136,7 +136,7 @@ const fruits = [
     radius: 80,
     score: 1280,
     type: "lemon",
-    files: ["lemon.png", "mango.png"],
+    files: ["lemon.png", "pomelo.png"],
     color: "#ffe45b",
     visualScale: 1.02,
     drawOffsetY: 0
