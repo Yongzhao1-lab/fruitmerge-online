@@ -7,7 +7,6 @@ const GAME_HEIGHT = Number(canvas.getAttribute("height")) || 560;
 function setupCanvasDpi() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-  canvas.style.width = `${GAME_WIDTH}px`;
   canvas.style.maxWidth = "100%";
   canvas.style.height = "auto";
 
@@ -23,7 +22,6 @@ setupCanvasDpi();
 window.addEventListener("resize", setupCanvasDpi);
 
 const scoreElement = document.getElementById("score");
-const panelScoreElement = document.getElementById("panelScore");
 const timeElement = document.getElementById("time");
 const bestScoreElement = document.getElementById("bestScore");
 const nextFruitNameElement = document.getElementById("nextFruitName");
@@ -32,136 +30,48 @@ const restartButton = document.getElementById("restartButton");
 const startButton = document.getElementById("startButton");
 const playAgainButton = document.getElementById("playAgainButton");
 const shareScoreButton = document.getElementById("shareScoreButton");
+const shareCurrentButton = document.getElementById("shareCurrentButton");
+const musicToggleButton = document.getElementById("musicToggleButton");
+const fullscreenButton = document.getElementById("fullscreenButton");
 
 const startOverlay = document.getElementById("startOverlay");
-const gameOverOverlay = document.getElementById("gameOverOverlay");
-
-const finalScoreElement = document.getElementById("finalScore");
-const finalTimeElement = document.getElementById("finalTime");
-const finalBestScoreElement = document.getElementById("finalBestScore");
-const gameOverMessageElement = document.getElementById("gameOverMessage");
-const runTitleElement = document.getElementById("runTitle");
+const gameOverPanel = document.getElementById("gameOverPanel");
+const gameOverBadge = document.getElementById("gameOverBadge");
+const gameOverScore = document.getElementById("gameOverScore");
+const gameOverTime = document.getElementById("gameOverTime");
+const gameOverBest = document.getElementById("gameOverBest");
+const gameOverTip = document.getElementById("gameOverTip");
 
 const leaderboardList = document.getElementById("leaderboardList");
-const gameOverLeaderboard = document.getElementById("gameOverLeaderboard");
-const evolutionCircle = document.getElementById("evolutionCircle");
+const evolutionBar = document.getElementById("evolutionBar");
 
-let nextFruitCanvases = [];
-let nextFruitContexts = [];
+const nextCanvases = [
+  document.getElementById("nextFruitCanvas0"),
+  document.getElementById("nextFruitCanvas1"),
+  document.getElementById("nextFruitCanvas2")
+].filter(Boolean);
 
-const ASSET_VERSION = "v=20260706-arcade-layout-final";
+const nextContexts = nextCanvases.map((item) => {
+  const c = item.getContext("2d");
+  c.imageSmoothingEnabled = true;
+  c.imageSmoothingQuality = "high";
+  return c;
+});
+
+const ASSET_VERSION = "v=20260706-clean-fruit-arcade-final";
 
 const fruits = [
-  {
-    name: "Cherry",
-    radius: 15,
-    score: 5,
-    type: "cherry",
-    files: ["cherry.png"],
-    color: "#ff4a42",
-    visualScale: 1.40,
-    drawOffsetY: 0
-  },
-  {
-    name: "Strawberry",
-    radius: 20,
-    score: 10,
-    type: "strawberry",
-    files: ["strawberry.png"],
-    color: "#ff5148",
-    visualScale: 1.30,
-    drawOffsetY: 0
-  },
-  {
-    name: "Grape",
-    radius: 25,
-    score: 20,
-    type: "grape",
-    files: ["grape.png"],
-    color: "#a65bff",
-    visualScale: 1.18,
-    drawOffsetY: 1
-  },
-  {
-    name: "Orange",
-    radius: 32,
-    score: 40,
-    type: "orange",
-    files: ["orange.png"],
-    color: "#ff9f2e",
-    visualScale: 1.14,
-    drawOffsetY: 0
-  },
-  {
-    name: "Apple",
-    radius: 39,
-    score: 80,
-    type: "apple",
-    files: ["apple.png"],
-    color: "#f64340",
-    visualScale: 1.12,
-    drawOffsetY: 0
-  },
-  {
-    name: "Peach",
-    radius: 48,
-    score: 160,
-    type: "peach",
-    files: ["peach.png"],
-    color: "#ff9872",
-    visualScale: 1.10,
-    drawOffsetY: 0
-  },
-  {
-    name: "Pineapple",
-    radius: 57,
-    score: 320,
-    type: "pineapple",
-    files: ["pineapple.png"],
-    color: "#ffc238",
-    visualScale: 1.02,
-    drawOffsetY: -2
-  },
-  {
-    name: "Watermelon",
-    radius: 68,
-    score: 640,
-    type: "watermelon",
-    files: ["watermelon.png"],
-    color: "#30c765",
-    visualScale: 1.04,
-    drawOffsetY: 0
-  },
-  {
-    name: "Grapefruit",
-    radius: 80,
-    score: 1280,
-    type: "grapefruit",
-    files: ["grapefruit.png", "pomelo.png", "yuzu.png", "lemon.png"],
-    color: "#ffe45b",
-    visualScale: 1.02,
-    drawOffsetY: 0
-  },
-  {
-    name: "Melon",
-    radius: 92,
-    score: 2560,
-    type: "melon",
-    files: ["melon.png", "hami-melon.png", "honeydew.png", "cantaloupe.png"],
-    color: "#d9e66d",
-    visualScale: 1.00,
-    drawOffsetY: 0
-  },
-  {
-    name: "Dragon Fruit",
-    radius: 106,
-    score: 5120,
-    type: "dragonfruit",
-    files: ["dragonfruit.png", "dragon-fruit.png", "dragon_fruit.png", "pitaya.png"],
-    color: "#ff5098",
-    visualScale: 0.98,
-    drawOffsetY: 0
-  }
+  { name: "Cherry", radius: 15, score: 5, type: "cherry", files: ["cherry.png"], color: "#ff4a42", visualScale: 1.4 },
+  { name: "Strawberry", radius: 20, score: 10, type: "strawberry", files: ["strawberry.png"], color: "#ff5148", visualScale: 1.3 },
+  { name: "Grape", radius: 25, score: 20, type: "grape", files: ["grape.png"], color: "#a65bff", visualScale: 1.18 },
+  { name: "Orange", radius: 32, score: 40, type: "orange", files: ["orange.png"], color: "#ff9f2e", visualScale: 1.14 },
+  { name: "Apple", radius: 39, score: 80, type: "apple", files: ["apple.png"], color: "#f64340", visualScale: 1.12 },
+  { name: "Peach", radius: 48, score: 160, type: "peach", files: ["peach.png"], color: "#ff9872", visualScale: 1.1 },
+  { name: "Pineapple", radius: 57, score: 320, type: "pineapple", files: ["pineapple.png"], color: "#ffc238", visualScale: 1.02 },
+  { name: "Watermelon", radius: 68, score: 640, type: "watermelon", files: ["watermelon.png"], color: "#30c765", visualScale: 1.04 },
+  { name: "Grapefruit", radius: 80, score: 1280, type: "grapefruit", files: ["grapefruit.png", "pomelo.png", "yuzu.png", "lemon.png"], color: "#ffe45b", visualScale: 1.02 },
+  { name: "Melon", radius: 92, score: 2560, type: "melon", files: ["melon.png", "hami-melon.png", "honeydew.png", "cantaloupe.png"], color: "#d9e66d", visualScale: 1 },
+  { name: "Dragon Fruit", radius: 106, score: 5120, type: "dragonfruit", files: ["dragonfruit.png", "dragon-fruit.png", "dragon_fruit.png", "pitaya.png"], color: "#ff5098", visualScale: 0.98 }
 ];
 
 const fruitImages = new Map();
@@ -176,10 +86,9 @@ let bestScore = Number(localStorage.getItem("fruitMergeBestScore")) || 0;
 let bestTime = Number(localStorage.getItem("fruitMergeBestTime")) || 0;
 let highestUnlocked = Number(localStorage.getItem("fruitMergeHighestUnlocked")) || 0;
 
-let isGameOver = false;
 let isGameStarted = false;
+let isGameOver = false;
 let canDrop = true;
-
 let gameStartTime = 0;
 let survivalTime = 0;
 
@@ -189,11 +98,13 @@ let screenShake = 0;
 
 let audioContext = null;
 let soundReady = false;
+let musicEnabled = localStorage.getItem("fruitMergeMusic") !== "off";
+let musicTimer = null;
+let musicStep = 0;
 
-const gravity = 0.60;
+const gravity = 0.6;
 const friction = 0.965;
 const floorFriction = 0.94;
-const bounce = 0;
 
 const dropLineY = 86;
 const spawnY = 46;
@@ -203,13 +114,10 @@ const maxHorizontalSpeed = 0.28;
 const maxVerticalSpeed = 7.2;
 
 const collisionSolverIterations = 5;
-const collisionRestitution = 0;
 const collisionCorrection = 0.18;
 const maxCorrectionPerFrame = 1.05;
-
 const collisionTightness = 0.86;
 const mergeDistanceFactor = 0.91;
-
 const collisionSlop = 1.8;
 const verticalCorrectionFactor = 0.42;
 
@@ -229,21 +137,6 @@ function hideElement(element) {
   if (element) element.classList.add("hidden");
 }
 
-function setupNextPreviewUi() {
-  const ids = ["nextFruitCanvas0", "nextFruitCanvas1", "nextFruitCanvas2"];
-
-  nextFruitCanvases = ids
-    .map((id) => document.getElementById(id))
-    .filter(Boolean);
-
-  nextFruitContexts = nextFruitCanvases.map((item) => {
-    const context = item.getContext("2d");
-    context.imageSmoothingEnabled = true;
-    context.imageSmoothingQuality = "high";
-    return context;
-  });
-}
-
 function initAudio() {
   if (soundReady) {
     if (audioContext && audioContext.state === "suspended") {
@@ -256,51 +149,97 @@ function initAudio() {
   if (!AudioContextClass) return;
 
   audioContext = new AudioContextClass();
-
-  if (audioContext.state === "suspended") {
-    audioContext.resume().catch(() => {});
-  }
-
+  audioContext.resume().catch(() => {});
   soundReady = true;
 }
 
-function playTone(frequency, duration, type = "sine", volume = 0.04) {
+function playTone(frequency, duration, type = "sine", volume = 0.04, delay = 0) {
   if (!audioContext) return;
 
+  const startAt = audioContext.currentTime + delay;
   const oscillator = audioContext.createOscillator();
   const gain = audioContext.createGain();
 
   oscillator.type = type;
-  oscillator.frequency.value = frequency;
+  oscillator.frequency.setValueAtTime(frequency, startAt);
 
-  gain.gain.setValueAtTime(volume, audioContext.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+  gain.gain.setValueAtTime(0.0001, startAt);
+  gain.gain.exponentialRampToValueAtTime(volume, startAt + 0.025);
+  gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
 
   oscillator.connect(gain);
   gain.connect(audioContext.destination);
 
-  oscillator.start();
-  oscillator.stop(audioContext.currentTime + duration);
+  oscillator.start(startAt);
+  oscillator.stop(startAt + duration + 0.03);
 }
 
 function playDropSound() {
-  playTone(280, 0.055, "triangle", 0.025);
+  playTone(620, 0.04, "triangle", 0.042);
+  playTone(320, 0.06, "sine", 0.022, 0.03);
 }
 
 function playMergeSound(level) {
-  const frequency = 430 + level * 42;
-  playTone(frequency, 0.075, "sine", 0.042);
-  playTone(frequency * 1.3, 0.09, "triangle", 0.025);
+  const frequency = 460 + level * 38;
+  playTone(frequency, 0.065, "sine", 0.04);
+  playTone(frequency * 1.24, 0.08, "triangle", 0.024, 0.04);
 }
 
 function playBigMergeSound() {
-  playTone(620, 0.09, "sine", 0.045);
-  setTimeout(() => playTone(820, 0.12, "sine", 0.038), 70);
+  playTone(640, 0.08, "sine", 0.045);
+  playTone(850, 0.12, "sine", 0.034, 0.07);
 }
 
 function playGameOverSound() {
-  playTone(240, 0.14, "sawtooth", 0.028);
-  setTimeout(() => playTone(160, 0.18, "sawtooth", 0.022), 120);
+  playTone(240, 0.14, "sawtooth", 0.025);
+  playTone(160, 0.18, "sawtooth", 0.018, 0.12);
+}
+
+function startMusic() {
+  if (!musicEnabled) return;
+  initAudio();
+  if (!audioContext) return;
+  if (musicTimer) return;
+
+  const melody = [392, 440, 523.25, 440, 329.63, 392, 493.88, 392];
+  const bass = [196, 220, 261.63, 220];
+
+  musicTimer = setInterval(() => {
+    if (!musicEnabled || !audioContext || document.hidden) return;
+
+    const note = melody[musicStep % melody.length];
+    const bassNote = bass[Math.floor(musicStep / 2) % bass.length];
+
+    playTone(note, 0.42, "sine", 0.009);
+    playTone(bassNote, 0.52, "sine", 0.005, 0.02);
+
+    musicStep += 1;
+  }, 680);
+}
+
+function stopMusic() {
+  if (musicTimer) {
+    clearInterval(musicTimer);
+    musicTimer = null;
+  }
+}
+
+function updateMusicButton() {
+  if (!musicToggleButton) return;
+  musicToggleButton.textContent = musicEnabled ? "Music On" : "Music Off";
+  musicToggleButton.classList.toggle("music-off", !musicEnabled);
+}
+
+function toggleMusic() {
+  musicEnabled = !musicEnabled;
+  localStorage.setItem("fruitMergeMusic", musicEnabled ? "on" : "off");
+  updateMusicButton();
+
+  if (musicEnabled) {
+    startMusic();
+  } else {
+    stopMusic();
+  }
 }
 
 function vibrate(ms) {
@@ -312,32 +251,18 @@ function loadFruitImage(index, fileIndex = 0) {
   const file = fruit.files[fileIndex];
 
   if (!file) {
-    fruitImages.set(index, {
-      image: null,
-      loaded: false,
-      failed: true
-    });
-    updateEvolutionCircle();
+    fruitImages.set(index, { image: null, loaded: false, failed: true });
     return;
   }
 
   const image = new Image();
 
-  fruitImages.set(index, {
-    image,
-    loaded: false,
-    failed: false
-  });
+  fruitImages.set(index, { image, loaded: false, failed: false });
 
   image.onload = () => {
-    fruitImages.set(index, {
-      image,
-      loaded: true,
-      failed: false
-    });
-
+    fruitImages.set(index, { image, loaded: true, failed: false });
     updateNextFruit();
-    updateEvolutionCircle();
+    updateEvolutionBar();
   };
 
   image.onerror = () => {
@@ -348,53 +273,42 @@ function loadFruitImage(index, fileIndex = 0) {
 }
 
 function preloadFruitImages() {
-  fruits.forEach((_, index) => {
-    loadFruitImage(index);
-  });
+  fruits.forEach((_, index) => loadFruitImage(index));
 }
 
-function setupEvolutionCircle() {
-  if (!evolutionCircle) return;
+function randomStartLevel() {
+  const stage = getDifficultyStage();
+  const random = Math.random();
 
-  evolutionCircle.innerHTML = "";
+  if (stage === 0) {
+    if (random < 0.2) return 0;
+    if (random < 0.45) return 1;
+    if (random < 0.74) return 2;
+    return 3;
+  }
 
-  fruits.forEach((fruit, index) => {
-    const item = document.createElement("div");
-    const angle = (360 / fruits.length) * index - 90;
+  if (stage === 1) {
+    if (random < 0.08) return 0;
+    if (random < 0.25) return 1;
+    if (random < 0.5) return 2;
+    if (random < 0.75) return 3;
+    if (random < 0.92) return 4;
+    return 5;
+  }
 
-    item.className = "evolution-item";
-    item.dataset.level = String(index);
-    item.style.setProperty("--angle", `${angle}deg`);
-    item.title = fruit.name;
+  if (stage === 2) {
+    if (random < 0.18) return 2;
+    if (random < 0.42) return 3;
+    if (random < 0.67) return 4;
+    if (random < 0.88) return 5;
+    return 6;
+  }
 
-    const img = document.createElement("img");
-    img.alt = fruit.name;
-    img.dataset.level = String(index);
-
-    item.appendChild(img);
-    evolutionCircle.appendChild(item);
-  });
-
-  updateEvolutionCircle();
-}
-
-function updateEvolutionCircle(currentLevel = highestUnlocked) {
-  if (!evolutionCircle) return;
-
-  const items = evolutionCircle.querySelectorAll(".evolution-item");
-
-  items.forEach((item) => {
-    const level = Number(item.dataset.level);
-    const img = item.querySelector("img");
-    const record = fruitImages.get(level);
-
-    item.classList.toggle("unlocked", level <= highestUnlocked);
-    item.classList.toggle("current", level === currentLevel);
-
-    if (img && record && record.loaded && record.image) {
-      img.src = record.image.src;
-    }
-  });
+  if (random < 0.16) return 3;
+  if (random < 0.39) return 4;
+  if (random < 0.63) return 5;
+  if (random < 0.85) return 6;
+  return 7;
 }
 
 function getDifficultyStage() {
@@ -414,7 +328,6 @@ function getStageName() {
 
 function getDangerLimit() {
   const stage = getDifficultyStage();
-
   if (stage === 0) return 56;
   if (stage === 1) return 42;
   if (stage === 2) return 32;
@@ -423,46 +336,10 @@ function getDangerLimit() {
 
 function getDropCooldown() {
   const stage = getDifficultyStage();
-
   if (stage === 0) return 300;
   if (stage === 1) return 270;
   if (stage === 2) return 240;
   return 220;
-}
-
-function randomStartLevel() {
-  const stage = getDifficultyStage();
-  const random = Math.random();
-
-  if (stage === 0) {
-    if (random < 0.20) return 0;
-    if (random < 0.45) return 1;
-    if (random < 0.74) return 2;
-    return 3;
-  }
-
-  if (stage === 1) {
-    if (random < 0.08) return 0;
-    if (random < 0.25) return 1;
-    if (random < 0.50) return 2;
-    if (random < 0.75) return 3;
-    if (random < 0.92) return 4;
-    return 5;
-  }
-
-  if (stage === 2) {
-    if (random < 0.18) return 2;
-    if (random < 0.42) return 3;
-    if (random < 0.67) return 4;
-    if (random < 0.88) return 5;
-    return 6;
-  }
-
-  if (random < 0.16) return 3;
-  if (random < 0.39) return 4;
-  if (random < 0.63) return 5;
-  if (random < 0.85) return 6;
-  return 7;
 }
 
 function createFruit(x, y, level) {
@@ -491,9 +368,7 @@ function wakeFruit(ball) {
 }
 
 function isFruitSupported(ball) {
-  if (ball.y + ball.radius >= GAME_HEIGHT - 1.5) {
-    return true;
-  }
+  if (ball.y + ball.radius >= GAME_HEIGHT - 1.5) return true;
 
   let supportCount = 0;
 
@@ -505,13 +380,11 @@ function isFruitSupported(ball) {
     const distance = Math.sqrt(dx * dx + dy * dy);
 
     const supportDistance = (ball.radius + other.radius) * 0.95;
-    const isBelow = other.y > ball.y + ball.radius * 0.10;
-    const isCloseEnough = distance < supportDistance;
-    const otherStable = other.asleep || getFruitSpeed(other) < 0.18;
+    const isBelow = other.y > ball.y + ball.radius * 0.1;
+    const isClose = distance < supportDistance;
+    const stable = other.asleep || getFruitSpeed(other) < 0.18;
 
-    if (isBelow && isCloseEnough && otherStable) {
-      supportCount += 1;
-    }
+    if (isBelow && isClose && stable) supportCount += 1;
   }
 
   return supportCount >= 1;
@@ -551,6 +424,46 @@ function updateSleepStates() {
   }
 }
 
+function setupEvolutionBar() {
+  if (!evolutionBar) return;
+
+  evolutionBar.innerHTML = "";
+
+  fruits.forEach((fruit, index) => {
+    const item = document.createElement("div");
+    item.className = "evolution-item";
+    item.dataset.level = String(index);
+    item.title = fruit.name;
+
+    const img = document.createElement("img");
+    img.alt = fruit.name;
+
+    item.appendChild(img);
+    evolutionBar.appendChild(item);
+  });
+
+  updateEvolutionBar();
+}
+
+function updateEvolutionBar(currentLevel = highestUnlocked) {
+  if (!evolutionBar) return;
+
+  const items = evolutionBar.querySelectorAll(".evolution-item");
+
+  items.forEach((item) => {
+    const level = Number(item.dataset.level);
+    const img = item.querySelector("img");
+    const record = fruitImages.get(level);
+
+    item.classList.toggle("unlocked", level <= highestUnlocked);
+    item.classList.toggle("current", level === currentLevel);
+
+    if (img && record && record.loaded && record.image) {
+      img.src = record.image.src;
+    }
+  });
+}
+
 function setupRound(showStartScreen = true) {
   balls = [];
   floatingTexts = [];
@@ -565,24 +478,24 @@ function setupRound(showStartScreen = true) {
   screenShake = 0;
 
   setText(scoreElement, score);
-  setText(panelScoreElement, score);
   setText(timeElement, "00:00");
   setText(bestScoreElement, bestScore);
 
-  hideElement(gameOverOverlay);
+  hideElement(gameOverPanel);
 
   if (showStartScreen) {
     showElement(startOverlay);
   } else {
     hideElement(startOverlay);
     gameStartTime = performance.now();
+    startMusic();
   }
 
   currentFruit = createFruit(mouseX, spawnY, randomStartLevel());
   nextQueue = [randomStartLevel(), randomStartLevel(), randomStartLevel()];
 
   updateNextFruit();
-  updateEvolutionCircle();
+  updateEvolutionBar();
   renderLeaderboard();
 }
 
@@ -590,16 +503,12 @@ function updateNextFruit() {
   if (!nextQueue.length) return;
 
   const nextLevel = nextQueue[0];
-  const fruit = fruits[nextLevel];
+  setText(nextFruitNameElement, fruits[nextLevel].name);
 
-  setText(nextFruitNameElement, fruit.name);
-
-  nextFruitCanvases.forEach((nextCanvas, index) => {
-    const nextCtx = nextFruitContexts[index];
-    if (!nextCtx) return;
-
+  nextCanvases.forEach((nextCanvas, index) => {
+    const nextCtx = nextContexts[index];
     const level = nextQueue[index] ?? nextQueue[0];
-    const size = index === 0 ? 28 : 19;
+    const size = index === 0 ? 25 : 17;
 
     nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
     drawFruitIcon(nextCtx, nextCanvas.width / 2, nextCanvas.height / 2, size, level, false);
@@ -614,18 +523,18 @@ function updateSurvivalTime() {
 }
 
 function formatTime(seconds) {
-  const total = Math.floor(seconds);
+  const total = Math.floor(seconds || 0);
   const min = String(Math.floor(total / 60)).padStart(2, "0");
   const sec = String(total % 60).padStart(2, "0");
   return `${min}:${sec}`;
 }
 
-function getRunTitle(seconds) {
-  if (seconds >= 180) return "Expert Run";
-  if (seconds >= 120) return "Pro Run";
-  if (seconds >= 60) return "Strong Run";
-  if (seconds >= 30) return "Casual Run";
-  return "Quick Try";
+function getRunTitle(value) {
+  if (value >= 50000) return "Legend Run";
+  if (value >= 35000) return "Strong Run";
+  if (value >= 20000) return "Great Run";
+  if (value >= 10000) return "Nice Run";
+  return "Warm Up";
 }
 
 function getLeaderboard() {
@@ -640,57 +549,55 @@ function saveLeaderboard(list) {
   localStorage.setItem("fruitMergeLeaderboard", JSON.stringify(list));
 }
 
-function updateLeaderboard() {
-  if (score <= 0 && survivalTime <= 0) return;
+function addRunToLeaderboard() {
+  if (!score && !survivalTime) return;
 
   const list = getLeaderboard();
 
   list.push({
     score,
     time: survivalTime,
-    title: getRunTitle(survivalTime),
+    title: getRunTitle(score),
     date: new Date().toISOString()
   });
 
   list.sort((a, b) => {
-    if (b.score !== a.score) return b.score - a.score;
-    return b.time - a.time;
+    if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
+    return (a.time || 0) - (b.time || 0);
   });
 
-  saveLeaderboard(list.slice(0, 5));
+  saveLeaderboard(list.slice(0, 8));
 }
 
 function renderLeaderboard() {
-  const list = getLeaderboard();
+  if (!leaderboardList) return;
 
-  if (leaderboardList) {
-    if (!list.length) {
-      leaderboardList.innerHTML = `<div class="leaderboard-empty">No local runs yet.</div>`;
-    } else {
-      leaderboardList.innerHTML = list.slice(0, 3).map((item, index) => createLeaderboardRow(item, index)).join("");
-    }
+  const list = getLeaderboard().slice(0, 5);
+
+  if (!list.length) {
+    leaderboardList.innerHTML = `
+      <div class="leaderboard-item">
+        <div class="leaderboard-rank">1</div>
+        <div class="leaderboard-main">
+          <strong>No run yet</strong>
+          <span>Start your first game</span>
+        </div>
+        <div class="leaderboard-score">0</div>
+      </div>
+    `;
+    return;
   }
 
-  if (gameOverLeaderboard) {
-    if (!list.length) {
-      gameOverLeaderboard.innerHTML = "";
-    } else {
-      gameOverLeaderboard.innerHTML = list.slice(0, 3).map((item, index) => createLeaderboardRow(item, index)).join("");
-    }
-  }
-}
-
-function createLeaderboardRow(item, index) {
-  return `
-    <div class="leaderboard-row">
-      <span class="leaderboard-rank">${index + 1}</span>
-      <span class="leaderboard-main">
-        <strong>${item.title || "Quick Run"}</strong>
+  leaderboardList.innerHTML = list.map((item, index) => `
+    <div class="leaderboard-item">
+      <div class="leaderboard-rank">${index + 1}</div>
+      <div class="leaderboard-main">
+        <strong>${item.title || getRunTitle(item.score || 0)}</strong>
         <span>${formatTime(item.time || 0)}</span>
-      </span>
-      <span class="leaderboard-score">${item.score || 0}</span>
+      </div>
+      <div class="leaderboard-score">${item.score || 0}</div>
     </div>
-  `;
+  `).join("");
 }
 
 function getMaxDangerRatio() {
@@ -713,24 +620,29 @@ function drawBackground() {
 
   ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-  ctx.fillStyle = "rgba(255, 247, 191, 0.12)";
+  const bg = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
+  bg.addColorStop(0, "#f7fffb");
+  bg.addColorStop(0.44, "#edf9f6");
+  bg.addColorStop(1, "#e3f6ef");
+
+  ctx.fillStyle = bg;
   ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
-  ctx.fillStyle = "rgba(139, 238, 109, 0.12)";
-  ctx.fillRect(0, GAME_HEIGHT - 76, GAME_WIDTH, 76);
+  ctx.fillStyle = "rgba(143, 219, 172, 0.16)";
+  ctx.fillRect(0, GAME_HEIGHT - 72, GAME_WIDTH, 72);
 
-  const warningAlpha = dangerActive
-    ? 0.12 + dangerRatio * 0.26 + pulse * 0.06
-    : 0.02 + dangerRatio * 0.10;
+  const topAlpha = dangerActive
+    ? 0.12 + dangerRatio * 0.24 + pulse * 0.06
+    : 0.045;
 
-  ctx.fillStyle = `rgba(255, 92, 68, ${warningAlpha})`;
+  ctx.fillStyle = `rgba(255, 112, 88, ${topAlpha})`;
   ctx.fillRect(0, 0, GAME_WIDTH, dropLineY);
 
   ctx.strokeStyle = dangerActive
-    ? `rgba(255, 76, 61, ${0.7 + pulse * 0.3})`
-    : "rgba(255, 213, 91, 0.72)";
+    ? `rgba(255, 80, 65, ${0.78 + pulse * 0.22})`
+    : "rgba(29, 190, 170, 0.86)";
 
-  ctx.lineWidth = dangerActive ? 4 + pulse * 1.2 : 3;
+  ctx.lineWidth = dangerActive ? 4 + pulse * 1.1 : 3;
   ctx.setLineDash([8, 8]);
 
   ctx.beginPath();
@@ -740,18 +652,46 @@ function drawBackground() {
 
   ctx.setLineDash([]);
 
-  ctx.fillStyle = dangerActive ? "#ff4c3d" : "#b66e1f";
-  ctx.font = dangerActive ? "bold 14px Arial" : "bold 13px Arial";
-  ctx.textAlign = "left";
-  ctx.textBaseline = "middle";
-  ctx.fillText(dangerActive ? "Warning!" : "Danger Line", 12, dropLineY - 14);
-
-  ctx.textAlign = "right";
-  ctx.fillText(getStageName(), GAME_WIDTH - 12, dropLineY - 14);
+  drawCanvasLabel(dangerActive ? "Warning!" : "Danger Line", 12, dropLineY - 18, "left", dangerActive);
+  drawCanvasLabel(getStageName(), GAME_WIDTH - 12, dropLineY - 18, "right", dangerActive);
 
   if (dangerActive && !isGameOver) {
     drawDangerCountdown(dangerRatio);
   }
+}
+
+function drawCanvasLabel(text, x, y, align = "left", danger = false) {
+  ctx.save();
+
+  ctx.font = "bold 13px Arial";
+  ctx.textBaseline = "middle";
+
+  const width = ctx.measureText(text).width;
+  const paddingX = 8;
+  const boxWidth = width + paddingX * 2;
+  const boxHeight = 22;
+
+  let boxX = x;
+
+  if (align === "right") {
+    boxX = x - boxWidth;
+    ctx.textAlign = "right";
+  } else {
+    ctx.textAlign = "left";
+  }
+
+  ctx.fillStyle = danger ? "rgba(255,255,255,0.94)" : "rgba(255,255,255,0.84)";
+  ctx.fillRect(boxX, y - boxHeight / 2, boxWidth, boxHeight);
+
+  ctx.fillStyle = danger ? "#ff4c3d" : "#078c83";
+
+  if (align === "right") {
+    ctx.fillText(text, x - paddingX, y);
+  } else {
+    ctx.fillText(text, x + paddingX, y);
+  }
+
+  ctx.restore();
 }
 
 function drawDangerCountdown(dangerRatio) {
@@ -774,7 +714,7 @@ function drawAimLine() {
   if (!isGameStarted || isGameOver || !currentFruit) return;
 
   ctx.save();
-  ctx.strokeStyle = "rgba(255, 213, 91, 0.55)";
+  ctx.strokeStyle = "rgba(255, 213, 91, 0.65)";
   ctx.lineWidth = 2;
   ctx.setLineDash([6, 8]);
 
@@ -822,8 +762,8 @@ function drawFruitIcon(targetCtx, x, y, radius, level, showShadow = true) {
     visualSize = Math.min(visualSize, maxPreviewSize);
   }
 
-  let drawX = Math.round(x - visualSize / 2 + (fruit.drawOffsetX || 0));
-  let drawY = Math.round(y - visualSize / 2 + (fruit.drawOffsetY || 0));
+  let drawX = Math.round(x - visualSize / 2);
+  let drawY = Math.round(y - visualSize / 2);
 
   const padding = showShadow ? 4 : 1;
 
@@ -834,8 +774,8 @@ function drawFruitIcon(targetCtx, x, y, radius, level, showShadow = true) {
 
   if (showShadow) {
     targetCtx.save();
-    targetCtx.globalAlpha = 0.02;
-    targetCtx.fillStyle = "#9acb3b";
+    targetCtx.globalAlpha = 0.025;
+    targetCtx.fillStyle = "#0ea5a2";
     targetCtx.beginPath();
     targetCtx.ellipse(
       Math.round(x),
@@ -878,15 +818,11 @@ function keepFruitInside(ball) {
   if (ball.y + ball.radius > GAME_HEIGHT) {
     ball.y = GAME_HEIGHT - ball.radius;
 
-    if (ball.vy > 0) {
-      ball.vy = 0;
-    }
+    if (ball.vy > 0) ball.vy = 0;
 
     ball.vx *= floorFriction;
 
-    if (Math.abs(ball.vx) < 0.025) {
-      ball.vx = 0;
-    }
+    if (Math.abs(ball.vx) < 0.025) ball.vx = 0;
   }
 }
 
@@ -898,9 +834,7 @@ function updatePhysics() {
   for (const ball of balls) {
     ball.age += 1;
 
-    if (ball.popFrames > 0) {
-      ball.popFrames -= 1;
-    }
+    if (ball.popFrames > 0) ball.popFrames -= 1;
 
     if (ball.asleep) {
       ball.vx = 0;
@@ -1011,25 +945,6 @@ function handleCollisions() {
         a.y -= correctionY * (moveA / moveTotal);
         b.y += correctionY * (moveB / moveTotal);
 
-        const relativeVx = b.vx - a.vx;
-        const relativeVy = b.vy - a.vy;
-        const velocityAlongNormal = relativeVx * nx + relativeVy * ny;
-
-        if (velocityAlongNormal < -0.18) {
-          const impulse = -velocityAlongNormal;
-          const impulseStrength = Math.min(impulse * 0.006, 0.035);
-
-          if (!a.asleep) {
-            a.vx -= nx * impulseStrength * moveA;
-            a.vy -= ny * impulseStrength * moveA * 0.025;
-          }
-
-          if (!b.asleep) {
-            b.vx += nx * impulseStrength * moveB;
-            b.vy += ny * impulseStrength * moveB * 0.025;
-          }
-        }
-
         if (!a.asleep) {
           a.vx *= 0.54;
           a.vy *= 0.92;
@@ -1068,11 +983,7 @@ function mergeFruits(indexA, indexB, a, b) {
   const newLevel = a.level + 1;
   const gainedScore = fruits[newLevel].score;
 
-  const newFruit = createFruit(
-    (a.x + b.x) / 2,
-    (a.y + b.y) / 2,
-    newLevel
-  );
+  const newFruit = createFruit((a.x + b.x) / 2, (a.y + b.y) / 2, newLevel);
 
   newFruit.vx = (a.vx + b.vx) * 0.03;
   newFruit.vy = Math.min((a.vy + b.vy) * 0.03, 0.06);
@@ -1084,14 +995,13 @@ function mergeFruits(indexA, indexB, a, b) {
 
   score += gainedScore;
   setText(scoreElement, score);
-  setText(panelScoreElement, score);
 
   if (newLevel > highestUnlocked) {
     highestUnlocked = newLevel;
     localStorage.setItem("fruitMergeHighestUnlocked", highestUnlocked);
   }
 
-  updateEvolutionCircle(newLevel);
+  updateEvolutionBar(newLevel);
   addFloatingText(newFruit.x, newFruit.y - newFruit.radius, `+${gainedScore}`);
   addMergeBurst(newFruit.x, newFruit.y, newFruit.radius, fruits[newLevel].color);
 
@@ -1112,13 +1022,7 @@ function mergeFruits(indexA, indexB, a, b) {
 }
 
 function addFloatingText(x, y, text) {
-  floatingTexts.push({
-    x,
-    y,
-    text,
-    life: 42,
-    alpha: 1
-  });
+  floatingTexts.push({ x, y, text, life: 42, alpha: 1 });
 }
 
 function addMergeBurst(x, y, radius, color) {
@@ -1128,8 +1032,8 @@ function addMergeBurst(x, y, radius, color) {
     mergeBursts.push({
       x,
       y,
-      vx: Math.cos(angle) * (0.60 + radius * 0.004),
-      vy: Math.sin(angle) * (0.60 + radius * 0.004),
+      vx: Math.cos(angle) * (0.6 + radius * 0.004),
+      vy: Math.sin(angle) * (0.6 + radius * 0.004),
       radius: Math.max(2, radius * 0.034),
       color,
       life: 18,
@@ -1157,9 +1061,7 @@ function updateEffects() {
 
   mergeBursts = mergeBursts.filter((burst) => burst.life > 0);
 
-  if (screenShake > 0) {
-    screenShake -= 1;
-  }
+  if (screenShake > 0) screenShake -= 1;
 }
 
 function drawEffects() {
@@ -1176,13 +1078,10 @@ function drawEffects() {
   for (const text of floatingTexts) {
     ctx.save();
     ctx.globalAlpha = text.alpha;
-    ctx.fillStyle = "#fff6b8";
-    ctx.strokeStyle = "#9b5b1c";
-    ctx.lineWidth = 3;
+    ctx.fillStyle = "#0f766e";
     ctx.font = "bold 18px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.strokeText(text.text, text.x, text.y);
     ctx.fillText(text.text, text.x, text.y);
     ctx.restore();
   }
@@ -1219,8 +1118,6 @@ function endGame() {
   isGameStarted = false;
 
   const oldBest = bestScore;
-  const oldBestTime = bestTime;
-  const runTitle = getRunTitle(survivalTime);
 
   if (score > bestScore) {
     bestScore = score;
@@ -1232,27 +1129,29 @@ function endGame() {
     localStorage.setItem("fruitMergeBestTime", bestTime);
   }
 
-  updateLeaderboard();
+  addRunToLeaderboard();
   renderLeaderboard();
 
   setText(bestScoreElement, bestScore);
-  setText(finalScoreElement, score);
-  setText(finalTimeElement, formatTime(survivalTime));
-  setText(finalBestScoreElement, bestScore);
-  setText(runTitleElement, runTitle);
+  setText(gameOverBadge, getRunTitle(score));
+  setText(gameOverScore, score);
+  setText(gameOverTime, formatTime(survivalTime));
+  setText(gameOverBest, bestScore);
+
+  const gap = Math.max(0, bestScore - score);
 
   if (score > oldBest) {
-    setText(gameOverMessageElement, `New Best! You beat your record by ${score - oldBest} points.`);
-  } else if (survivalTime > oldBestTime) {
-    setText(gameOverMessageElement, `New survival record: ${formatTime(survivalTime)}!`);
+    setText(gameOverTip, `New personal best! You beat your record by ${score - oldBest} points.`);
+  } else if (gap > 0) {
+    setText(gameOverTip, `Only ${gap} points away from your best score.`);
   } else {
-    setText(gameOverMessageElement, `Only ${Math.max(0, bestScore - score)} points away from your best score.`);
+    setText(gameOverTip, "Great run! Keep merging to beat your best score.");
   }
 
+  showElement(gameOverPanel);
+  stopMusic();
   playGameOverSound();
   vibrate(60);
-
-  showElement(gameOverOverlay);
 }
 
 function draw() {
@@ -1290,15 +1189,14 @@ function dropFruit() {
   if (isGameOver || !isGameStarted || !canDrop || !currentFruit) return;
 
   initAudio();
+  startMusic();
+
   canDrop = false;
 
   const fruit = createFruit(mouseX, spawnY, currentFruit.level);
   fruit.vy = initialDropVelocity;
-  fruit.asleep = false;
-  fruit.sleepFrames = 0;
 
   balls.push(fruit);
-
   playDropSound();
 
   const nextLevel = nextQueue.shift();
@@ -1321,14 +1219,11 @@ function updateMousePosition(clientX) {
   const radius = currentFruit ? currentFruit.radius : 24;
   const margin = 8;
 
-  mouseX = Math.max(
-    radius + margin,
-    Math.min(GAME_WIDTH - radius - margin, mouseX)
-  );
+  mouseX = Math.max(radius + margin, Math.min(GAME_WIDTH - radius - margin, mouseX));
 }
 
 function shareScore() {
-  const text = `I scored ${score} and survived ${formatTime(survivalTime)} in Fruit Merge Online! Can you beat me? https://fruitmerge.online`;
+  const text = `I scored ${score || 0} in Fruit Merge Online! Can you beat me? https://fruitmerge.online`;
 
   if (navigator.share) {
     navigator.share({
@@ -1341,12 +1236,12 @@ function shareScore() {
 
   if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(() => {
-      setText(gameOverMessageElement, "Score copied! Share it with your friends.");
+      alert("Score copied!");
     }).catch(() => {
-      setText(gameOverMessageElement, text);
+      alert(text);
     });
   } else {
-    setText(gameOverMessageElement, text);
+    alert(text);
   }
 }
 
@@ -1380,283 +1275,46 @@ canvas.addEventListener(
   { passive: false }
 );
 
-if (startButton) {
-  startButton.addEventListener("click", () => {
-    initAudio();
-    setupRound(false);
-  });
-}
-
-if (restartButton) {
-  restartButton.addEventListener("click", () => {
-    initAudio();
-    setupRound(false);
-  });
-}
-
-if (playAgainButton) {
-  playAgainButton.addEventListener("click", () => {
-    initAudio();
-    setupRound(false);
-  });
-}
-
-if (shareScoreButton) {
-  shareScoreButton.addEventListener("click", shareScore);
-}
-
-setupNextPreviewUi();
-setupEvolutionCircle();
-preloadFruitImages();
-setupRound(true);
-gameLoop();
-/* === Audio + Clean Canvas Background Upgrade === */
-
-const musicToggleButton = document.getElementById("musicToggleButton");
-
-let backgroundMusicEnabled = localStorage.getItem("fruitMergeMusic") !== "off";
-let backgroundMusicTimer = null;
-let backgroundMusicStep = 0;
-
-function updateMusicButtonState() {
-  if (!musicToggleButton) return;
-
-  musicToggleButton.textContent = backgroundMusicEnabled ? "♪" : "♪";
-  musicToggleButton.classList.toggle("music-off", !backgroundMusicEnabled);
-  musicToggleButton.title = backgroundMusicEnabled ? "Music On" : "Music Off";
-}
-
-function playSoftMusicTone(frequency, duration, delay = 0, volume = 0.012) {
-  if (!audioContext) return;
-
-  const startTime = audioContext.currentTime + delay;
-
-  const oscillator = audioContext.createOscillator();
-  const gain = audioContext.createGain();
-
-  oscillator.type = "sine";
-  oscillator.frequency.setValueAtTime(frequency, startTime);
-
-  gain.gain.setValueAtTime(0.0001, startTime);
-  gain.gain.exponentialRampToValueAtTime(volume, startTime + 0.04);
-  gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-
-  oscillator.connect(gain);
-  gain.connect(audioContext.destination);
-
-  oscillator.start(startTime);
-  oscillator.stop(startTime + duration + 0.04);
-}
-
-function playBackgroundMusicStep() {
-  if (!backgroundMusicEnabled || !audioContext) return;
-
-  const melody = [392, 440, 523.25, 440, 329.63, 392, 493.88, 392];
-  const bass = [196, 220, 261.63, 220];
-
-  const note = melody[backgroundMusicStep % melody.length];
-  const bassNote = bass[Math.floor(backgroundMusicStep / 2) % bass.length];
-
-  playSoftMusicTone(note, 0.42, 0, 0.010);
-  playSoftMusicTone(bassNote, 0.55, 0.02, 0.006);
-
-  backgroundMusicStep += 1;
-}
-
-function startBackgroundMusic() {
-  if (!backgroundMusicEnabled) return;
-
+startButton?.addEventListener("click", () => {
   initAudio();
+  setupRound(false);
+});
 
-  if (!audioContext) return;
+restartButton?.addEventListener("click", () => {
+  initAudio();
+  setupRound(false);
+});
 
-  if (audioContext.state === "suspended") {
-    audioContext.resume().catch(() => {});
-  }
+playAgainButton?.addEventListener("click", () => {
+  initAudio();
+  setupRound(false);
+});
 
-  if (backgroundMusicTimer) return;
+shareScoreButton?.addEventListener("click", shareScore);
+shareCurrentButton?.addEventListener("click", shareScore);
 
-  playBackgroundMusicStep();
+musicToggleButton?.addEventListener("click", () => {
+  initAudio();
+  toggleMusic();
+});
 
-  backgroundMusicTimer = setInterval(() => {
-    playBackgroundMusicStep();
-  }, 680);
-}
+fullscreenButton?.addEventListener("click", () => {
+  const target = document.querySelector(".game-shell") || document.documentElement;
 
-function stopBackgroundMusic() {
-  if (backgroundMusicTimer) {
-    clearInterval(backgroundMusicTimer);
-    backgroundMusicTimer = null;
-  }
-}
-
-function toggleBackgroundMusic() {
-  backgroundMusicEnabled = !backgroundMusicEnabled;
-  localStorage.setItem("fruitMergeMusic", backgroundMusicEnabled ? "on" : "off");
-
-  if (backgroundMusicEnabled) {
-    startBackgroundMusic();
+  if (!document.fullscreenElement) {
+    target.requestFullscreen?.();
   } else {
-    stopBackgroundMusic();
+    document.exitFullscreen?.();
   }
-
-  updateMusicButtonState();
-}
-
-if (musicToggleButton) {
-  musicToggleButton.addEventListener("click", () => {
-    initAudio();
-    toggleBackgroundMusic();
-  });
-}
-
-[startButton, restartButton, playAgainButton, canvas].forEach((element) => {
-  if (!element) return;
-
-  element.addEventListener("pointerdown", () => {
-    if (backgroundMusicEnabled) {
-      startBackgroundMusic();
-    }
-  });
 });
 
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    stopBackgroundMusic();
-  } else if (backgroundMusicEnabled && isGameStarted && !isGameOver) {
-    startBackgroundMusic();
-  }
+  if (document.hidden) stopMusic();
+  else if (musicEnabled && isGameStarted && !isGameOver) startMusic();
 });
 
-updateMusicButtonState();
-
-/*
-  Override drop sound:
-  More responsive click/drop feedback for desktop and mobile.
-*/
-function playDropSound() {
-  if (!audioContext) return;
-
-  playTone(620, 0.035, "triangle", 0.045);
-
-  setTimeout(() => {
-    playTone(320, 0.045, "sine", 0.026);
-  }, 28);
-}
-
-/*
-  Override merge sound:
-  Softer, cleaner, less harsh.
-*/
-function playMergeSound(level) {
-  const frequency = 460 + level * 38;
-
-  playTone(frequency, 0.06, "sine", 0.040);
-
-  setTimeout(() => {
-    playTone(frequency * 1.24, 0.08, "triangle", 0.024);
-  }, 42);
-}
-
-/*
-  Override game background:
-  Cleaner and higher contrast.
-  Text no longer overlaps with a noisy yellow background.
-*/
-function drawBackground() {
-  const dangerRatio = getMaxDangerRatio();
-  const time = performance.now();
-  const pulse = 0.5 + Math.sin(time / 120) * 0.5;
-  const dangerActive = dangerRatio > 0.35;
-
-  ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-
-  const bg = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
-  bg.addColorStop(0, "#f7fffb");
-  bg.addColorStop(0.42, "#effbf8");
-  bg.addColorStop(1, "#e6f7f1");
-
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-
-  ctx.fillStyle = "rgba(143, 219, 172, 0.15)";
-  ctx.fillRect(0, GAME_HEIGHT - 72, GAME_WIDTH, 72);
-
-  const topAlpha = dangerActive
-    ? 0.12 + dangerRatio * 0.24 + pulse * 0.06
-    : 0.045;
-
-  ctx.fillStyle = `rgba(255, 112, 88, ${topAlpha})`;
-  ctx.fillRect(0, 0, GAME_WIDTH, dropLineY);
-
-  ctx.strokeStyle = dangerActive
-    ? `rgba(255, 80, 65, ${0.78 + pulse * 0.22})`
-    : "rgba(29, 190, 170, 0.86)";
-
-  ctx.lineWidth = dangerActive ? 4 + pulse * 1.1 : 3;
-  ctx.setLineDash([8, 8]);
-
-  ctx.beginPath();
-  ctx.moveTo(0, dropLineY);
-  ctx.lineTo(GAME_WIDTH, dropLineY);
-  ctx.stroke();
-
-  ctx.setLineDash([]);
-
-  drawCanvasLabel(
-    dangerActive ? "Warning!" : "Danger Line",
-    12,
-    dropLineY - 18,
-    "left",
-    dangerActive
-  );
-
-  drawCanvasLabel(
-    getStageName(),
-    GAME_WIDTH - 12,
-    dropLineY - 18,
-    "right",
-    dangerActive
-  );
-
-  if (dangerActive && !isGameOver) {
-    drawDangerCountdown(dangerRatio);
-  }
-}
-
-function drawCanvasLabel(text, x, y, align = "left", danger = false) {
-  ctx.save();
-
-  ctx.font = "bold 13px Arial";
-  ctx.textBaseline = "middle";
-
-  const textWidth = ctx.measureText(text).width;
-  const paddingX = 8;
-  const boxWidth = textWidth + paddingX * 2;
-  const boxHeight = 22;
-
-  let boxX = x;
-
-  if (align === "right") {
-    boxX = x - boxWidth;
-    ctx.textAlign = "right";
-  } else {
-    ctx.textAlign = "left";
-  }
-
-  ctx.fillStyle = danger
-    ? "rgba(255, 255, 255, 0.92)"
-    : "rgba(255, 255, 255, 0.82)";
-
-  ctx.fillRect(boxX, y - boxHeight / 2, boxWidth, boxHeight);
-
-  ctx.fillStyle = danger ? "#ff4c3d" : "#078c83";
-
-  if (align === "right") {
-    ctx.fillText(text, x - paddingX, y);
-  } else {
-    ctx.fillText(text, x + paddingX, y);
-  }
-
-  ctx.restore();
-}
+updateMusicButton();
+preloadFruitImages();
+setupEvolutionBar();
+setupRound(true);
+gameLoop();
