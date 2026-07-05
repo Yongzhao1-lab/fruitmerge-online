@@ -5,8 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Fruit Merge Online - Play Free Fruit Merge Game</title>
-  <meta name="description" content="Play Fruit Merge Online for free. Drop fruits, merge matching fruits, unlock bigger fruits, and challenge your best score in this relaxing browser puzzle game." />
-  <meta name="keywords" content="fruit merge, fruit merge online, fruit merge game, merge fruit game, watermelon game, browser game" />
+
+  <meta
+    name="description"
+    content="Play Fruit Merge Online for free. Drop fruits, merge matching fruits, unlock bigger fruits, and challenge your best score in this relaxing browser puzzle game."
+  />
+
+  <meta
+    name="keywords"
+    content="fruit merge, fruit merge online, fruit merge game, merge fruit game, watermelon game, browser game, puzzle game"
+  />
+
   <link rel="canonical" href="https://fruitmerge.online/" />
 
   <meta property="og:title" content="Fruit Merge Online - Play Free Fruit Merge Game" />
@@ -14,6 +23,13 @@
   <meta property="og:url" content="https://fruitmerge.online/" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://fruitmerge.online/og-image.svg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fruit Merge Online - Play Free Fruit Merge Game" />
+  <meta name="twitter:description" content="Drop fruits, merge matching fruits, unlock bigger fruits, and challenge your best score." />
+  <meta name="twitter:image" content="https://fruitmerge.online/og-image.svg" />
+
+  <meta name="theme-color" content="#0b1120" />
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/style.css" />
@@ -25,9 +41,49 @@
     "name": "Fruit Merge Online",
     "url": "https://fruitmerge.online/",
     "description": "Fruit Merge Online is a free browser puzzle game where players drop and merge fruits to unlock bigger fruits and chase high scores.",
-    "genre": "Puzzle",
+    "genre": ["Puzzle", "Casual", "Merge"],
     "gamePlatform": "Web browser",
-    "applicationCategory": "Game"
+    "applicationCategory": "Game",
+    "operatingSystem": "Any",
+    "inLanguage": "en",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is Fruit Merge Online free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Fruit Merge Online is free to play directly in your browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to download Fruit Merge Online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Fruit Merge Online works directly online without downloads or installation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Fruit Merge Online save my score?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Your best score and local records are saved in your browser."
+        }
+      }
+    ]
   }
   </script>
 </head>
@@ -35,17 +91,17 @@
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <a class="logo" href="/" aria-label="Fruit Merge Online">
+      <a class="logo" href="/" aria-label="Fruit Merge Online Home">
         <span class="logo-mark">🍓</span>
         <span>FruitMerge</span>
       </a>
 
-      <div class="search-box">
-        <span>🔍</span>
+      <div class="search-box" role="search">
+        <span aria-hidden="true">🔍</span>
         <input type="search" placeholder="Search games" aria-label="Search games" />
       </div>
 
-      <nav class="top-actions" aria-label="Top actions">
+      <nav class="top-actions" aria-label="Main navigation">
         <a href="#game">Play</a>
         <a href="#related-games">More Games</a>
         <a href="#faq">FAQ</a>
@@ -54,12 +110,12 @@
     </header>
 
     <aside class="left-sidebar" aria-label="Game categories">
-      <a href="/" title="Home">🏠</a>
-      <a href="#game" title="Play">❤️</a>
-      <a href="#related-games" title="Puzzle Games">🧩</a>
-      <a href="#tips" title="Tips">🎯</a>
-      <a href="#levels" title="Levels">🏆</a>
-      <a href="#faq" title="FAQ">❔</a>
+      <a href="/" title="Home" aria-label="Home">🏠</a>
+      <a href="#game" title="Play Fruit Merge" aria-label="Play Fruit Merge">❤️</a>
+      <a href="#related-games" title="Puzzle Games" aria-label="Puzzle Games">🧩</a>
+      <a href="#tips" title="Game Tips" aria-label="Game Tips">🎯</a>
+      <a href="#levels" title="Fruit Levels" aria-label="Fruit Levels">🏆</a>
+      <a href="#faq" title="FAQ" aria-label="FAQ">❔</a>
     </aside>
 
     <main class="main-content">
@@ -69,7 +125,8 @@
             <p class="eyebrow">PLAY NOW</p>
             <h1>Fruit Merge Online</h1>
           </div>
-          <div class="player-badges">
+
+          <div class="player-badges" aria-label="Game features">
             <span>Free</span>
             <span>No Download</span>
             <span>Browser Game</span>
@@ -78,7 +135,7 @@
 
         <div class="game-screen">
           <div class="game-layout">
-            <aside class="game-left-panel">
+            <aside class="left-panel" aria-label="Score and leaderboard">
               <div class="score-bubble">
                 <span>Score</span>
                 <strong id="score">0</strong>
@@ -86,28 +143,36 @@
                 <b id="bestScore">0</b>
               </div>
 
-              <div class="my-score-card">
-                <h2>My Score</h2>
+              <div class="leaderboard-card">
+                <div class="leaderboard-card-header">
+                  <h2>Top Runs</h2>
+                  <p>Best local scores</p>
+                </div>
 
-                <div class="score-strip gold"></div>
-                <div class="score-strip blue"></div>
-                <div class="score-strip pink"></div>
+                <div id="leaderboardList" class="leaderboard-list">
+                  <div class="leaderboard-item">
+                    <div class="leaderboard-rank">1</div>
+                    <div class="leaderboard-main">
+                      <div class="leaderboard-label">No run yet</div>
+                      <div class="leaderboard-time">Start your first game</div>
+                    </div>
+                    <div class="leaderboard-score">0</div>
+                  </div>
+                </div>
 
-                <div class="now-score">
-                  <span>NOW</span>
-                  <strong id="panelScore">0</strong>
+                <div class="current-run-box">
+                  <div class="current-run-label">Current Run</div>
+                  <div class="current-run-score" id="panelScore">0</div>
                 </div>
 
                 <div class="time-box">
                   <span>Time</span>
                   <strong id="time">00:00</strong>
                 </div>
-
-                <div id="leaderboardList" class="leaderboard-list"></div>
               </div>
             </aside>
 
-            <section class="game-center">
+            <section class="center-panel" aria-label="Fruit Merge game player">
               <div class="glass-frame">
                 <canvas
                   id="gameCanvas"
@@ -119,31 +184,57 @@
                 <div id="startOverlay" class="game-overlay">
                   <div class="overlay-card">
                     <h2>Ready to Merge?</h2>
-                    <p>Drop fruits into the box. Merge the same fruits to unlock bigger ones.</p>
+                    <p>
+                      Drop fruits into the box. Merge the same fruits to unlock bigger ones.
+                    </p>
                     <button id="startButton" type="button">Start Game</button>
                   </div>
                 </div>
+              </div>
 
-                <div id="gameOverOverlay" class="game-overlay hidden">
-                  <div class="overlay-card">
-                    <p class="overlay-kicker" id="runTitle">Game Over</p>
-                    <h2>Final Score: <span id="finalScore">0</span></h2>
-                    <p>Time: <strong id="finalTime">00:00</strong></p>
-                    <p>Best Score: <strong id="finalBestScore">0</strong></p>
-                    <p id="gameOverMessage" class="game-over-message"></p>
+              <div id="gameOverPanel" class="game-over-panel hidden">
+                <div class="game-over-card">
+                  <div class="game-over-badge" id="gameOverBadge">Game Over</div>
 
-                    <div id="gameOverLeaderboard" class="mini-leaderboard"></div>
+                  <h3>Final Score</h3>
+                  <div class="game-over-score" id="gameOverScore">0</div>
 
-                    <div class="overlay-actions">
-                      <button id="playAgainButton" type="button">Play Again</button>
-                      <button id="shareScoreButton" type="button" class="secondary-button">Share Score</button>
+                  <div class="game-over-meta">
+                    <div>
+                      <span>Time</span>
+                      <strong id="gameOverTime">00:00</strong>
+                    </div>
+                    <div>
+                      <span>Best</span>
+                      <strong id="gameOverBest">0</strong>
                     </div>
                   </div>
+
+                  <div class="game-over-tip" id="gameOverTip">
+                    Great run! Keep merging to beat your best score.
+                  </div>
+
+                  <div id="gameOverLeaderboard" class="mini-leaderboard"></div>
+
+                  <div class="game-over-actions">
+                    <button id="playAgainButton" class="primary" type="button">Play Again</button>
+                    <button id="shareScoreButton" class="secondary" type="button">Share</button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="gameOverOverlay" class="game-overlay hidden" aria-hidden="true">
+                <div class="overlay-card">
+                  <p class="overlay-kicker" id="runTitle">Game Over</p>
+                  <h2>Final Score: <span id="finalScore">0</span></h2>
+                  <p>Time: <strong id="finalTime">00:00</strong></p>
+                  <p>Best Score: <strong id="finalBestScore">0</strong></p>
+                  <p id="gameOverMessage" class="game-over-message"></p>
                 </div>
               </div>
             </section>
 
-            <aside class="game-right-panel">
+            <aside class="right-panel" aria-label="Next fruit and evolution">
               <div class="next-bubble">
                 <h2>Next</h2>
 
@@ -153,22 +244,25 @@
                 </div>
 
                 <div class="next-mini-row">
-                  <div>
+                  <div class="next-mini">
                     <canvas id="nextFruitCanvas1" width="44" height="44"></canvas>
                     <small>2nd</small>
                   </div>
-                  <div>
+
+                  <div class="next-mini">
                     <canvas id="nextFruitCanvas2" width="44" height="44"></canvas>
                     <small>3rd</small>
                   </div>
                 </div>
 
-                <button id="restartButton" class="restart-button" type="button" aria-label="Restart game">↻</button>
+                <button id="restartButton" class="restart-button" type="button" aria-label="Restart game">
+                  ↻
+                </button>
               </div>
 
               <div class="evolution-panel">
                 <h2>Circle of Evolution</h2>
-                <div id="evolutionCircle" class="evolution-circle"></div>
+                <div id="evolutionCircle" class="evolution-circle" aria-label="Fruit evolution circle"></div>
               </div>
             </aside>
           </div>
@@ -182,13 +276,14 @@
               <p>Matching · Puzzle · Casual</p>
             </div>
           </div>
-<div class="toolbar-actions">
-  <button type="button" id="musicToggleButton" title="Music">♪</button>
-  <button type="button" title="Download">⬇</button>
-  <button type="button" title="Favorite">♡</button>
-  <button type="button" title="Share">➤</button>
-  <button type="button" title="Fullscreen">⛶</button>
-</div>
+
+          <div class="toolbar-actions">
+            <button type="button" id="musicToggleButton" title="Music" aria-label="Toggle music">♪</button>
+            <button type="button" title="Download" aria-label="Download">⬇</button>
+            <button type="button" title="Favorite" aria-label="Favorite">♡</button>
+            <button type="button" title="Share" aria-label="Share">➤</button>
+            <button type="button" title="Fullscreen" aria-label="Fullscreen">⛶</button>
+          </div>
         </div>
       </section>
 
@@ -197,15 +292,18 @@
       <section class="content-panel" id="how-to-play">
         <p class="section-kicker">HOW TO PLAY</p>
         <h2>How to Play Fruit Merge Online</h2>
+
         <div class="info-grid">
           <article>
             <h3>Drop Fruits</h3>
             <p>Move your cursor or finger to choose where the next fruit will fall.</p>
           </article>
+
           <article>
             <h3>Merge Matching Fruits</h3>
-            <p>When two identical fruits touch, they merge into a bigger fruit.</p>
+            <p>When two identical fruits touch, they merge into a bigger fruit and increase your score.</p>
           </article>
+
           <article>
             <h3>Avoid Overflow</h3>
             <p>Keep fruits below the danger line to survive longer and score higher.</p>
@@ -216,18 +314,21 @@
       <section class="content-panel" id="tips">
         <p class="section-kicker">TIPS</p>
         <h2>Fruit Merge Tips</h2>
+
         <div class="info-grid">
           <article>
             <h3>Use the Corners</h3>
             <p>Keep bigger fruits near the corners to build stable merge chains.</p>
           </article>
+
           <article>
             <h3>Watch the Next Fruit</h3>
             <p>Plan your drop position by checking the next fruit preview.</p>
           </article>
+
           <article>
             <h3>Keep the Center Open</h3>
-            <p>A clean center gives new fruits more room to fall and merge.</p>
+            <p>A clean center gives new fruits more room to fall and merge naturally.</p>
           </article>
         </div>
       </section>
@@ -235,6 +336,7 @@
       <section class="content-panel" id="levels">
         <p class="section-kicker">FRUIT LEVELS</p>
         <h2>Fruit Evolution Levels</h2>
+
         <p class="wide-text">
           Cherry → Strawberry → Grape → Orange → Apple → Peach → Pineapple → Watermelon → Grapefruit → Melon → Dragon Fruit
         </p>
