@@ -145,9 +145,21 @@
 
               <div class="leaderboard-card">
                 <div class="leaderboard-card-header">
-                  <h2>Top Runs</h2>
-                  <p>Best local scores</p>
+                  <h2>Current Run</h2>
+                  <p>Your live score</p>
                 </div>
+
+                <div class="current-run-box">
+                  <div class="current-run-label">Score</div>
+                  <div class="current-run-score" id="panelScore">0</div>
+                </div>
+
+                <div class="time-box">
+                  <span>Time</span>
+                  <strong id="time">00:00</strong>
+                </div>
+
+                <div class="top-runs-title">Top Runs</div>
 
                 <div id="leaderboardList" class="leaderboard-list">
                   <div class="leaderboard-item">
@@ -158,16 +170,6 @@
                     </div>
                     <div class="leaderboard-score">0</div>
                   </div>
-                </div>
-
-                <div class="current-run-box">
-                  <div class="current-run-label">Current Run</div>
-                  <div class="current-run-score" id="panelScore">0</div>
-                </div>
-
-                <div class="time-box">
-                  <span>Time</span>
-                  <strong id="time">00:00</strong>
                 </div>
               </div>
             </aside>
