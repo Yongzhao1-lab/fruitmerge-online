@@ -974,3 +974,304 @@ input {
     padding: 18px;
   }
 }
+/* === Compact Game Portal Layout Fix === */
+
+@media (min-width: 981px) {
+  .app-shell {
+    grid-template-columns: 56px minmax(0, 1fr) 118px;
+    grid-template-rows: 64px 1fr;
+  }
+
+  .topbar {
+    height: 64px;
+    padding: 8px 16px;
+    gap: 12px;
+  }
+
+  .logo {
+    font-size: 22px;
+    padding: 7px 14px 7px 8px;
+  }
+
+  .logo-mark {
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
+  }
+
+  .search-box {
+    height: 44px;
+    max-width: 300px;
+  }
+
+  .top-actions a,
+  .login-button {
+    height: 40px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
+
+  .left-sidebar {
+    top: 64px;
+    height: calc(100vh - 64px);
+    gap: 10px;
+    padding: 12px 0;
+  }
+
+  .left-sidebar a {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .right-rail {
+    top: 64px;
+    height: calc(100vh - 64px);
+    padding: 10px 8px;
+  }
+
+  .main-content {
+    padding: 0 12px 30px 0;
+  }
+
+  .game-player-header {
+    min-height: 58px;
+    padding: 10px 16px 8px;
+  }
+
+  .game-player-header h1 {
+    font-size: 28px;
+  }
+
+  .eyebrow {
+    margin-bottom: 4px;
+    font-size: 11px;
+  }
+
+  .player-badges span {
+    padding: 6px 9px;
+    font-size: 12px;
+  }
+
+  .game-screen {
+    min-height: 500px;
+    height: clamp(500px, calc(100vh - 180px), 540px);
+    padding: 8px 12px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 50% 14%, rgba(255, 255, 255, 0.22), transparent 34%),
+      linear-gradient(180deg, #24304a 0%, #1b2338 44%, #151b2d 100%);
+  }
+
+  .game-layout {
+    width: min(100%, 860px);
+    grid-template-columns: 158px minmax(280px, 348px) 190px;
+    gap: 10px;
+  }
+
+  .score-bubble {
+    width: 118px;
+    height: 108px;
+    padding: 10px;
+  }
+
+  .score-bubble span {
+    font-size: 18px;
+  }
+
+  .score-bubble strong {
+    font-size: 30px;
+  }
+
+  .score-bubble small {
+    margin-top: 3px;
+    font-size: 9px;
+  }
+
+  .score-bubble b {
+    font-size: 16px;
+  }
+
+  .my-score-card {
+    width: 150px;
+    padding: 12px;
+    border-radius: 22px;
+  }
+
+  .my-score-card h2 {
+    margin-bottom: 8px;
+    font-size: 19px;
+  }
+
+  .score-strip {
+    height: 22px;
+    margin-bottom: 5px;
+  }
+
+  .score-strip::after {
+    left: 46px;
+    right: 16px;
+    top: 10px;
+    border-top-width: 2px;
+  }
+
+  .now-score {
+    margin-top: 6px;
+    padding: 6px;
+  }
+
+  .now-score strong {
+    font-size: 20px;
+  }
+
+  .time-box {
+    margin-top: 6px;
+    font-size: 12px;
+  }
+
+  .leaderboard-list {
+    display: none;
+  }
+
+  .glass-frame {
+    width: min(100%, 348px);
+    border-width: 5px;
+    box-shadow:
+      inset 0 0 0 2px rgba(255,255,255,0.24),
+      0 9px 0 rgba(0, 0, 0, 0.18),
+      0 18px 32px rgba(0, 0, 0, 0.25);
+  }
+
+  .glass-frame::before {
+    left: 24px;
+    right: 24px;
+    top: -32px;
+    height: 44px;
+    border-width: 5px;
+    border-bottom: 0;
+  }
+
+  #gameCanvas {
+    width: 100%;
+    height: auto;
+  }
+
+  .next-bubble {
+    width: 142px;
+    min-height: 132px;
+    padding: 12px 14px;
+  }
+
+  .next-bubble h2 {
+    font-size: 22px;
+  }
+
+  .next-main canvas {
+    width: 54px;
+    height: 54px;
+  }
+
+  .next-main span {
+    font-size: 11px;
+  }
+
+  .next-mini-row {
+    gap: 8px;
+  }
+
+  .restart-button {
+    left: -20px;
+    bottom: 24px;
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+  }
+
+  .evolution-panel {
+    width: 178px;
+  }
+
+  .evolution-panel h2 {
+    font-size: 18px;
+  }
+
+  .evolution-circle {
+    width: 166px;
+    height: 166px;
+  }
+
+  .evolution-item {
+    width: 32px;
+    height: 32px;
+    margin: -16px 0 0 -16px;
+    transform:
+      rotate(var(--angle))
+      translate(62px)
+      rotate(calc(-1 * var(--angle)));
+  }
+
+  .evolution-item.current {
+    transform:
+      rotate(var(--angle))
+      translate(62px)
+      rotate(calc(-1 * var(--angle)))
+      scale(1.16);
+  }
+
+  .evolution-item img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .game-toolbar {
+    min-height: 58px;
+    padding: 8px 12px;
+  }
+
+  .game-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 23px;
+  }
+
+  .game-info h2 {
+    font-size: 16px;
+  }
+
+  .game-info p {
+    font-size: 13px;
+  }
+
+  .toolbar-actions button {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+  }
+
+  .ad-placeholder {
+    height: 70px;
+  }
+
+  .content-panel,
+  .related-section {
+    margin-top: 14px;
+    padding: 20px;
+  }
+}
+
+#musicToggleButton {
+  background: linear-gradient(135deg, #9c4dff, #6b2cff);
+}
+
+#musicToggleButton.music-off {
+  background: #30303c;
+  color: #9b98a8;
+}
+
+.game-screen {
+  border-radius: 0;
+}
+
+.game-player-card {
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+}
