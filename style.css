@@ -2471,3 +2471,66 @@ body {
     margin-top: 10px;
   }
 }
+/* Remove useless score progress strips and polish left score panel */
+
+.score-strip {
+  display: none !important;
+}
+
+.leaderboard-card {
+  padding: 16px 12px 14px;
+}
+
+.leaderboard-card-header {
+  margin-bottom: 12px;
+}
+
+.leaderboard-card-header h2 {
+  font-size: 17px;
+  color: #7d5318;
+}
+
+.leaderboard-card-header p {
+  font-size: 11px;
+  color: #8b795b;
+}
+
+.current-run-box {
+  margin-bottom: 10px;
+  padding: 12px 8px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #f8d35f 0%, #e7b935 100%);
+  box-shadow: inset 0 2px 6px rgba(255,255,255,0.25);
+}
+
+.current-run-label {
+  font-size: 12px;
+  font-weight: 900;
+  color: #80520d;
+}
+
+.current-run-score {
+  margin-top: 3px;
+  font-size: 24px;
+  font-weight: 900;
+  color: #5e3a06;
+}
+
+.time-box {
+  margin-bottom: 12px;
+  padding: 0 2px;
+}
+
+.top-runs-title {
+  margin: 8px 0 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(130, 94, 32, 0.18);
+  font-size: 13px;
+  font-weight: 900;
+  color: #7d5318;
+  text-align: center;
+}
+
+.leaderboard-list {
+  margin-top: 0;
+}
