@@ -48,117 +48,118 @@ const gameOverLeaderboard = document.getElementById("gameOverLeaderboard");
 let nextFruitCanvases = [];
 let nextFruitContexts = [];
 
+const ASSET_VERSION = "v=20260705-soft-jelly";
+
 const fruits = [
   {
     name: "Cherry",
     radius: 15,
     score: 5,
     type: "cherry",
-    color: "#ff3f3a",
-    light: "#ff9c7d",
-    dark: "#c9282d",
-    visualScale: 1.45
+    files: ["cherry.png"],
+    color: "#ff4a42",
+    visualScale: 1.46,
+    drawOffsetY: 0
   },
   {
     name: "Strawberry",
     radius: 20,
     score: 10,
     type: "strawberry",
-    color: "#ff4f48",
-    light: "#ffa688",
-    dark: "#c52731",
-    visualScale: 1.32
+    files: ["strawberry.png"],
+    color: "#ff5148",
+    visualScale: 1.34,
+    drawOffsetY: 0
   },
   {
     name: "Grape",
     radius: 25,
     score: 20,
     type: "grape",
+    files: ["grape.png"],
     color: "#a65bff",
-    light: "#d9a2ff",
-    dark: "#6531b8",
-    visualScale: 1.24,
-    drawOffsetY: 2
+    visualScale: 1.26,
+    drawOffsetY: 1
   },
   {
     name: "Orange",
     radius: 32,
     score: 40,
     type: "orange",
+    files: ["orange.png"],
     color: "#ff9f2e",
-    light: "#ffd573",
-    dark: "#d76b07",
-    visualScale: 1.20
+    visualScale: 1.20,
+    drawOffsetY: 0
   },
   {
     name: "Apple",
     radius: 39,
     score: 80,
     type: "apple",
+    files: ["apple.png"],
     color: "#f64340",
-    light: "#ff8c7d",
-    dark: "#b82a2d",
-    visualScale: 1.17
+    visualScale: 1.18,
+    drawOffsetY: 0
   },
   {
-    name: "Lemon",
+    name: "Peach",
     radius: 48,
     score: 160,
-    type: "lemon",
-    color: "#ffe45b",
-    light: "#fff8ad",
-    dark: "#d9ad17",
-    visualScale: 1.14
+    type: "peach",
+    files: ["peach.png"],
+    color: "#ff9872",
+    visualScale: 1.15,
+    drawOffsetY: 0
   },
   {
-    name: "Lime",
+    name: "Pineapple",
     radius: 57,
     score: 320,
-    type: "lime",
-    color: "#9bdd45",
-    light: "#dcff83",
-    dark: "#58a824",
-    visualScale: 1.12
+    type: "pineapple",
+    files: ["pineapple.png"],
+    color: "#ffc238",
+    visualScale: 1.10,
+    drawOffsetY: -2
   },
   {
     name: "Watermelon",
     radius: 68,
     score: 640,
     type: "watermelon",
+    files: ["watermelon.png"],
     color: "#30c765",
-    light: "#96ec75",
-    dark: "#0d7d3b",
-    visualScale: 1.08
+    visualScale: 1.08,
+    drawOffsetY: 0
   },
   {
-    name: "Mango",
+    name: "Lemon",
     radius: 80,
     score: 1280,
-    type: "mango",
-    color: "#ffae2e",
-    light: "#ffdd78",
-    dark: "#d76e07",
-    visualScale: 1.05
+    type: "lemon",
+    files: ["lemon.png", "mango.png"],
+    color: "#ffe45b",
+    visualScale: 1.05,
+    drawOffsetY: 0
   },
   {
     name: "Melon",
     radius: 92,
     score: 2560,
     type: "melon",
+    files: ["melon.png"],
     color: "#d9e66d",
-    light: "#f7f8af",
-    dark: "#92a33e",
-    visualScale: 1.03
+    visualScale: 1.03,
+    drawOffsetY: 0
   },
   {
     name: "Dragon Fruit",
     radius: 106,
     score: 5120,
     type: "dragonfruit",
+    files: ["dragonfruit.png", "dragon-fruit.png"],
     color: "#ff5098",
-    light: "#ff9ecc",
-    dark: "#c21c67",
-    visualScale: 1.00
+    visualScale: 1.00,
+    drawOffsetY: 0
   }
 ];
 
@@ -205,8 +206,8 @@ const collisionRestitution = 0.003;
 const collisionCorrection = 0.45;
 const maxCorrectionPerFrame = 3.1;
 
-const collisionTightness = 0.76;
-const mergeDistanceFactor = 0.84;
+const collisionTightness = 0.78;
+const mergeDistanceFactor = 0.86;
 
 function setText(element, value) {
   if (element) element.textContent = value;
@@ -353,346 +354,47 @@ function vibrate(ms) {
   if (navigator.vibrate) navigator.vibrate(ms);
 }
 
-function preloadFruitImages() {
-  fruits.forEach((fruit, index) => {
-    const image = new Image();
+function loadFruitImage(index, fileIndex = 0) {
+  const fruit = fruits[index];
+  const file = fruit.files[fileIndex];
 
+  if (!file) {
+    fruitImages.set(index, {
+      image: null,
+      loaded: false,
+      failed: true
+    });
+    return;
+  }
+
+  const image = new Image();
+
+  fruitImages.set(index, {
+    image,
+    loaded: false,
+    failed: false
+  });
+
+  image.onload = () => {
     fruitImages.set(index, {
       image,
-      loaded: false,
+      loaded: true,
       failed: false
     });
+    updateNextFruit();
+  };
 
-    image.onload = () => {
-      fruitImages.set(index, {
-        image,
-        loaded: true,
-        failed: false
-      });
-      updateNextFruit();
-    };
+  image.onerror = () => {
+    loadFruitImage(index, fileIndex + 1);
+  };
 
-    image.onerror = () => {
-      fruitImages.set(index, {
-        image: null,
-        loaded: false,
-        failed: true
-      });
-      updateNextFruit();
-    };
+  image.src = `/assets/fruits/${file}?${ASSET_VERSION}`;
+}
 
-    image.src = svgToDataUri(createFruitSvg(fruit));
+function preloadFruitImages() {
+  fruits.forEach((_, index) => {
+    loadFruitImage(index);
   });
-}
-
-function svgToDataUri(svg) {
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-}
-
-function createFruitSvg(fruit) {
-  const id = fruit.type;
-  const stroke = "rgba(126, 78, 30, 0.62)";
-  const softStroke = "rgba(255,255,255,0.38)";
-
-  const defs = `
-    <defs>
-      <radialGradient id="body-${id}" cx="34%" cy="26%" r="82%">
-        <stop offset="0%" stop-color="#fffbd3"/>
-        <stop offset="20%" stop-color="${fruit.light}"/>
-        <stop offset="64%" stop-color="${fruit.color}"/>
-        <stop offset="100%" stop-color="${fruit.dark}"/>
-      </radialGradient>
-
-      <linearGradient id="leaf-${id}" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#e6ff86"/>
-        <stop offset="48%" stop-color="#70db42"/>
-        <stop offset="100%" stop-color="#2e9d2d"/>
-      </linearGradient>
-
-      <linearGradient id="stem-${id}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#c77a2a"/>
-        <stop offset="100%" stop-color="#7d461c"/>
-      </linearGradient>
-
-      <filter id="soft-${id}" x="-24%" y="-24%" width="148%" height="148%">
-        <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000" flood-opacity="0.12"/>
-      </filter>
-    </defs>
-  `;
-
-  function wrap(content) {
-    return `
-      <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
-        ${defs}
-        <g filter="url(#soft-${id})" stroke-linecap="round" stroke-linejoin="round">
-          ${content}
-        </g>
-      </svg>
-    `;
-  }
-
-  function gloss(x, y, rx, ry, alpha = 0.48) {
-    return `
-      <ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#fffdf1" opacity="${alpha}" transform="rotate(-28 ${x} ${y})"/>
-      <circle cx="${x + rx * 1.45}" cy="${y + ry * 0.62}" r="${Math.max(3, rx * 0.28)}" fill="#fff" opacity="${alpha * 0.45}"/>
-    `;
-  }
-
-  function face(cx, cy, s = 1) {
-    return `
-      <circle cx="${cx - 15 * s}" cy="${cy}" r="${3.5 * s}" fill="#6b421f" opacity="0.78"/>
-      <circle cx="${cx + 15 * s}" cy="${cy}" r="${3.5 * s}" fill="#6b421f" opacity="0.78"/>
-      <path d="M${cx - 7 * s} ${cy + 10 * s} Q${cx} ${cy + 17 * s}, ${cx + 7 * s} ${cy + 10 * s}"
-        fill="none" stroke="#6b421f" stroke-width="${3 * s}" opacity="0.7"/>
-      <circle cx="${cx - 27 * s}" cy="${cy + 8 * s}" r="${5.5 * s}" fill="#ff8fa3" opacity="0.42"/>
-      <circle cx="${cx + 27 * s}" cy="${cy + 8 * s}" r="${5.5 * s}" fill="#ff8fa3" opacity="0.42"/>
-    `;
-  }
-
-  function leaf(x, y, s, r = 0) {
-    return `
-      <path d="M${x} ${y}
-        C${x + s * 0.55} ${y - s * 0.72}, ${x + s * 1.02} ${y - s * 0.16}, ${x + s * 0.82} ${y + s * 0.18}
-        C${x + s * 0.38} ${y + s * 0.34}, ${x + s * 0.1} ${y + s * 0.16}, ${x} ${y} Z"
-        fill="url(#leaf-${id})" stroke="rgba(48,120,28,0.62)" stroke-width="${Math.max(2, s * 0.08)}"
-        transform="rotate(${r} ${x} ${y})"/>
-    `;
-  }
-
-  function stem(x, y, h, r = 0, w = 6) {
-    return `
-      <path d="M${x} ${y} Q${x + h * 0.10} ${y - h * 0.40}, ${x + h * 0.02} ${y - h}"
-        fill="none" stroke="url(#stem-${id})" stroke-width="${w}"
-        transform="rotate(${r} ${x} ${y})"/>
-    `;
-  }
-
-  function candyBlob(cx, cy, rx, ry, fillId = `url(#body-${id})`) {
-    return `
-      <path d="
-        M${cx} ${cy - ry}
-        C${cx + rx * 0.72} ${cy - ry * 0.96}, ${cx + rx} ${cy - ry * 0.30}, ${cx + rx * 0.92} ${cy + ry * 0.18}
-        C${cx + rx * 0.80} ${cy + ry * 0.74}, ${cx + rx * 0.28} ${cy + ry * 0.94}, ${cx} ${cy + ry * 0.78}
-        C${cx - rx * 0.28} ${cy + ry * 0.94}, ${cx - rx * 0.80} ${cy + ry * 0.74}, ${cx - rx * 0.92} ${cy + ry * 0.18}
-        C${cx - rx} ${cy - ry * 0.30}, ${cx - rx * 0.72} ${cy - ry * 0.96}, ${cx} ${cy - ry}
-        Z"
-        fill="${fillId}" stroke="${stroke}" stroke-width="6"/>
-    `;
-  }
-
-  if (fruit.type === "cherry") {
-    return wrap(`
-      ${stem(104, 96, 55, -22, 6)}
-      ${stem(149, 98, 54, 22, 6)}
-      ${leaf(126, 48, 25, -8)}
-      ${candyBlob(98, 147, 39, 34)}
-      ${candyBlob(145, 149, 37, 32)}
-      ${gloss(84, 135, 10, 5, 0.48)}
-      ${gloss(132, 137, 9, 5, 0.40)}
-    `);
-  }
-
-  if (fruit.type === "strawberry") {
-    const seeds = [
-      [99, 99], [128, 91], [157, 100],
-      [91, 128], [122, 123], [153, 130],
-      [103, 158], [137, 158]
-    ].map(([x, y]) => `
-      <ellipse cx="${x}" cy="${y}" rx="4" ry="7" fill="#ffe476" opacity="0.82" transform="rotate(20 ${x} ${y})"/>
-    `).join("");
-
-    return wrap(`
-      <path d="
-        M128 218
-        C70 176, 56 108, 103 76
-        C116 67, 140 67, 153 76
-        C200 108, 186 176, 128 218
-        Z"
-        fill="url(#body-${id})" stroke="${stroke}" stroke-width="6"/>
-      ${gloss(93, 96, 18, 9, 0.45)}
-      ${seeds}
-      ${leaf(92, 74, 24, -68)}
-      ${leaf(112, 68, 27, -38)}
-      ${leaf(132, 66, 28, -8)}
-      ${leaf(153, 70, 24, 20)}
-    `);
-  }
-
-  if (fruit.type === "grape") {
-    const pieces = [
-      [128, 76, 27],
-      [99, 100, 28], [129, 105, 30], [158, 101, 28],
-      [83, 130, 26], [113, 137, 29], [148, 137, 29], [174, 132, 25],
-      [103, 166, 25], [138, 168, 26]
-    ].map(([x, y, r]) => `
-      <circle cx="${x}" cy="${y}" r="${r}" fill="url(#body-${id})" stroke="${stroke}" stroke-width="5"/>
-      <ellipse cx="${x - r * 0.28}" cy="${y - r * 0.30}" rx="${r * 0.20}" ry="${r * 0.09}" fill="#fffdf1" opacity="0.35" transform="rotate(-28 ${x - r * 0.28} ${y - r * 0.30})"/>
-    `).join("");
-
-    return wrap(`
-      ${stem(143, 66, 36, 34, 6)}
-      ${leaf(156, 55, 30, -15)}
-      ${pieces}
-    `);
-  }
-
-  if (fruit.type === "orange") {
-    const dots = [
-      [92, 113], [121, 101], [151, 114],
-      [91, 145], [135, 151], [163, 141]
-    ].map(([x, y]) => `
-      <circle cx="${x}" cy="${y}" r="4" fill="#b65d00" opacity="0.22"/>
-    `).join("");
-
-    return wrap(`
-      ${candyBlob(128, 142, 78, 67)}
-      ${gloss(92, 94, 22, 10, 0.45)}
-      ${dots}
-      ${stem(128, 74, 28, 4, 6)}
-      ${leaf(145, 68, 27, -8)}
-    `);
-  }
-
-  if (fruit.type === "apple") {
-    return wrap(`
-      <path d="
-        M128 84
-        C91 64, 62 91, 63 138
-        C64 189, 105 211, 128 190
-        C151 211, 192 189, 193 138
-        C194 91, 165 64, 128 84
-        Z"
-        fill="url(#body-${id})" stroke="${stroke}" stroke-width="6"/>
-      <path d="M107 79 C117 88, 139 88, 149 79" fill="none" stroke="rgba(122,60,31,0.30)" stroke-width="4"/>
-      ${gloss(91, 99, 22, 10, 0.44)}
-      ${stem(132, 79, 34, 10, 6)}
-      ${leaf(150, 73, 29, -10)}
-    `);
-  }
-
-  if (fruit.type === "lemon") {
-    return wrap(`
-      <path d="
-        M79 88
-        C112 59, 172 66, 196 112
-        C218 155, 186 205, 126 207
-        C70 209, 44 170, 57 126
-        C61 111, 69 98, 79 88
-        Z"
-        fill="url(#body-${id})" stroke="${stroke}" stroke-width="6"/>
-      ${gloss(94, 105, 23, 10, 0.45)}
-      <circle cx="101" cy="152" r="5" fill="#d4a318" opacity="0.28"/>
-      <circle cx="151" cy="137" r="5" fill="#d4a318" opacity="0.25"/>
-      ${face(128, 150, 0.9)}
-    `);
-  }
-
-  if (fruit.type === "lime") {
-    return wrap(`
-      ${candyBlob(128, 142, 78, 68)}
-      ${gloss(91, 98, 22, 10, 0.42)}
-      <path d="M74 142 C103 125, 154 126, 184 144" fill="none" stroke="rgba(255,255,180,0.55)" stroke-width="5"/>
-      <path d="M93 103 C113 94, 146 95, 166 106" fill="none" stroke="rgba(255,255,180,0.42)" stroke-width="4"/>
-      ${face(128, 151, 0.85)}
-    `);
-  }
-
-  if (fruit.type === "watermelon") {
-    const stripes = [-2, -1, 0, 1, 2].map((i) => `
-      <path d="M${128 + i * 26} 70
-        C${113 + i * 16} 105, ${113 + i * 16} 160, ${128 + i * 26} 210"
-        fill="none" stroke="#0d7a35" stroke-width="10" opacity="0.38"/>
-    `).join("");
-
-    return wrap(`
-      ${candyBlob(128, 142, 82, 72)}
-      <clipPath id="clip-${id}">
-        <path d="
-          M128 70
-          C187 68, 214 103, 204 158
-          C195 207, 153 225, 128 210
-          C103 225, 61 207, 52 158
-          C42 103, 69 68, 128 70
-          Z"/>
-      </clipPath>
-      <g clip-path="url(#clip-${id})">${stripes}</g>
-      ${gloss(91, 97, 23, 11, 0.42)}
-      ${stem(132, 72, 28, 18, 6)}
-    `);
-  }
-
-  if (fruit.type === "mango") {
-    return wrap(`
-      <path d="
-        M107 66
-        C164 57, 205 101, 196 154
-        C186 212, 111 222, 72 181
-        C38 145, 52 76, 107 66
-        Z"
-        fill="url(#body-${id})" stroke="${stroke}" stroke-width="6"/>
-      ${gloss(89, 103, 22, 10, 0.43)}
-      ${stem(128, 73, 29, 12, 6)}
-      ${leaf(147, 69, 29, -8)}
-    `);
-  }
-
-  if (fruit.type === "melon") {
-    const net = `
-      <path d="M62 139 C92 120 162 120 194 139" fill="none" stroke="#fff8b2" stroke-width="5" opacity="0.62"/>
-      <path d="M68 164 C98 149 158 149 188 164" fill="none" stroke="#fff8b2" stroke-width="5" opacity="0.58"/>
-      <path d="M78 109 C104 98 153 98 179 109" fill="none" stroke="#fff8b2" stroke-width="4.5" opacity="0.54"/>
-      <path d="M104 65 C92 99 92 173 105 212" fill="none" stroke="#fff8b2" stroke-width="5" opacity="0.58"/>
-      <path d="M153 65 C166 99 166 173 151 212" fill="none" stroke="#fff8b2" stroke-width="5" opacity="0.58"/>
-      <path d="M128 64 C128 101 128 174 128 216" fill="none" stroke="#fff8b2" stroke-width="5" opacity="0.54"/>
-    `;
-
-    return wrap(`
-      ${candyBlob(128, 142, 84, 74)}
-      <clipPath id="clip-${id}">
-        <path d="
-          M128 68
-          C190 66, 219 106, 207 161
-          C197 212, 153 228, 128 212
-          C103 228, 59 212, 49 161
-          C37 106, 66 66, 128 68
-          Z"/>
-      </clipPath>
-      <g clip-path="url(#clip-${id})">${net}</g>
-      ${gloss(91, 97, 23, 11, 0.40)}
-      ${stem(128, 72, 25, 0, 7)}
-    `);
-  }
-
-  if (fruit.type === "dragonfruit") {
-    const leaves = [
-      [78, 96, 30, -120],
-      [119, 66, 36, -85],
-      [164, 82, 31, -42],
-      [196, 128, 28, 4],
-      [169, 190, 31, 46],
-      [102, 201, 30, 116],
-      [61, 149, 31, 160]
-    ].map(([x, y, s, r]) => leaf(x, y, s, r)).join("");
-
-    return wrap(`
-      ${leaves}
-      <path d="
-        M129 58
-        C185 66, 207 124, 184 174
-        C160 220, 91 215, 63 168
-        C36 121, 68 62, 129 58
-        Z"
-        fill="url(#body-${id})" stroke="${stroke}" stroke-width="6"/>
-      ${gloss(92, 101, 23, 10, 0.43)}
-      <path d="M86 158 C116 176, 155 172, 178 142" fill="none" stroke="#cb1e70" stroke-width="5" opacity="0.22"/>
-      ${face(128, 148, 0.88)}
-    `);
-  }
-
-  return wrap(`
-    ${candyBlob(128, 142, 80, 70)}
-    ${gloss(92, 96, 22, 10, 0.42)}
-  `);
 }
 
 function getDifficultyStage() {
@@ -1058,6 +760,7 @@ function drawFruit(ball) {
 function drawFruitIcon(targetCtx, x, y, radius, level, showShadow = true) {
   const fruit = fruits[level];
   const record = fruitImages.get(level);
+
   const visualSize = Math.round(radius * 2 * (fruit.visualScale || 1));
   const drawX = Math.round(x - visualSize / 2 + (fruit.drawOffsetX || 0));
   const drawY = Math.round(y - visualSize / 2 + (fruit.drawOffsetY || 0));
