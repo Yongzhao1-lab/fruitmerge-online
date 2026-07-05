@@ -48,7 +48,7 @@ const gameOverLeaderboard = document.getElementById("gameOverLeaderboard");
 let nextFruitCanvases = [];
 let nextFruitContexts = [];
 
-const ASSET_VERSION = "v=20260705-stable-physics";
+const ASSET_VERSION = "v=20260705-no-crop-fix";
 
 const fruits = [
   {
@@ -189,13 +189,6 @@ let screenShake = 0;
 let audioContext = null;
 let soundReady = false;
 
-/*
-  Stable physics version:
-  - lower bounce
-  - stronger floor friction
-  - sleep mechanism
-  - reduced endless micro-jitter
-*/
 const gravity = 0.64;
 const friction = 0.94;
 const floorFriction = 0.88;
@@ -837,9 +830,37 @@ function drawFruitIcon(targetCtx, x, y, radius, level, showShadow = true) {
   const fruit = fruits[level];
   const record = fruitImages.get(level);
 
-  const visualSize = Math.round(radius * 2 * (fruit.visualScale || 1));
-  const drawX = Math.round(x - visualSize / 2 + (fruit.drawOffsetX || 0));
-  const drawY = Math.round(y - visualSize / 2 + (fruit.drawOffsetY || 0));
+  const isMainCanvas = targetCtx === ctx;
+  const canvasW = isMainCanvas ? GAME_WIDTH : targetCtx.canvas.width;
+  const canvasH = isMainCanvas ? GAME_HEIGHT : targetCtx.canvas.height;
+
+  let visualSize = Math.round(radius * 2 * (fruit.visualScale || 1));
+
+  if (!showShadow) {
+    const maxPreviewSize = Math.floor(Math.min(canvasW, canvasH) * 0.82);
+    visualSize = Math.min(visualSize, maxPreviewSize);
+  }
+
+  let drawX = Math.round(x - visualSize / 2 + (fruit.drawOffsetX || 0));
+  let drawY = Math.round(y - visualSize / 2 + (fruit.drawOffsetY || 0));
+
+  const padding = showShadow ? 3 : 1;
+
+  if (drawX < padding) {
+    drawX = padding;
+  }
+
+  if (drawX + visualSize > canvasW - padding) {
+    drawX = canvasW - padding - visualSize;
+  }
+
+  if (drawY < padding) {
+    drawY = padding;
+  }
+
+  if (drawY + visualSize > canvasH - padding) {
+    drawY = canvasH - padding - visualSize;
+  }
 
   if (showShadow) {
     targetCtx.save();
