@@ -1360,3 +1360,87 @@ input {
     grid-template-columns: 1fr;
   }
 }
+/* =========================================================
+   Clean Start Screen
+   简化游戏开始界面：去掉大弹窗，只保留 Play 按钮
+   ========================================================= */
+
+.game-overlay.start-screen {
+  inset: 6px !important;
+  z-index: 20;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 0 !important;
+  border-radius: 14px 14px 18px 18px;
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: none !important;
+}
+
+.start-play-button {
+  width: 96px;
+  height: 96px;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background:
+    radial-gradient(circle at 28% 24%, rgba(255,255,255,0.55), transparent 18%),
+    linear-gradient(180deg, #ffad72 0%, #ff7d59 100%);
+  box-shadow:
+    0 16px 34px rgba(112, 70, 21, 0.26),
+    inset 0 5px 12px rgba(255, 255, 255, 0.26);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.start-play-button:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow:
+    0 20px 38px rgba(112, 70, 21, 0.30),
+    inset 0 5px 12px rgba(255, 255, 255, 0.30);
+}
+
+.start-play-button:active {
+  transform: scale(0.96);
+}
+
+.play-icon {
+  margin-left: 7px;
+  font-size: 38px;
+  line-height: 1;
+  font-weight: 1000;
+  text-shadow: 0 2px 0 rgba(120, 63, 18, 0.24);
+}
+
+.start-hint {
+  margin: 0;
+  padding: 7px 14px;
+  border-radius: 999px;
+  color: #704615;
+  background: rgba(255, 249, 222, 0.82);
+  font-size: 13px;
+  font-weight: 900;
+  box-shadow: 0 8px 18px rgba(112, 70, 21, 0.12);
+}
+
+/* mobile */
+@media (max-width: 880px) {
+  .start-play-button {
+    width: 58px;
+    height: 58px;
+  }
+
+  .play-icon {
+    margin-left: 4px;
+    font-size: 24px;
+  }
+
+  .start-hint {
+    padding: 5px 9px;
+    font-size: 9px;
+  }
+}
