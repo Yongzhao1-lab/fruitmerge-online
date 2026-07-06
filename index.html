@@ -334,6 +334,51 @@
               </div>
             </div>
           </div>
+
+          <div id="mobileSharePopover" class="mobile-share-popover hidden" aria-label="Share score">
+            <div class="mobile-share-card">
+              <div class="mobile-share-head">
+                <div>
+                  <span>Share</span>
+                  <strong>Your Score</strong>
+                </div>
+
+                <button id="mobileShareCloseButton" type="button" aria-label="Close share panel">×</button>
+              </div>
+
+              <div class="mobile-share-grid">
+                <button type="button" data-share-platform="facebook">
+                  <span>f</span>
+                  Facebook
+                </button>
+
+                <button type="button" data-share-platform="instagram">
+                  <span>◎</span>
+                  Instagram
+                </button>
+
+                <button type="button" data-share-platform="whatsapp">
+                  <span>☘</span>
+                  WhatsApp
+                </button>
+
+                <button type="button" data-share-platform="telegram">
+                  <span>✈</span>
+                  Telegram
+                </button>
+
+                <button type="button" data-share-platform="x">
+                  <span>𝕏</span>
+                  X
+                </button>
+
+                <button type="button" data-share-platform="copy">
+                  <span>⛓</span>
+                  Copy
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="game-toolbar">
@@ -529,6 +574,9 @@
       const mobileRestartButton = document.getElementById("mobileRestartButton");
       const mobileShareButton = document.getElementById("mobileShareButton");
 
+      const mobileSharePopover = document.getElementById("mobileSharePopover");
+      const mobileShareCloseButton = document.getElementById("mobileShareCloseButton");
+
       const musicToggleButton = document.getElementById("musicToggleButton");
       const restartButton = document.getElementById("restartButton");
 
@@ -547,8 +595,12 @@
         };
       }
 
-      async function copyShareText(data) {
-        const shareText = `${data.text}\n${data.url}`;
+      function getShareText(data = getShareData()) {
+        return `${data.text}\n${data.url}`;
+      }
+
+      async function copyShareText(data = getShareData()) {
+        const shareText = getShareText(data);
 
         try {
           if (navigator.clipboard && window.isSecureContext) {
@@ -562,7 +614,7 @@
         return false;
       }
 
-      async function shareGame() {
+      async function nativeShareOrCopy() {
         const data = getShareData();
 
         try {
@@ -576,9 +628,62 @@
         return false;
       }
 
+      function openShareUrl(url) {
+        const win = window.open(url, "_blank", "noopener,noreferrer");
+
+        if (!win) {
+          copyShareText();
+        }
+      }
+
+      async function shareToPlatform(platform) {
+        const data = getShareData();
+        const encodedUrl = encodeURIComponent(data.url);
+        const encodedText = encodeURIComponent(data.text);
+        const encodedFullText = encodeURIComponent(getShareText(data));
+
+        if (platform === "facebook") {
+          openShareUrl(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`);
+          return;
+        }
+
+        if (platform === "whatsapp") {
+          openShareUrl(`https://wa.me/?text=${encodedFullText}`);
+          return;
+        }
+
+        if (platform === "telegram") {
+          openShareUrl(`https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`);
+          return;
+        }
+
+        if (platform === "x") {
+          openShareUrl(`https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`);
+          return;
+        }
+
+        if (platform === "instagram") {
+          try {
+            if (navigator.share) {
+              await navigator.share(data);
+              return;
+            }
+          } catch (error) {}
+
+          await copyShareText(data);
+          openShareUrl("https://www.instagram.com/");
+          return;
+        }
+
+        if (platform === "copy") {
+          await copyShareText(data);
+        }
+      }
+
       function openMobileMenu() {
         if (!mobileGameMenu) return;
 
+        closeSharePopover();
         mobileGameMenu.classList.remove("hidden");
         document.body.classList.add("mobile-menu-open");
       }
@@ -590,12 +695,28 @@
         document.body.classList.remove("mobile-menu-open");
       }
 
+      function openSharePopover() {
+        if (!mobileSharePopover) return;
+
+        closeMobileMenu();
+        mobileSharePopover.classList.remove("hidden");
+        document.body.classList.add("mobile-share-open");
+      }
+
+      function closeSharePopover() {
+        if (!mobileSharePopover) return;
+
+        mobileSharePopover.classList.add("hidden");
+        document.body.classList.remove("mobile-share-open");
+      }
+
       function enterMobilePlayMode() {
         if (!isMobileScreen()) return false;
 
         document.body.classList.add("mobile-playing");
-        document.body.classList.remove("mobile-menu-open");
+        document.body.classList.remove("mobile-menu-open", "mobile-share-open");
         closeMobileMenu();
+        closeSharePopover();
         window.scrollTo(0, 0);
 
         const target = gamePlayer || document.documentElement;
@@ -619,8 +740,9 @@
 
       function exitMobilePlayMode() {
         closeMobileMenu();
+        closeSharePopover();
 
-        document.body.classList.remove("mobile-playing", "mobile-menu-open");
+        document.body.classList.remove("mobile-playing", "mobile-menu-open", "mobile-share-open");
 
         if (document.fullscreenElement) {
           document.exitFullscreen?.().catch(() => {});
@@ -687,26 +809,34 @@
       toolbarShareButton?.addEventListener("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
-        await shareGame();
+
+        if (isMobileScreen()) {
+          openSharePopover();
+        } else {
+          await nativeShareOrCopy();
+        }
       });
 
       shareCurrentButton?.addEventListener("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
-        await shareGame();
+
+        if (isMobileScreen()) {
+          openSharePopover();
+        } else {
+          await nativeShareOrCopy();
+        }
       });
 
       shareScoreButton?.addEventListener("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
-        await shareGame();
-      });
 
-      mobileShareButton?.addEventListener("click", async (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        await shareGame();
-        closeMobileMenu();
+        if (isMobileScreen()) {
+          openSharePopover();
+        } else {
+          await nativeShareOrCopy();
+        }
       });
 
       toolbarFullscreenButton?.addEventListener("click", toggleFullscreenOrMobileMode);
@@ -740,12 +870,15 @@
         event.preventDefault();
         event.stopPropagation();
 
-        const confirmed = window.confirm("Restart this run?");
+        restartButton?.click();
+        closeMobileMenu();
+      });
 
-        if (confirmed) {
-          restartButton?.click();
-          closeMobileMenu();
-        }
+      mobileShareButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        openSharePopover();
       });
 
       mobileExitButton?.addEventListener("click", (event) => {
@@ -755,22 +888,56 @@
         exitMobilePlayMode();
       });
 
+      mobileShareCloseButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        closeSharePopover();
+      });
+
+      document.querySelectorAll("[data-share-platform]").forEach((button) => {
+        button.addEventListener("click", async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+
+          const platform = button.getAttribute("data-share-platform");
+          await shareToPlatform(platform);
+          closeSharePopover();
+        });
+      });
+
       mobileGameMenu?.addEventListener("click", (event) => {
         if (event.target === mobileGameMenu) {
           closeMobileMenu();
         }
       });
 
+      document.addEventListener("click", (event) => {
+        if (
+          mobileSharePopover &&
+          !mobileSharePopover.classList.contains("hidden") &&
+          !mobileSharePopover.contains(event.target) &&
+          event.target !== mobileShareButton &&
+          event.target !== toolbarShareButton &&
+          event.target !== shareCurrentButton &&
+          event.target !== shareScoreButton
+        ) {
+          closeSharePopover();
+        }
+      });
+
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
           closeMobileMenu();
+          closeSharePopover();
         }
       });
 
       document.addEventListener("fullscreenchange", () => {
         if (!document.fullscreenElement && isMobileScreen()) {
-          document.body.classList.remove("mobile-playing", "mobile-menu-open");
+          document.body.classList.remove("mobile-playing", "mobile-menu-open", "mobile-share-open");
           closeMobileMenu();
+          closeSharePopover();
         }
       });
 
