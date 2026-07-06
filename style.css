@@ -1642,3 +1642,43 @@ a {
     width: calc(100vw - 14px) !important;
   }
 }
+/* =========================================================
+   Fix Evolution Circle Fruits
+   修复右侧进化圈水果不显示 / 堆在中间的问题
+   ========================================================= */
+
+.evolution-circle {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.evolution-circle .evolution-item {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 34px !important;
+  height: 34px !important;
+  margin: -17px 0 0 -17px !important;
+  border-radius: 50% !important;
+  display: grid !important;
+  place-items: center !important;
+  background: rgba(255, 255, 255, 0.62) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.75),
+    0 4px 10px rgba(86, 120, 0, 0.12) !important;
+  z-index: 2 !important;
+}
+
+.evolution-circle .evolution-item img,
+.evolution-circle .evolution-item canvas {
+  width: 28px !important;
+  height: 28px !important;
+  object-fit: contain !important;
+  display: block !important;
+  background: transparent !important;
+}
+
+.evolution-circle .evolution-item span {
+  font-size: 22px !important;
+  line-height: 1 !important;
+}
