@@ -1319,256 +1319,151 @@ setupEvolutionBar();
 setupRound(true);
 gameLoop();
 /* =========================================================
-   Cover Start Screen
-   类似小游戏站封面：封面图 + 暗色蒙版 + PLAY NOW
+   Cover Start + Better Arcade Audio
+   封面点击开始 + 更轻快的休闲小游戏音乐
    ========================================================= */
 
-.cover-start-screen {
-  inset: 6px !important;
-  z-index: 30;
-  display: grid !important;
-  place-items: center;
-  padding: 0 !important;
-  overflow: hidden;
-  border-radius: 14px 14px 18px 18px;
-  background: #14171f !important;
-  backdrop-filter: none !important;
-}
+(() => {
+  const startOverlayFix = document.getElementById("startOverlay");
+  const startButtonFix = document.getElementById("startButton");
 
-.cover-art {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 28% 18%, rgba(255,255,255,0.22), transparent 22%),
-    radial-gradient(circle at 70% 18%, rgba(255,255,255,0.16), transparent 22%),
-    linear-gradient(180deg, #ffe17d 0%, #ffbd54 42%, #ff8b58 100%);
-}
+  if (startOverlayFix && startButtonFix) {
+    startOverlayFix.addEventListener("click", (event) => {
+      const clickedCover = event.target.closest(".cover-art") || event.target.closest(".cover-mask");
 
-.cover-art::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.18), transparent 35%),
-    radial-gradient(circle at center, transparent 0 30%, rgba(86, 46, 13, 0.22) 100%);
-}
+      if (clickedCover) {
+        startButtonFix.click();
+      }
+    });
+  }
+})();
 
-.cover-fruit-row {
-  position: absolute;
-  left: 50%;
-  top: 6%;
-  width: 110%;
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  transform: translateX(-50%);
-  opacity: 0.98;
-}
+(() => {
+  let arcadeLoopTimer = null;
+  let arcadeStep = 0;
 
-.cover-fruit-row img {
-  width: 78px;
-  height: 78px;
-  object-fit: contain;
-  filter: drop-shadow(0 8px 8px rgba(80, 42, 8, 0.26));
-}
+  const melody = [
+    523.25, 587.33, 659.25, 783.99,
+    659.25, 587.33, 523.25, 392.00,
+    440.00, 523.25, 587.33, 659.25,
+    587.33, 523.25, 440.00, 392.00
+  ];
 
-.cover-fruit-row img:nth-child(1) {
-  transform: rotate(-10deg) translateY(4px);
-}
+  const bass = [
+    130.81, 196.00, 146.83, 220.00,
+    164.81, 246.94, 146.83, 196.00
+  ];
 
-.cover-fruit-row img:nth-child(2) {
-  transform: rotate(8deg) translateY(-4px);
-}
+  function ensureArcadeAudio() {
+    initAudio();
 
-.cover-fruit-row img:nth-child(3) {
-  transform: rotate(-5deg) translateY(2px);
-}
+    if (audioContext && audioContext.state === "suspended") {
+      audioContext.resume().catch(() => {});
+    }
 
-.cover-fruit-row img:nth-child(4) {
-  transform: rotate(10deg) translateY(8px);
-}
-
-.cover-title {
-  position: absolute;
-  left: 50%;
-  top: 28%;
-  width: 120%;
-  transform: translateX(-50%) rotate(-2deg);
-  text-align: center;
-  font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
-  line-height: 0.86;
-  letter-spacing: -0.05em;
-  text-shadow:
-    0 8px 0 rgba(95, 49, 9, 0.22),
-    0 14px 26px rgba(77, 35, 4, 0.30);
-}
-
-.cover-title span,
-.cover-title strong {
-  display: block;
-  font-weight: 1000;
-}
-
-.cover-title span {
-  color: #76db36;
-  font-size: clamp(70px, 8vw, 128px);
-  -webkit-text-stroke: 4px #5b3512;
-}
-
-.cover-title strong {
-  color: #ffd33f;
-  font-size: clamp(64px, 7.5vw, 116px);
-  -webkit-text-stroke: 4px #5b3512;
-}
-
-.cover-fruit-bottom {
-  position: absolute;
-  left: 50%;
-  bottom: 3%;
-  width: 110%;
-  display: flex;
-  justify-content: center;
-  align-items: end;
-  gap: 4px;
-  transform: translateX(-50%);
-}
-
-.cover-fruit-bottom img {
-  width: 92px;
-  height: 92px;
-  object-fit: contain;
-  filter: drop-shadow(0 10px 10px rgba(70, 35, 6, 0.28));
-}
-
-.cover-fruit-bottom img:nth-child(1) {
-  width: 116px;
-  height: 116px;
-  transform: rotate(-7deg);
-}
-
-.cover-fruit-bottom img:nth-child(2) {
-  width: 102px;
-  height: 102px;
-  transform: rotate(5deg) translateY(6px);
-}
-
-.cover-fruit-bottom img:nth-child(3) {
-  width: 110px;
-  height: 110px;
-  transform: rotate(8deg);
-}
-
-.cover-mask {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background:
-    radial-gradient(circle at center, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.52)),
-    rgba(0, 0, 0, 0.25);
-}
-
-.cover-play-button {
-  position: relative;
-  z-index: 3;
-  min-width: 164px;
-  height: 56px;
-  padding: 0 24px;
-  border: 0;
-  border-radius: 14px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: #fff;
-  background: linear-gradient(180deg, #25d969 0%, #12b956 100%);
-  box-shadow:
-    0 16px 34px rgba(0, 0, 0, 0.26),
-    inset 0 4px 10px rgba(255, 255, 255, 0.22);
-  font-size: 20px;
-  font-weight: 1000;
-  letter-spacing: 0.01em;
-  transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
-}
-
-.cover-play-button span {
-  font-size: 20px;
-  line-height: 1;
-}
-
-.cover-play-button:hover {
-  transform: translateY(-2px) scale(1.03);
-  filter: brightness(1.04);
-  box-shadow:
-    0 20px 38px rgba(0, 0, 0, 0.30),
-    inset 0 4px 10px rgba(255, 255, 255, 0.28);
-}
-
-.cover-play-button:active {
-  transform: scale(0.96);
-}
-
-/* mobile cover */
-@media (max-width: 880px) {
-  .cover-fruit-row {
-    top: 5%;
-    gap: 5px;
+    return audioContext;
   }
 
-  .cover-fruit-row img {
-    width: 38px;
-    height: 38px;
+  function arcadeTone(frequency, duration, type = "sine", volume = 0.02, delay = 0) {
+    const context = ensureArcadeAudio();
+
+    if (!context) return;
+
+    const startAt = context.currentTime + delay;
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+
+    oscillator.type = type;
+    oscillator.frequency.setValueAtTime(frequency, startAt);
+
+    gain.gain.setValueAtTime(0.0001, startAt);
+    gain.gain.exponentialRampToValueAtTime(volume, startAt + 0.025);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+
+    oscillator.start(startAt);
+    oscillator.stop(startAt + duration + 0.04);
   }
 
-  .cover-title {
-    top: 29%;
-  }
+  startMusic = function () {
+    if (!musicEnabled) return;
 
-  .cover-title span {
-    font-size: 48px;
-    -webkit-text-stroke: 2px #5b3512;
-  }
+    ensureArcadeAudio();
 
-  .cover-title strong {
-    font-size: 44px;
-    -webkit-text-stroke: 2px #5b3512;
-  }
+    if (arcadeLoopTimer) return;
 
-  .cover-fruit-bottom {
-    bottom: 4%;
-    gap: 0;
-  }
+    arcadeLoopTimer = setInterval(() => {
+      if (!musicEnabled || document.hidden || isGameOver || !isGameStarted) return;
 
-  .cover-fruit-bottom img {
-    width: 42px;
-    height: 42px;
-  }
+      const note = melody[arcadeStep % melody.length];
+      const harmony = melody[(arcadeStep + 4) % melody.length];
+      const bassNote = bass[Math.floor(arcadeStep / 2) % bass.length];
 
-  .cover-fruit-bottom img:nth-child(1) {
-    width: 52px;
-    height: 52px;
-  }
+      arcadeTone(note, 0.18, "triangle", 0.012);
+      arcadeTone(harmony, 0.12, "sine", 0.0045, 0.04);
 
-  .cover-fruit-bottom img:nth-child(2) {
-    width: 46px;
-    height: 46px;
-  }
+      if (arcadeStep % 2 === 0) {
+        arcadeTone(bassNote, 0.26, "sine", 0.004, 0.02);
+      }
 
-  .cover-fruit-bottom img:nth-child(3) {
-    width: 48px;
-    height: 48px;
-  }
+      arcadeStep += 1;
+    }, 430);
+  };
 
-  .cover-play-button {
-    min-width: 112px;
-    height: 40px;
-    padding: 0 15px;
-    border-radius: 11px;
-    font-size: 13px;
-  }
+  stopMusic = function () {
+    if (arcadeLoopTimer) {
+      clearInterval(arcadeLoopTimer);
+      arcadeLoopTimer = null;
+    }
+  };
 
-  .cover-play-button span {
-    font-size: 13px;
-  }
-}
+  updateMusicButton = function () {
+    const button = document.getElementById("musicToggleButton");
+
+    if (!button) return;
+
+    button.textContent = musicEnabled ? "♪" : "×";
+    button.classList.toggle("music-off", !musicEnabled);
+    button.title = musicEnabled ? "Music On" : "Music Off";
+  };
+
+  toggleMusic = function () {
+    musicEnabled = !musicEnabled;
+    localStorage.setItem("fruitMergeMusic", musicEnabled ? "on" : "off");
+    updateMusicButton();
+
+    if (musicEnabled) {
+      startMusic();
+    } else {
+      stopMusic();
+    }
+  };
+
+  playDropSound = function () {
+    arcadeTone(720, 0.035, "triangle", 0.035);
+    arcadeTone(420, 0.045, "sine", 0.014, 0.025);
+  };
+
+  playMergeSound = function (level) {
+    const base = 480 + level * 35;
+
+    arcadeTone(base, 0.055, "triangle", 0.032);
+    arcadeTone(base * 1.25, 0.075, "sine", 0.018, 0.045);
+  };
+
+  playBigMergeSound = function () {
+    arcadeTone(523.25, 0.07, "triangle", 0.034);
+    arcadeTone(659.25, 0.08, "triangle", 0.026, 0.055);
+    arcadeTone(783.99, 0.10, "sine", 0.022, 0.11);
+  };
+
+  playGameOverSound = function () {
+    arcadeTone(392.00, 0.12, "sine", 0.024);
+    arcadeTone(293.66, 0.16, "sine", 0.018, 0.12);
+    arcadeTone(196.00, 0.18, "sine", 0.014, 0.25);
+  };
+
+  updateMusicButton();
+})();
