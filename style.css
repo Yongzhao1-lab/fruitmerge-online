@@ -3797,3 +3797,441 @@ a {
     -webkit-text-stroke: 3px #fff !important;
   }
 }
+/* =========================================================
+   Desktop Balanced Layout Final Fix
+   修复：左右不协调、进化圈水果跑出、左侧底部显示不全
+   只影响电脑端
+   ========================================================= */
+
+@media (min-width: 881px) {
+  .portal-main {
+    padding: 10px 18px 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  /*
+    整体游戏区域适当缩小，但不是只缩中间画布。
+    黄色背景、左右面板、底部栏一起协调缩小。
+  */
+  .game-player {
+    width: min(980px, calc(100vw - 170px)) !important;
+    height: min(640px, calc(100dvh - 94px)) !important;
+    max-height: none !important;
+    margin: 0 auto !important;
+    border-radius: 30px !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .game-viewport {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 0 !important;
+    display: grid !important;
+    place-items: center !important;
+    overflow: hidden !important;
+    border-radius: 30px 30px 0 0 !important;
+  }
+
+  .game-toolbar {
+    flex: 0 0 56px !important;
+    height: 56px !important;
+    min-height: 56px !important;
+    padding: 6px 22px !important;
+  }
+
+  .game-icon {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 13px !important;
+    font-size: 21px !important;
+  }
+
+  .game-info h1 {
+    font-size: 18px !important;
+  }
+
+  .game-info p {
+    font-size: 12px !important;
+  }
+
+  .toolbar-actions button {
+    width: 42px !important;
+    height: 42px !important;
+  }
+
+  /*
+    内部舞台重新定宽。
+    不再无限缩小中间，也不让外层黄色背景过大。
+  */
+  .game-scene {
+    position: relative !important;
+    width: min(
+      900px,
+      calc(100% - 56px),
+      calc((100dvh - 190px) * 16 / 9)
+    ) !important;
+    aspect-ratio: 16 / 9 !important;
+    height: auto !important;
+    margin: 0 auto !important;
+    overflow: visible !important;
+    transform: none !important;
+    z-index: 2 !important;
+  }
+
+  .game-viewport::after {
+    height: 78px !important;
+    opacity: 0.85 !important;
+  }
+
+  /* 顶部标题：保留设计感，但缩小到协调比例 */
+  .scene-title {
+    top: 1.4% !important;
+    padding: 3px 22px 7px !important;
+    z-index: 10 !important;
+  }
+
+  .scene-title span,
+  .scene-title strong {
+    font-size: clamp(28px, 3.2vw, 44px) !important;
+    -webkit-text-stroke: 3px #fff !important;
+    text-shadow:
+      0 3px 0 rgba(126, 76, 14, 0.14),
+      0 8px 14px rgba(126, 76, 14, 0.16) !important;
+  }
+
+  .scene-title::before {
+    left: -13px !important;
+    top: 6px !important;
+    font-size: 20px !important;
+  }
+
+  .scene-title::after {
+    right: -15px !important;
+    top: 6px !important;
+    font-size: 18px !important;
+  }
+
+  .scene-leaf-one {
+    left: 3% !important;
+    top: 8% !important;
+    font-size: 24px !important;
+  }
+
+  .scene-leaf-two {
+    right: 7% !important;
+    top: 8% !important;
+    font-size: 20px !important;
+  }
+
+  .scene-star-one,
+  .scene-star-two {
+    font-size: 13px !important;
+  }
+
+  /*
+    左侧：缩小并只显示前三名，避免底部截断。
+  */
+  .scene-left {
+    left: 5.5% !important;
+    top: 13.2% !important;
+    width: 18.2% !important;
+    height: auto !important;
+  }
+
+  .score-orb {
+    width: 94px !important;
+    height: 94px !important;
+    margin-bottom: 9px !important;
+    border-radius: 22px !important;
+  }
+
+  .score-crown {
+    top: -15px !important;
+    font-size: 20px !important;
+  }
+
+  .score-orb span,
+  .score-orb small {
+    font-size: 7px !important;
+  }
+
+  .score-orb strong {
+    font-size: 27px !important;
+  }
+
+  .score-orb b {
+    font-size: 11px !important;
+  }
+
+  .score-panel {
+    min-height: 212px !important;
+    max-height: 212px !important;
+    padding: 11px 10px 10px !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+  }
+
+  .panel-title h2 {
+    font-size: 16px !important;
+  }
+
+  .panel-title p {
+    margin: 4px 0 8px !important;
+    font-size: 8px !important;
+  }
+
+  .time-card {
+    padding: 7px 6px !important;
+    border-radius: 12px !important;
+  }
+
+  .time-card span {
+    font-size: 8px !important;
+  }
+
+  .time-card strong {
+    font-size: 16px !important;
+  }
+
+  .top-runs-title {
+    margin: 8px 0 6px !important;
+    gap: 6px !important;
+    font-size: 8px !important;
+  }
+
+  .leaderboard-list {
+    gap: 5px !important;
+  }
+
+  .leaderboard-item {
+    min-height: 28px !important;
+    padding: 3px 6px 3px 3px !important;
+    grid-template-columns: 22px 1fr auto !important;
+    gap: 5px !important;
+  }
+
+  .leaderboard-item:nth-child(n + 4) {
+    display: none !important;
+  }
+
+  .leaderboard-rank {
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 11px !important;
+  }
+
+  .leaderboard-main strong {
+    font-size: 8px !important;
+  }
+
+  .leaderboard-main span {
+    display: none !important;
+  }
+
+  .leaderboard-score {
+    font-size: 8px !important;
+  }
+
+  /*
+    中间游戏框：稍微加大一点，避免周围卡片显得过大。
+  */
+  .scene-center {
+    left: 32.5% !important;
+    top: 15.8% !important;
+    width: 34.5% !important;
+  }
+
+  .glass-top {
+    width: 52% !important;
+    height: 14px !important;
+  }
+
+  .canvas-frame {
+    padding: 4px !important;
+    border-radius: 22px !important;
+  }
+
+  #gameCanvas {
+    border-radius: 18px !important;
+  }
+
+  /*
+    右侧：Next 缩小，进化圈恢复正常。
+  */
+  .scene-right {
+    right: 5.3% !important;
+    top: 13.2% !important;
+    width: 19.2% !important;
+    height: auto !important;
+  }
+
+  .next-panel {
+    min-height: 166px !important;
+    max-height: 166px !important;
+    padding: 11px 10px 9px !important;
+    border-radius: 20px !important;
+  }
+
+  .next-panel h2 {
+    margin-bottom: 5px !important;
+    font-size: 17px !important;
+  }
+
+  .panel-sparkle {
+    top: 16px !important;
+    right: 15px !important;
+    font-size: 13px !important;
+  }
+
+  .next-main {
+    gap: 4px !important;
+  }
+
+  .next-main canvas {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .next-main span {
+    font-size: 10px !important;
+  }
+
+  .next-divider {
+    margin: 7px auto 6px !important;
+  }
+
+  .next-mini-row {
+    gap: 20px !important;
+  }
+
+  .next-mini-row canvas {
+    width: 25px !important;
+    height: 25px !important;
+  }
+
+  .next-mini-row small {
+    font-size: 8px !important;
+  }
+
+  .restart-button {
+    left: -18px !important;
+    top: 44px !important;
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 18px !important;
+  }
+
+  /*
+    关键修复：
+    进化圈不能缩到 96 / 86。
+    因为 HTML 脚本里水果圆周半径是 translate(64px)。
+    所以这里恢复到 160px，水果才会回到圆环上。
+  */
+  .evolution-panel {
+    margin-top: 9px !important;
+    padding: 12px 10px 10px !important;
+    border-radius: 21px !important;
+    overflow: visible !important;
+  }
+
+  .evolution-panel h2 {
+    margin-bottom: 7px !important;
+    font-size: 14px !important;
+    line-height: 1.08 !important;
+    gap: 4px !important;
+  }
+
+  .evolution-panel h2 span {
+    font-size: 11px !important;
+  }
+
+  .evolution-circle {
+    width: 160px !important;
+    height: 160px !important;
+    overflow: visible !important;
+  }
+
+  .evolution-circle::before {
+    inset: 44px !important;
+  }
+
+  .fm-evo-item {
+    width: 30px !important;
+    height: 30px !important;
+    margin: -15px 0 0 -15px !important;
+  }
+
+  .fm-evo-item img {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .fruit-corner {
+    bottom: -1% !important;
+  }
+
+  .fruit-corner span {
+    font-size: 24px !important;
+    margin-left: -6px !important;
+  }
+}
+
+/* 中等宽度电脑：隐藏搜索框，避免导航挤压 */
+@media (min-width: 881px) and (max-width: 1180px) {
+  .search-box {
+    display: none !important;
+  }
+
+  .game-player {
+    width: min(920px, calc(100vw - 150px)) !important;
+  }
+
+  .game-scene {
+    width: min(
+      860px,
+      calc(100% - 56px),
+      calc((100dvh - 190px) * 16 / 9)
+    ) !important;
+  }
+}
+
+/* 矮屏：整体再缩一点，但进化圈仍保持能容纳 64px 半径 */
+@media (min-width: 881px) and (max-height: 720px) {
+  .game-player {
+    width: min(900px, calc(100vw - 170px)) !important;
+    height: min(590px, calc(100dvh - 96px)) !important;
+  }
+
+  .game-scene {
+    width: min(
+      820px,
+      calc(100% - 56px),
+      calc((100dvh - 198px) * 16 / 9)
+    ) !important;
+  }
+
+  .scene-title span,
+  .scene-title strong {
+    font-size: clamp(24px, 3vw, 38px) !important;
+  }
+
+  .evolution-circle {
+    width: 150px !important;
+    height: 150px !important;
+  }
+
+  .fm-evo-item {
+    width: 28px !important;
+    height: 28px !important;
+    margin: -14px 0 0 -14px !important;
+  }
+
+  .fm-evo-item img {
+    width: 22px !important;
+    height: 22px !important;
+  }
+}
