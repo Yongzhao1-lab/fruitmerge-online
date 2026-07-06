@@ -938,5 +938,113 @@
       });
     });
   </script>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const evolutionBar = document.getElementById("evolutionBar");
+
+    const evolutionFruits = [
+      {
+        name: "Cherry",
+        files: ["cherry.png"],
+        fallback: "🍒"
+      },
+      {
+        name: "Strawberry",
+        files: ["strawberry.png"],
+        fallback: "🍓"
+      },
+      {
+        name: "Grape",
+        files: ["grape.png"],
+        fallback: "🍇"
+      },
+      {
+        name: "Orange",
+        files: ["orange.png"],
+        fallback: "🍊"
+      },
+      {
+        name: "Apple",
+        files: ["apple.png"],
+        fallback: "🍎"
+      },
+      {
+        name: "Peach",
+        files: ["peach.png"],
+        fallback: "🍑"
+      },
+      {
+        name: "Pineapple",
+        files: ["pineapple.png"],
+        fallback: "🍍"
+      },
+      {
+        name: "Watermelon",
+        files: ["watermelon.png"],
+        fallback: "🍉"
+      },
+      {
+        name: "Grapefruit",
+        files: ["grapefruit.png", "pomelo.png", "yuzu.png", "lemon.png"],
+        fallback: "🍋"
+      },
+      {
+        name: "Melon",
+        files: ["melon.png", "hami-melon.png", "honeydew.png", "cantaloupe.png"],
+        fallback: "🍈"
+      },
+      {
+        name: "Dragon Fruit",
+        files: ["dragonfruit.png", "dragon-fruit.png", "dragon_fruit.png", "pitaya.png"],
+        fallback: "🐉"
+      }
+    ];
+
+    function buildEvolutionCircle() {
+      if (!evolutionBar) return;
+
+      evolutionBar.innerHTML = "";
+
+      const count = evolutionFruits.length;
+      const radius = 64;
+
+      evolutionFruits.forEach((fruit, index) => {
+        const item = document.createElement("div");
+        item.className = "evolution-item";
+
+        const angle = -90 + (360 / count) * index;
+
+        item.style.transform = `rotate(${angle}deg) translate(${radius}px) rotate(${-angle}deg)`;
+        item.title = fruit.name;
+
+        const img = document.createElement("img");
+        img.alt = fruit.name;
+        img.draggable = false;
+
+        let fileIndex = 0;
+
+        img.onerror = () => {
+          fileIndex += 1;
+
+          if (fileIndex < fruit.files.length) {
+            img.src = `/assets/fruits/${fruit.files[fileIndex]}`;
+          } else {
+            item.innerHTML = `<span>${fruit.fallback}</span>`;
+          }
+        };
+
+        img.src = `/assets/fruits/${fruit.files[0]}`;
+
+        item.appendChild(img);
+        evolutionBar.appendChild(item);
+      });
+    }
+
+    buildEvolutionCircle();
+
+    setTimeout(buildEvolutionCircle, 500);
+    setTimeout(buildEvolutionCircle, 1500);
+  });
+</script>
 </body>
 </html>
