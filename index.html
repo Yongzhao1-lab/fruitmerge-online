@@ -312,25 +312,11 @@
               </div>
 
               <div class="mobile-menu-actions">
-                <button id="mobileResumeButton" type="button" class="mobile-menu-primary">
-                  Resume
-                </button>
-
-                <button id="mobileRestartButton" type="button">
-                  ↻ Restart
-                </button>
-
-                <button id="mobileMusicButton" type="button">
-                  ♪ Music
-                </button>
-
-                <button id="mobileShareButton" type="button">
-                  ➤ Share
-                </button>
-
-                <button id="mobileExitButton" type="button" class="mobile-menu-danger">
-                  Exit
-                </button>
+                <button id="mobileResumeButton" type="button" class="mobile-menu-primary">Resume</button>
+                <button id="mobileRestartButton" type="button">↻ Restart</button>
+                <button id="mobileMusicButton" type="button">♪ Music</button>
+                <button id="mobileShareButton" type="button">➤ Share</button>
+                <button id="mobileExitButton" type="button" class="mobile-menu-danger">Exit</button>
               </div>
             </div>
           </div>
@@ -578,7 +564,6 @@
       const mobileShareCloseButton = document.getElementById("mobileShareCloseButton");
 
       const musicToggleButton = document.getElementById("musicToggleButton");
-      const restartButton = document.getElementById("restartButton");
 
       function isMobileScreen() {
         return window.matchMedia("(max-width: 880px)").matches;
@@ -715,9 +700,15 @@
 
         document.body.classList.add("mobile-playing");
         document.body.classList.remove("mobile-menu-open", "mobile-share-open");
+
         closeMobileMenu();
         closeSharePopover();
+
         window.scrollTo(0, 0);
+
+        if (window.FruitMergeGame && window.FruitMergeGame.setMobileMode) {
+          window.FruitMergeGame.setMobileMode(true);
+        }
 
         const target = gamePlayer || document.documentElement;
 
@@ -732,8 +723,13 @@
 
         setTimeout(() => {
           window.scrollTo(0, 0);
+
+          if (window.FruitMergeGame && window.FruitMergeGame.setMobileMode) {
+            window.FruitMergeGame.setMobileMode(true);
+          }
+
           window.dispatchEvent(new Event("resize"));
-        }, 180);
+        }, 160);
 
         return true;
       }
@@ -744,13 +740,17 @@
 
         document.body.classList.remove("mobile-playing", "mobile-menu-open", "mobile-share-open");
 
+        if (window.FruitMergeGame && window.FruitMergeGame.setMobileMode) {
+          window.FruitMergeGame.setMobileMode(false);
+        }
+
         if (document.fullscreenElement) {
           document.exitFullscreen?.().catch(() => {});
         }
 
         setTimeout(() => {
           window.dispatchEvent(new Event("resize"));
-        }, 180);
+        }, 160);
       }
 
       function toggleFullscreenOrMobileMode() {
@@ -765,29 +765,6 @@
           target.requestFullscreen?.();
         } else {
           document.exitFullscreen?.();
-        }
-      }
-
-      function syncMobileHud() {
-        const score = document.getElementById("score")?.textContent || "0";
-        const best = document.getElementById("bestScore")?.textContent || "0";
-        const time = document.getElementById("time")?.textContent || "00:00";
-
-        const mobileScore = document.getElementById("mobileScore");
-        const mobileBestScore = document.getElementById("mobileBestScore");
-        const mobileTime = document.getElementById("mobileTime");
-
-        if (mobileScore) mobileScore.textContent = score;
-        if (mobileBestScore) mobileBestScore.textContent = best;
-        if (mobileTime) mobileTime.textContent = time;
-
-        const sourceCanvas = document.getElementById("nextFruitCanvas0");
-        const targetCanvas = document.getElementById("mobileNextFruitCanvas");
-
-        if (sourceCanvas && targetCanvas) {
-          const targetContext = targetCanvas.getContext("2d");
-          targetContext.clearRect(0, 0, targetCanvas.width, targetCanvas.height);
-          targetContext.drawImage(sourceCanvas, 0, 0, targetCanvas.width, targetCanvas.height);
         }
       }
 
@@ -861,7 +838,6 @@
       mobileMusicButton?.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
-
         musicToggleButton?.click();
         closeMobileMenu();
       });
@@ -870,28 +846,30 @@
         event.preventDefault();
         event.stopPropagation();
 
-        restartButton?.click();
+        if (window.FruitMergeGame && window.FruitMergeGame.restartGame) {
+          window.FruitMergeGame.restartGame();
+        } else {
+          document.getElementById("restartButton")?.click();
+        }
+
         closeMobileMenu();
       });
 
       mobileShareButton?.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
-
         openSharePopover();
       });
 
       mobileExitButton?.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
-
         exitMobilePlayMode();
       });
 
       mobileShareCloseButton?.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
-
         closeSharePopover();
       });
 
@@ -938,6 +916,10 @@
           document.body.classList.remove("mobile-playing", "mobile-menu-open", "mobile-share-open");
           closeMobileMenu();
           closeSharePopover();
+
+          if (window.FruitMergeGame && window.FruitMergeGame.setMobileMode) {
+            window.FruitMergeGame.setMobileMode(false);
+          }
         }
       });
 
@@ -945,13 +927,15 @@
         setTimeout(() => {
           if (document.body.classList.contains("mobile-playing")) {
             window.scrollTo(0, 0);
+
+            if (window.FruitMergeGame && window.FruitMergeGame.setMobileMode) {
+              window.FruitMergeGame.setMobileMode(true);
+            }
+
             window.dispatchEvent(new Event("resize"));
           }
-        }, 300);
+        }, 260);
       });
-
-      setInterval(syncMobileHud, 300);
-      syncMobileHud();
     });
   </script>
 </body>
