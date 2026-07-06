@@ -80,7 +80,7 @@
         "name": "Does Fruit Merge Online save my score?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Your best score and local records are saved in your browser."
+          "text": "Your best score and local top runs are saved in your browser."
         }
       }
     ]
@@ -176,13 +176,34 @@
                   aria-label="Fruit Merge Online game area"
                 ></canvas>
 
-               <div id="startOverlay" class="game-overlay start-screen">
-  <button id="startButton" class="start-play-button" type="button" aria-label="Start Game">
-    <span class="play-icon">▶</span>
-  </button>
+                <div id="startOverlay" class="game-overlay cover-start-screen">
+                  <div class="cover-art" aria-hidden="true">
+                    <div class="cover-fruit-row">
+                      <img src="/assets/fruits/apple.png" alt="" />
+                      <img src="/assets/fruits/orange.png" alt="" />
+                      <img src="/assets/fruits/grape.png" alt="" />
+                      <img src="/assets/fruits/strawberry.png" alt="" />
+                    </div>
 
-  <p class="start-hint">Tap or click to drop fruits</p>
-</div>
+                    <div class="cover-title">
+                      <span>Fruit</span>
+                      <strong>Merge</strong>
+                    </div>
+
+                    <div class="cover-fruit-bottom">
+                      <img src="/assets/fruits/watermelon.png" alt="" />
+                      <img src="/assets/fruits/pineapple.png" alt="" />
+                      <img src="/assets/fruits/peach.png" alt="" />
+                    </div>
+                  </div>
+
+                  <div class="cover-mask"></div>
+
+                  <button id="startButton" class="cover-play-button" type="button" aria-label="Play Fruit Merge Online">
+                    <span>▶</span>
+                    PLAY NOW
+                  </button>
+                </div>
 
                 <div id="gameOverPanel" class="game-over-panel hidden">
                   <div class="game-over-card">
@@ -422,9 +443,11 @@
       const toolbarLikeButton = document.getElementById("toolbarLikeButton");
       const toolbarShareButton = document.getElementById("toolbarShareButton");
       const toolbarFullscreenButton = document.getElementById("toolbarFullscreenButton");
-      const shareCurrentButton = document.getElementById("shareCurrentButton");
       const fullscreenButton = document.getElementById("fullscreenButton");
+      const shareCurrentButton = document.getElementById("shareCurrentButton");
       const gamePlayer = document.querySelector(".game-player");
+      const startOverlay = document.getElementById("startOverlay");
+      const startButton = document.getElementById("startButton");
 
       function getShareText() {
         const scoreEl = document.getElementById("score");
@@ -467,18 +490,29 @@
         toolbarLikeButton.textContent = liked ? "❤️" : "👍";
 
         toolbarLikeButton.addEventListener("click", () => {
-          const isLiked = localStorage.getItem("fruitMergeLiked") === "yes";
-          localStorage.setItem("fruitMergeLiked", isLiked ? "no" : "yes");
-          toolbarLikeButton.classList.toggle("liked", !isLiked);
-          toolbarLikeButton.textContent = !isLiked ? "❤️" : "👍";
+          const current = localStorage.getItem("fruitMergeLiked") === "yes";
+          const next = !current;
+
+          localStorage.setItem("fruitMergeLiked", next ? "yes" : "no");
+          toolbarLikeButton.classList.toggle("liked", next);
+          toolbarLikeButton.textContent = next ? "❤️" : "👍";
         });
       }
 
       toolbarShareButton?.addEventListener("click", shareGame);
       shareCurrentButton?.addEventListener("click", shareGame);
-
       toolbarFullscreenButton?.addEventListener("click", toggleFullscreen);
       fullscreenButton?.addEventListener("click", toggleFullscreen);
+
+      if (startOverlay && startButton) {
+        startOverlay.addEventListener("click", (event) => {
+          const clickedCover = event.target.closest(".cover-art") || event.target.closest(".cover-mask");
+
+          if (clickedCover) {
+            startButton.click();
+          }
+        });
+      }
     });
   </script>
 </body>
