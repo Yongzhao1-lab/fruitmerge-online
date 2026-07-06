@@ -119,10 +119,10 @@
     </aside>
 
     <main class="portal-main">
-      <section class="game-player" id="game">
+      <section class="game-player game-shell" id="game">
         <div class="game-viewport">
           <div class="game-scene">
-            <div class="game-bg-layer"></div>
+            <div class="scene-bg"></div>
 
             <aside class="scene-left">
               <div class="score-orb">
@@ -132,40 +132,18 @@
                 <b id="bestScore">0</b>
               </div>
 
-             <div class="score-panel">
-  <div class="panel-title">
-    <h2>My Score</h2>
-    <p>Local record board</p>
-  </div>
-
-  <div class="time-card">
-    <span>Survival Time</span>
-    <strong id="time">00:00</strong>
-  </div>
-
-  <div class="top-runs-title">Top Runs</div>
-
-  <div id="leaderboardList" class="leaderboard-list">
-    <div class="leaderboard-item">
-      <div class="leaderboard-rank">1</div>
-      <div class="leaderboard-main">
-        <strong>No run yet</strong>
-        <span>Start your first game</span>
-      </div>
-      <div class="leaderboard-score">0</div>
-    </div>
-  </div>
-</div>
-
-                <div class="current-score-box">
-                  <span>Now</span>
-                  <strong id="panelScore">0</strong>
+              <div class="score-panel">
+                <div class="panel-title">
+                  <h2>My Score</h2>
+                  <p>Local record board</p>
                 </div>
 
-                <div class="time-row">
-                  <span>Time</span>
+                <div class="time-card">
+                  <span>Survival Time</span>
                   <strong id="time">00:00</strong>
                 </div>
+
+                <span id="panelScore" class="sr-only">0</span>
 
                 <div class="top-runs-title">Top Runs</div>
 
@@ -288,9 +266,9 @@
           </div>
 
           <div class="toolbar-actions">
-            <button type="button" aria-label="Like">👍</button>
-            <button type="button" aria-label="Share">➤</button>
-            <button type="button" aria-label="Fullscreen">⛶</button>
+            <button type="button" id="toolbarLikeButton" aria-label="Like">👍</button>
+            <button type="button" id="toolbarShareButton" aria-label="Share">➤</button>
+            <button type="button" id="toolbarFullscreenButton" aria-label="Fullscreen">⛶</button>
           </div>
         </div>
       </section>
@@ -398,7 +376,7 @@
 
           <article>
             <h3>Do I need to download anything?</h3>
-            <p>No. Fruit Merge Online works directly online without downloads or installation.</p>
+            <p>No. Fruit Merge Online works online without downloads or installation.</p>
           </article>
 
           <article>
@@ -439,5 +417,70 @@
   </div>
 
   <script src="/game.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const toolbarLikeButton = document.getElementById("toolbarLikeButton");
+      const toolbarShareButton = document.getElementById("toolbarShareButton");
+      const toolbarFullscreenButton = document.getElementById("toolbarFullscreenButton");
+      const shareCurrentButton = document.getElementById("shareCurrentButton");
+      const fullscreenButton = document.getElementById("fullscreenButton");
+      const gamePlayer = document.querySelector(".game-player");
+
+      function getShareText() {
+        const scoreEl = document.getElementById("score");
+        const currentScore = scoreEl ? scoreEl.textContent : "0";
+        return `I scored ${currentScore} in Fruit Merge Online! Can you beat me? https://fruitmerge.online`;
+      }
+
+      async function shareGame() {
+        const text = getShareText();
+
+        try {
+          if (navigator.share) {
+            await navigator.share({
+              title: "Fruit Merge Online",
+              text,
+              url: "https://fruitmerge.online"
+            });
+          } else if (navigator.clipboard) {
+            await navigator.clipboard.writeText(text);
+            alert("Score copied!");
+          } else {
+            alert(text);
+          }
+        } catch (error) {}
+      }
+
+      function toggleFullscreen() {
+        const target = gamePlayer || document.documentElement;
+
+        if (!document.fullscreenElement) {
+          target.requestFullscreen?.();
+        } else {
+          document.exitFullscreen?.();
+        }
+      }
+
+      if (toolbarLikeButton) {
+        const liked = localStorage.getItem("fruitMergeLiked") === "yes";
+        toolbarLikeButton.classList.toggle("liked", liked);
+        toolbarLikeButton.textContent = liked ? "❤️" : "👍";
+
+        toolbarLikeButton.addEventListener("click", () => {
+          const isLiked = localStorage.getItem("fruitMergeLiked") === "yes";
+          localStorage.setItem("fruitMergeLiked", isLiked ? "no" : "yes");
+          toolbarLikeButton.classList.toggle("liked", !isLiked);
+          toolbarLikeButton.textContent = !isLiked ? "❤️" : "👍";
+        });
+      }
+
+      toolbarShareButton?.addEventListener("click", shareGame);
+      shareCurrentButton?.addEventListener("click", shareGame);
+
+      toolbarFullscreenButton?.addEventListener("click", toggleFullscreen);
+      fullscreenButton?.addEventListener("click", toggleFullscreen);
+    });
+  </script>
 </body>
 </html>
