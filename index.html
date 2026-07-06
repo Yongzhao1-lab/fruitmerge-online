@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
   <title>Fruit Merge Online - Play Free Fruit Merge Game</title>
 
@@ -105,8 +105,9 @@
 
       <nav class="top-nav" aria-label="Main navigation">
         <a href="#game">Play</a>
-        <a href="#how-to-play">How to Play</a>
         <a href="#features">Features</a>
+        <a href="#how-to-play">How to Play</a>
+        <a href="#levels">Levels</a>
         <a href="#faq">FAQ</a>
       </nav>
     </header>
@@ -299,9 +300,12 @@
             </div>
           </div>
 
-          <button id="mobileExitButton" class="mobile-exit-button" type="button">
-            Exit
-          </button>
+          <div class="mobile-action-dock" aria-label="Mobile game actions">
+            <button id="mobileMusicButton" type="button" aria-label="Toggle music">♪</button>
+            <button id="mobileRestartButton" type="button" aria-label="Restart game">↻</button>
+            <button id="mobileShareButton" type="button" aria-label="Share score">➤</button>
+            <button id="mobileExitButton" type="button" aria-label="Exit immersive mode">Exit</button>
+          </div>
         </div>
 
         <div class="game-toolbar">
@@ -485,9 +489,17 @@
       const fullscreenButton = document.getElementById("fullscreenButton");
       const shareCurrentButton = document.getElementById("shareCurrentButton");
       const shareScoreButton = document.getElementById("shareScoreButton");
-      const gamePlayer = document.querySelector(".game-player");
+
       const startButton = document.getElementById("startButton");
+      const gamePlayer = document.querySelector(".game-player");
+
       const mobileExitButton = document.getElementById("mobileExitButton");
+      const mobileMusicButton = document.getElementById("mobileMusicButton");
+      const mobileRestartButton = document.getElementById("mobileRestartButton");
+      const mobileShareButton = document.getElementById("mobileShareButton");
+
+      const musicToggleButton = document.getElementById("musicToggleButton");
+      const restartButton = document.getElementById("restartButton");
 
       function isMobileScreen() {
         return window.matchMedia("(max-width: 880px)").matches;
@@ -496,7 +508,6 @@
       function getShareText() {
         const scoreEl = document.getElementById("score");
         const currentScore = scoreEl ? scoreEl.textContent : "0";
-
         return `I scored ${currentScore} in Fruit Merge Online! Can you beat me? https://fruitmerge.online`;
       }
 
@@ -519,26 +530,25 @@
         } catch (error) {}
       }
 
-      function toggleFullscreen() {
-        const target = gamePlayer || document.documentElement;
-
-        if (!document.fullscreenElement) {
-          target.requestFullscreen?.();
-        } else {
-          document.exitFullscreen?.();
-        }
-      }
-
       function enterMobilePlayMode() {
-        if (!isMobileScreen()) return;
+        if (!isMobileScreen()) return false;
 
         document.body.classList.add("mobile-playing");
+        window.scrollTo(0, 0);
 
         const target = gamePlayer || document.documentElement;
 
-        if (target && document.fullscreenEnabled && target.requestFullscreen) {
+        if (
+          target &&
+          document.fullscreenEnabled &&
+          target.requestFullscreen &&
+          !document.fullscreenElement
+        ) {
           target.requestFullscreen().catch(() => {});
         }
+
+        window.dispatchEvent(new Event("resize"));
+        return true;
       }
 
       function exitMobilePlayMode() {
@@ -546,6 +556,23 @@
 
         if (document.fullscreenElement) {
           document.exitFullscreen?.().catch(() => {});
+        }
+
+        window.dispatchEvent(new Event("resize"));
+      }
+
+      function toggleFullscreenOrMobileMode() {
+        if (isMobileScreen()) {
+          enterMobilePlayMode();
+          return;
+        }
+
+        const target = gamePlayer || document.documentElement;
+
+        if (!document.fullscreenElement) {
+          target.requestFullscreen?.();
+        } else {
+          document.exitFullscreen?.();
         }
       }
 
@@ -590,22 +617,38 @@
       toolbarShareButton?.addEventListener("click", shareGame);
       shareCurrentButton?.addEventListener("click", shareGame);
       shareScoreButton?.addEventListener("click", shareGame);
+      mobileShareButton?.addEventListener("click", shareGame);
 
-      toolbarFullscreenButton?.addEventListener("click", toggleFullscreen);
-      fullscreenButton?.addEventListener("click", toggleFullscreen);
+      toolbarFullscreenButton?.addEventListener("click", toggleFullscreenOrMobileMode);
+      fullscreenButton?.addEventListener("click", toggleFullscreenOrMobileMode);
 
       startButton?.addEventListener("click", () => {
         enterMobilePlayMode();
       });
 
-      mobileExitButton?.addEventListener("click", () => {
-        exitMobilePlayMode();
+      mobileExitButton?.addEventListener("click", exitMobilePlayMode);
+
+      mobileMusicButton?.addEventListener("click", () => {
+        musicToggleButton?.click();
+      });
+
+      mobileRestartButton?.addEventListener("click", () => {
+        restartButton?.click();
       });
 
       document.addEventListener("fullscreenchange", () => {
         if (!document.fullscreenElement && isMobileScreen()) {
           document.body.classList.remove("mobile-playing");
         }
+      });
+
+      window.addEventListener("orientationchange", () => {
+        setTimeout(() => {
+          if (document.body.classList.contains("mobile-playing")) {
+            window.scrollTo(0, 0);
+            window.dispatchEvent(new Event("resize"));
+          }
+        }, 300);
       });
 
       setInterval(syncMobileHud, 300);
