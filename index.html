@@ -30,10 +30,9 @@
   <meta name="twitter:description" content="Drop cute fruits, merge matching fruits, and challenge your best score." />
   <meta name="twitter:image" content="https://fruitmerge.online/og-image.svg" />
 
-  <meta name="theme-color" content="#070912" />
+  <meta name="theme-color" content="#071221" />
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="preload" href="/style.css" as="style" />
   <link rel="stylesheet" href="/style.css" />
 
   <script type="application/ld+json">
@@ -55,39 +54,6 @@
     }
   }
   </script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Is Fruit Merge Online free?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. Fruit Merge Online is free to play directly in your browser."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Do I need to download Fruit Merge Online?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. Fruit Merge Online works directly online without downloads or installation."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does Fruit Merge Online save my score?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Your best score and local top runs are saved in your browser."
-        }
-      }
-    ]
-  }
-  </script>
 </head>
 
 <body>
@@ -95,7 +61,7 @@
     <header class="portal-header">
       <a class="brand" href="/" aria-label="Fruit Merge Online Home">
         <span class="brand-mark">🍓</span>
-        <span>FruitMerge</span>
+        <span>Fruit<span>Merge</span></span>
       </a>
 
       <div class="search-box" role="search">
@@ -104,7 +70,7 @@
       </div>
 
       <nav class="top-nav" aria-label="Main navigation">
-        <a href="#game">Play</a>
+        <a class="active" href="#game">Play</a>
         <a href="#features">Features</a>
         <a href="#how-to-play">How to Play</a>
         <a href="#levels">Levels</a>
@@ -113,21 +79,63 @@
     </header>
 
     <aside class="icon-sidebar" aria-label="Game navigation">
-      <a href="/" aria-label="Home">🏠</a>
-      <a href="#game" aria-label="Play">❤️</a>
-      <a href="#how-to-play" aria-label="How to play">🎯</a>
-      <a href="#levels" aria-label="Levels">🏆</a>
-      <a href="#faq" aria-label="FAQ">❔</a>
+      <a href="/" aria-label="Home">
+        <span>🏠</span>
+        <small>Home</small>
+      </a>
+
+      <a href="#game" aria-label="Popular">
+        <span>💗</span>
+        <small>Popular</small>
+      </a>
+
+      <a href="#how-to-play" aria-label="Challenges">
+        <span>🎯</span>
+        <small>Challenges</small>
+      </a>
+
+      <a href="#levels" aria-label="Leaderboard">
+        <span>🏆</span>
+        <small>Leaderboard</small>
+      </a>
+
+      <a href="#faq" aria-label="Help">
+        <span>❔</span>
+        <small>Help</small>
+      </a>
+
+      <button class="side-settings" type="button" aria-label="Settings">⚙</button>
     </aside>
 
     <main class="portal-main">
       <section class="game-player game-shell" id="game" aria-label="Fruit Merge Online game">
         <div class="game-viewport">
           <div class="game-scene">
-            <div class="scene-bg"></div>
+            <div class="scene-decoration scene-leaf-one">🍃</div>
+            <div class="scene-decoration scene-leaf-two">🍃</div>
+            <div class="scene-decoration scene-star-one">✦</div>
+            <div class="scene-decoration scene-star-two">✦</div>
+
+            <div class="scene-title" aria-hidden="true">
+              <span>Fruit</span>
+              <strong>Merge</strong>
+            </div>
+
+            <div class="fruit-corner fruit-corner-left" aria-hidden="true">
+              <span>🍊</span>
+              <span>🍇</span>
+              <span>🍏</span>
+            </div>
+
+            <div class="fruit-corner fruit-corner-right" aria-hidden="true">
+              <span>🍉</span>
+              <span>🍓</span>
+              <span>🍊</span>
+            </div>
 
             <aside class="scene-left" aria-label="Score panel">
               <div class="score-orb">
+                <div class="score-crown">👑</div>
                 <span>Score</span>
                 <strong id="score">0</strong>
                 <small>Best Score</small>
@@ -137,7 +145,7 @@
               <div class="score-panel">
                 <div class="panel-title">
                   <h2>My Score</h2>
-                  <p>Local record board</p>
+                  <p>Local Record Board</p>
                 </div>
 
                 <div class="time-card">
@@ -147,7 +155,11 @@
 
                 <span id="panelScore" class="sr-only">0</span>
 
-                <div class="top-runs-title">Top Runs</div>
+                <div class="top-runs-title">
+                  <span></span>
+                  <b>Top Runs</b>
+                  <span></span>
+                </div>
 
                 <div id="leaderboardList" class="leaderboard-list">
                   <div class="leaderboard-item">
@@ -159,6 +171,8 @@
                     <div class="leaderboard-score">0</div>
                   </div>
                 </div>
+
+                <button class="view-more-button" type="button">View More <span>›</span></button>
               </div>
 
               <div class="quick-buttons">
@@ -214,12 +228,15 @@
 
             <aside class="scene-right" aria-label="Next fruit and evolution panel">
               <div class="next-panel">
+                <span class="panel-sparkle">✦</span>
                 <h2>Next</h2>
 
                 <div class="next-main">
                   <canvas id="nextFruitCanvas0" width="74" height="74"></canvas>
                   <span id="nextFruitName">Cherry</span>
                 </div>
+
+                <div class="next-divider"></div>
 
                 <div class="next-mini-row">
                   <div>
@@ -239,7 +256,12 @@
               </div>
 
               <div class="evolution-panel">
-                <h2>Circle of Evolution</h2>
+                <h2>
+                  <span>🍃</span>
+                  Circle of Evolution
+                  <span>🍃</span>
+                </h2>
+
                 <div id="evolutionBar" class="evolution-circle" aria-label="Fruit evolution circle"></div>
               </div>
 
@@ -312,25 +334,11 @@
               </div>
 
               <div class="mobile-menu-actions">
-                <button id="mobileResumeButton" type="button" class="mobile-menu-primary">
-                  Resume
-                </button>
-
-                <button id="mobileRestartButton" type="button">
-                  ↻ Restart
-                </button>
-
-                <button id="mobileMusicButton" type="button">
-                  ♪ Music
-                </button>
-
-                <button id="mobileShareButton" type="button">
-                  ➤ Share
-                </button>
-
-                <button id="mobileExitButton" type="button" class="mobile-menu-danger">
-                  Exit
-                </button>
+                <button id="mobileResumeButton" type="button" class="mobile-menu-primary">Resume</button>
+                <button id="mobileRestartButton" type="button">↻ Restart</button>
+                <button id="mobileMusicButton" type="button">♪ Music</button>
+                <button id="mobileShareButton" type="button">➤ Share</button>
+                <button id="mobileExitButton" type="button" class="mobile-menu-danger">Exit</button>
               </div>
             </div>
           </div>
@@ -347,35 +355,12 @@
               </div>
 
               <div class="mobile-share-grid">
-                <button type="button" data-share-platform="facebook">
-                  <span>f</span>
-                  Facebook
-                </button>
-
-                <button type="button" data-share-platform="instagram">
-                  <span>◎</span>
-                  Instagram
-                </button>
-
-                <button type="button" data-share-platform="whatsapp">
-                  <span>☘</span>
-                  WhatsApp
-                </button>
-
-                <button type="button" data-share-platform="telegram">
-                  <span>✈</span>
-                  Telegram
-                </button>
-
-                <button type="button" data-share-platform="x">
-                  <span>𝕏</span>
-                  X
-                </button>
-
-                <button type="button" data-share-platform="copy">
-                  <span>⛓</span>
-                  Copy
-                </button>
+                <button type="button" data-share-platform="facebook"><span>f</span>Facebook</button>
+                <button type="button" data-share-platform="instagram"><span>◎</span>Instagram</button>
+                <button type="button" data-share-platform="whatsapp"><span>☘</span>WhatsApp</button>
+                <button type="button" data-share-platform="telegram"><span>✈</span>Telegram</button>
+                <button type="button" data-share-platform="x"><span>𝕏</span>X</button>
+                <button type="button" data-share-platform="copy"><span>⛓</span>Copy</button>
               </div>
             </div>
           </div>
@@ -383,15 +368,15 @@
 
         <div class="game-toolbar">
           <div class="game-info">
-            <div class="game-icon">🍉</div>
+            <div class="game-icon">🍓</div>
             <div>
               <h1>Fruit Merge Online</h1>
-              <p>Matching · Puzzle · Casual</p>
+              <p>Merge same fruits, get bigger and higher!</p>
             </div>
           </div>
 
           <div class="toolbar-actions">
-            <button type="button" id="toolbarLikeButton" aria-label="Like">👍</button>
+            <button type="button" id="toolbarLikeButton" aria-label="Like">💗</button>
             <button type="button" id="toolbarShareButton" aria-label="Share">➤</button>
             <button type="button" id="toolbarFullscreenButton" aria-label="Fullscreen">⛶</button>
           </div>
@@ -492,28 +477,6 @@
               <tr><td>11</td><td>Dragon Fruit</td><td>5120</td></tr>
             </tbody>
           </table>
-        </div>
-      </section>
-
-      <section class="content-section" id="controls">
-        <p class="section-kicker">CONTROLS</p>
-        <h2>Desktop and Mobile Controls</h2>
-
-        <div class="info-grid">
-          <article>
-            <h3>Desktop</h3>
-            <p>Move your mouse to aim. Click the game area to drop the current fruit.</p>
-          </article>
-
-          <article>
-            <h3>Mobile</h3>
-            <p>Tap or drag on the game area to choose a drop position, then release to drop.</p>
-          </article>
-
-          <article>
-            <h3>Restart</h3>
-            <p>Use the restart button when you want to reset the board and try a new strategy.</p>
-          </article>
         </div>
       </section>
 
@@ -796,7 +759,7 @@
       if (toolbarLikeButton) {
         const liked = localStorage.getItem("fruitMergeLiked") === "yes";
         toolbarLikeButton.classList.toggle("liked", liked);
-        toolbarLikeButton.textContent = liked ? "❤️" : "👍";
+        toolbarLikeButton.textContent = liked ? "💗" : "💗";
 
         toolbarLikeButton.addEventListener("click", () => {
           const current = localStorage.getItem("fruitMergeLiked") === "yes";
@@ -804,7 +767,6 @@
 
           localStorage.setItem("fruitMergeLiked", next ? "yes" : "no");
           toolbarLikeButton.classList.toggle("liked", next);
-          toolbarLikeButton.textContent = next ? "❤️" : "👍";
         });
       }
 
@@ -911,20 +873,6 @@
       mobileGameMenu?.addEventListener("click", (event) => {
         if (event.target === mobileGameMenu) {
           closeMobileMenu();
-        }
-      });
-
-      document.addEventListener("click", (event) => {
-        if (
-          mobileSharePopover &&
-          !mobileSharePopover.classList.contains("hidden") &&
-          !mobileSharePopover.contains(event.target) &&
-          event.target !== mobileShareButton &&
-          event.target !== toolbarShareButton &&
-          event.target !== shareCurrentButton &&
-          event.target !== shareScoreButton
-        ) {
-          closeSharePopover();
         }
       });
 
@@ -1093,7 +1041,6 @@
       });
 
       setInterval(updateActive, 300);
-
       setTimeout(buildCircle, 500);
       setTimeout(updateActive, 1000);
     });
