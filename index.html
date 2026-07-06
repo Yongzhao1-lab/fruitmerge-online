@@ -1098,55 +1098,5 @@
       setTimeout(updateActive, 1000);
     });
   </script>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const canvas = document.getElementById("gameCanvas");
-      if (!canvas) return;
-
-      let lastTallMode = null;
-
-      function isMobilePlaying() {
-        return (
-          window.matchMedia("(max-width: 880px)").matches &&
-          document.body.classList.contains("mobile-playing")
-        );
-      }
-
-      function applyMobileCanvasSize() {
-        const tallMode = isMobilePlaying();
-
-        if (lastTallMode === tallMode) return;
-
-        lastTallMode = tallMode;
-
-        const width = 420;
-        const height = tallMode ? 840 : 560;
-
-        canvas.setAttribute("width", String(width));
-        canvas.setAttribute("height", String(height));
-        canvas.style.aspectRatio = `${width} / ${height}`;
-
-        setTimeout(() => {
-          window.dispatchEvent(new Event("resize"));
-        }, 80);
-      }
-
-      const observer = new MutationObserver(applyMobileCanvasSize);
-
-      observer.observe(document.body, {
-        attributes: true,
-        attributeFilter: ["class"]
-      });
-
-      window.addEventListener("resize", applyMobileCanvasSize);
-
-      window.addEventListener("orientationchange", () => {
-        setTimeout(applyMobileCanvasSize, 250);
-      });
-
-      applyMobileCanvasSize();
-    });
-  </script>
 </body>
 </html>
