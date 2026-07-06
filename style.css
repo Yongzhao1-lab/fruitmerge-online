@@ -4,16 +4,11 @@
 
 :root {
   --page-bg: #10111a;
-  --panel-dark: #1d1f2c;
-  --panel-soft: #252838;
   --text-main: #ffffff;
   --text-muted: #b8b9c8;
   --green: #8dff4f;
   --yellow: #ffd95a;
-  --orange: #d08b3c;
   --brown: #684014;
-  --cream: #fff0b7;
-  --cream-2: #fff8d5;
   --shadow-soft: 0 18px 48px rgba(0, 0, 0, 0.26);
 }
 
@@ -84,7 +79,6 @@ a {
 
 .portal-header {
   grid-area: top;
-  min-width: 0;
   height: 76px;
   padding: 0 24px 0 18px;
   display: flex;
@@ -99,7 +93,6 @@ a {
 }
 
 .brand {
-  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -187,12 +180,6 @@ a {
   display: grid;
   place-items: center;
   background: rgba(255, 255, 255, 0.06);
-  transition: transform 0.16s ease, background 0.16s ease;
-}
-
-.icon-sidebar a:hover {
-  transform: translateY(-2px);
-  background: rgba(141, 255, 79, 0.14);
 }
 
 .portal-main {
@@ -1032,7 +1019,7 @@ a {
 }
 
 /* =========================================================
-   Mobile
+   Mobile Normal Page
    ========================================================= */
 
 .mobile-game-hud,
@@ -1191,7 +1178,8 @@ a {
 }
 
 /* =========================================================
-   Mobile Immersive Portrait Mode
+   Mobile Immersive Mode
+   手机端专用：420 × 850 竖屏游戏空间
    ========================================================= */
 
 @media (max-width: 880px) {
@@ -1233,8 +1221,8 @@ a {
       linear-gradient(
         180deg,
         #cf914c 0%,
-        #c38331 26%,
-        #fff0b4 26%,
+        #c38331 24%,
+        #fff0b4 24%,
         #fff4c9 100%
       ) !important;
   }
@@ -1254,21 +1242,21 @@ a {
     content: "";
     position: absolute;
     left: 50%;
-    bottom: 18px;
-    width: 82vw;
-    max-width: 560px;
-    height: 112px;
+    bottom: 14px;
+    width: 74vw;
+    max-width: 460px;
+    height: 96px;
     transform: translateX(-50%);
     background:
       linear-gradient(
         90deg,
         transparent 17%,
-        rgba(153, 104, 28, 0.14) 17%,
-        rgba(153, 104, 28, 0.14) 21%,
+        rgba(153, 104, 28, 0.12) 17%,
+        rgba(153, 104, 28, 0.12) 21%,
         transparent 21%,
         transparent 79%,
-        rgba(153, 104, 28, 0.14) 79%,
-        rgba(153, 104, 28, 0.14) 83%,
+        rgba(153, 104, 28, 0.12) 79%,
+        rgba(153, 104, 28, 0.12) 83%,
         transparent 83%
       );
     opacity: 0.7;
@@ -1278,12 +1266,12 @@ a {
     content: "";
     position: absolute;
     left: 50%;
-    bottom: 8px;
-    width: 88vw;
-    max-width: 580px;
-    height: 82px;
+    bottom: 2px;
+    width: 84vw;
+    max-width: 500px;
+    height: 70px;
     transform: translateX(-50%);
-    background: radial-gradient(ellipse at center, rgba(116, 72, 17, 0.18), transparent 72%);
+    background: radial-gradient(ellipse at center, rgba(116, 72, 17, 0.16), transparent 72%);
     filter: blur(12px);
   }
 
@@ -1365,8 +1353,8 @@ a {
   body.mobile-playing .scene-center {
     position: absolute !important;
     left: 50% !important;
-    bottom: -10px !important;
-    width: min(126vw, calc((100dvh - 122px) * 0.75), 560px) !important;
+    bottom: 0 !important;
+    width: min(calc(100vw - 10px), calc((100dvh - 104px) * 420 / 850), 420px) !important;
     transform: translateX(-50%) !important;
     display: grid !important;
     grid-template-rows: auto auto !important;
@@ -1378,7 +1366,7 @@ a {
   body.mobile-playing .glass-top {
     display: block !important;
     width: 44% !important;
-    height: 17px !important;
+    height: 14px !important;
     border-radius: 18px 18px 0 0 !important;
     background:
       linear-gradient(180deg, rgba(255,239,126,0.96), rgba(245,194,62,0.96)) !important;
@@ -1390,24 +1378,25 @@ a {
   body.mobile-playing .canvas-frame {
     width: 100% !important;
     height: auto !important;
-    aspect-ratio: 420 / 560 !important;
+    aspect-ratio: 420 / 850 !important;
     min-height: 0 !important;
-    padding: 5px !important;
-    border-radius: 26px !important;
+    padding: 4px !important;
+    border-radius: 23px 23px 0 0 !important;
     background:
       linear-gradient(180deg, #ffe96f 0%, #f3c544 100%) !important;
     box-shadow:
       inset 0 0 0 2px rgba(255,255,255,0.42),
-      0 20px 46px rgba(95, 57, 10, 0.28) !important;
+      0 18px 40px rgba(95, 57, 10, 0.24) !important;
     display: block !important;
+    overflow: hidden !important;
   }
 
   body.mobile-playing #gameCanvas {
     width: 100% !important;
     height: auto !important;
-    aspect-ratio: 420 / 560 !important;
+    aspect-ratio: 420 / 850 !important;
     display: block !important;
-    border-radius: 22px !important;
+    border-radius: 19px 19px 0 0 !important;
     background: #eef8f5 !important;
     touch-action: none !important;
   }
@@ -1631,21 +1620,20 @@ a {
   }
 
   body.mobile-playing .scene-center {
-    bottom: -8px !important;
-    width: min(132vw, calc((100dvh - 110px) * 0.75), 550px) !important;
+    width: min(calc(100vw - 8px), calc((100dvh - 96px) * 420 / 850), 420px) !important;
   }
 
   body.mobile-playing .glass-top {
-    height: 15px !important;
+    height: 13px !important;
   }
 
   body.mobile-playing .canvas-frame {
     padding: 4px !important;
-    border-radius: 22px !important;
+    border-radius: 21px 21px 0 0 !important;
   }
 
   body.mobile-playing #gameCanvas {
-    border-radius: 18px !important;
+    border-radius: 17px 17px 0 0 !important;
   }
 
   body.mobile-playing .mobile-share-popover {
