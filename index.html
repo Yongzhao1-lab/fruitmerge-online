@@ -938,71 +938,130 @@
       });
     });
   </script>
-  <script>
+<script>
   document.addEventListener("DOMContentLoaded", () => {
     const evolutionBar = document.getElementById("evolutionBar");
+    const nextFruitNameEl = document.getElementById("nextFruitName");
+    const scoreEl = document.getElementById("score");
+
+    if (!evolutionBar) return;
 
     const evolutionFruits = [
       {
         name: "Cherry",
+        keys: ["cherry"],
         files: ["cherry.png"],
         fallback: "🍒"
       },
       {
         name: "Strawberry",
+        keys: ["strawberry"],
         files: ["strawberry.png"],
         fallback: "🍓"
       },
       {
         name: "Grape",
+        keys: ["grape"],
         files: ["grape.png"],
         fallback: "🍇"
       },
       {
         name: "Orange",
+        keys: ["orange"],
         files: ["orange.png"],
         fallback: "🍊"
       },
       {
         name: "Apple",
+        keys: ["apple"],
         files: ["apple.png"],
         fallback: "🍎"
       },
       {
         name: "Peach",
+        keys: ["peach"],
         files: ["peach.png"],
         fallback: "🍑"
       },
       {
         name: "Pineapple",
+        keys: ["pineapple"],
         files: ["pineapple.png"],
         fallback: "🍍"
       },
       {
         name: "Watermelon",
+        keys: ["watermelon"],
         files: ["watermelon.png"],
         fallback: "🍉"
       },
       {
         name: "Grapefruit",
+        keys: ["grapefruit", "pomelo", "yuzu", "lemon"],
         files: ["grapefruit.png", "pomelo.png", "yuzu.png", "lemon.png"],
         fallback: "🍋"
       },
       {
         name: "Melon",
+        keys: ["melon", "hami melon", "hami-melon", "honeydew", "cantaloupe"],
         files: ["melon.png", "hami-melon.png", "honeydew.png", "cantaloupe.png"],
         fallback: "🍈"
       },
       {
         name: "Dragon Fruit",
+        keys: ["dragon fruit", "dragonfruit", "dragon-fruit", "pitaya"],
         files: ["dragonfruit.png", "dragon-fruit.png", "dragon_fruit.png", "pitaya.png"],
         fallback: "🐉"
       }
     ];
 
-    function buildEvolutionCircle() {
-      if (!evolutionBar) return;
+    let lastActiveIndex = -1;
+    let lastScore = scoreEl ? scoreEl.textContent : "0";
 
+    function normalize(value) {
+      return String(value || "")
+        .toLowerCase()
+        .replace(/[_-]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function getCurrentFruitIndex() {
+      const currentName = normalize(nextFruitNameEl ? nextFruitNameEl.textContent : "");
+
+      if (!currentName) return 0;
+
+      const index = evolutionFruits.findIndex((fruit) => {
+        return fruit.keys.some((key) => normalize(key) === currentName);
+      });
+
+      return index >= 0 ? index : 0;
+    }
+
+    function createFruitImage(item, fruit) {
+      const img = document.createElement("img");
+
+      img.alt = fruit.name;
+      img.draggable = false;
+
+      let fileIndex = 0;
+
+      img.onerror = () => {
+        fileIndex += 1;
+
+        if (fileIndex < fruit.files.length) {
+          img.src = `/assets/fruits/${fruit.files[fileIndex]}`;
+        } else {
+          item.innerHTML = `<span>${fruit.fallback}</span>`;
+        }
+      };
+
+      img.src = `/assets/fruits/${fruit.files[0]}`;
+
+      return img;
+    }
+
+    function buildEvolutionCircle() {
       evolutionBar.innerHTML = "";
 
       const count = evolutionFruits.length;
@@ -1010,40 +1069,93 @@
 
       evolutionFruits.forEach((fruit, index) => {
         const item = document.createElement("div");
+
         item.className = "evolution-item";
+        item.dataset.index = String(index);
+        item.dataset.name = fruit.name;
 
         const angle = -90 + (360 / count) * index;
-
         item.style.transform = `rotate(${angle}deg) translate(${radius}px) rotate(${-angle}deg)`;
+
         item.title = fruit.name;
+        item.appendChild(createFruitImage(item, fruit));
 
-        const img = document.createElement("img");
-        img.alt = fruit.name;
-        img.draggable = false;
-
-        let fileIndex = 0;
-
-        img.onerror = () => {
-          fileIndex += 1;
-
-          if (fileIndex < fruit.files.length) {
-            img.src = `/assets/fruits/${fruit.files[fileIndex]}`;
-          } else {
-            item.innerHTML = `<span>${fruit.fallback}</span>`;
-          }
-        };
-
-        img.src = `/assets/fruits/${fruit.files[0]}`;
-
-        item.appendChild(img);
         evolutionBar.appendChild(item);
       });
+
+      updateEvolutionCircle(true);
+    }
+
+    function updateEvolutionCircle(forcePulse = false) {
+      const activeIndex = getCurrentFruitIndex();
+      const items = evolutionBar.querySelectorAll(".evolution-item");
+
+      items.forEach((item) => {
+        const index = Number(item.dataset.index);
+
+        item.classList.toggle("is-current", index === activeIndex);
+        item.classList.toggle("is-unlocked", index <= activeIndex);
+      });
+
+      const shouldPulse = forcePulse || activeIndex !== lastActiveIndex;
+
+      if (shouldPulse) {
+        const activeItem = evolutionBar.querySelector(
+          `.evolution-item[data-index="${activeIndex}"]`
+        );
+
+        if (activeItem) {
+          activeItem.classList.remove("is-pulse");
+
+          requestAnimationFrame(() => {
+            activeItem.classList.add("is-pulse");
+
+            setTimeout(() => {
+              activeItem.classList.remove("is-pulse");
+            }, 380);
+          });
+        }
+      }
+
+      lastActiveIndex = activeIndex;
+    }
+
+    function bindEvolutionObservers() {
+      if (nextFruitNameEl) {
+        const nextObserver = new MutationObserver(() => {
+          updateEvolutionCircle(true);
+        });
+
+        nextObserver.observe(nextFruitNameEl, {
+          childList: true,
+          characterData: true,
+          subtree: true
+        });
+      }
+
+      if (scoreEl) {
+        const scoreObserver = new MutationObserver(() => {
+          const currentScore = scoreEl.textContent;
+
+          if (currentScore !== lastScore) {
+            lastScore = currentScore;
+            updateEvolutionCircle(true);
+          }
+        });
+
+        scoreObserver.observe(scoreEl, {
+          childList: true,
+          characterData: true,
+          subtree: true
+        });
+      }
     }
 
     buildEvolutionCircle();
+    bindEvolutionObservers();
 
-    setTimeout(buildEvolutionCircle, 500);
-    setTimeout(buildEvolutionCircle, 1500);
+    setTimeout(() => updateEvolutionCircle(true), 300);
+    setTimeout(() => updateEvolutionCircle(true), 1000);
   });
 </script>
 </body>
