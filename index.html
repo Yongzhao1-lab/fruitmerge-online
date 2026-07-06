@@ -715,6 +715,7 @@
 
         document.body.classList.add("mobile-playing");
         document.body.classList.remove("mobile-menu-open", "mobile-share-open");
+
         closeMobileMenu();
         closeSharePopover();
 
@@ -955,54 +956,14 @@
       if (!evolutionBar || !nextFruitNameEl) return;
 
       const fruits = [
-        {
-          name: "Cherry",
-          keys: ["cherry"],
-          files: ["cherry.png"],
-          fallback: "🍒"
-        },
-        {
-          name: "Strawberry",
-          keys: ["strawberry"],
-          files: ["strawberry.png"],
-          fallback: "🍓"
-        },
-        {
-          name: "Grape",
-          keys: ["grape"],
-          files: ["grape.png"],
-          fallback: "🍇"
-        },
-        {
-          name: "Orange",
-          keys: ["orange"],
-          files: ["orange.png"],
-          fallback: "🍊"
-        },
-        {
-          name: "Apple",
-          keys: ["apple"],
-          files: ["apple.png"],
-          fallback: "🍎"
-        },
-        {
-          name: "Peach",
-          keys: ["peach"],
-          files: ["peach.png"],
-          fallback: "🍑"
-        },
-        {
-          name: "Pineapple",
-          keys: ["pineapple"],
-          files: ["pineapple.png"],
-          fallback: "🍍"
-        },
-        {
-          name: "Watermelon",
-          keys: ["watermelon"],
-          files: ["watermelon.png"],
-          fallback: "🍉"
-        },
+        { name: "Cherry", keys: ["cherry"], files: ["cherry.png"], fallback: "🍒" },
+        { name: "Strawberry", keys: ["strawberry"], files: ["strawberry.png"], fallback: "🍓" },
+        { name: "Grape", keys: ["grape"], files: ["grape.png"], fallback: "🍇" },
+        { name: "Orange", keys: ["orange"], files: ["orange.png"], fallback: "🍊" },
+        { name: "Apple", keys: ["apple"], files: ["apple.png"], fallback: "🍎" },
+        { name: "Peach", keys: ["peach"], files: ["peach.png"], fallback: "🍑" },
+        { name: "Pineapple", keys: ["pineapple"], files: ["pineapple.png"], fallback: "🍍" },
+        { name: "Watermelon", keys: ["watermelon"], files: ["watermelon.png"], fallback: "🍉" },
         {
           name: "Grapefruit",
           keys: ["grapefruit", "pomelo", "yuzu", "lemon"],
@@ -1135,6 +1096,56 @@
 
       setTimeout(buildCircle, 500);
       setTimeout(updateActive, 1000);
+    });
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const canvas = document.getElementById("gameCanvas");
+      if (!canvas) return;
+
+      let lastTallMode = null;
+
+      function isMobilePlaying() {
+        return (
+          window.matchMedia("(max-width: 880px)").matches &&
+          document.body.classList.contains("mobile-playing")
+        );
+      }
+
+      function applyMobileCanvasSize() {
+        const tallMode = isMobilePlaying();
+
+        if (lastTallMode === tallMode) return;
+
+        lastTallMode = tallMode;
+
+        const width = 420;
+        const height = tallMode ? 840 : 560;
+
+        canvas.setAttribute("width", String(width));
+        canvas.setAttribute("height", String(height));
+        canvas.style.aspectRatio = `${width} / ${height}`;
+
+        setTimeout(() => {
+          window.dispatchEvent(new Event("resize"));
+        }, 80);
+      }
+
+      const observer = new MutationObserver(applyMobileCanvasSize);
+
+      observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ["class"]
+      });
+
+      window.addEventListener("resize", applyMobileCanvasSize);
+
+      window.addEventListener("orientationchange", () => {
+        setTimeout(applyMobileCanvasSize, 250);
+      });
+
+      applyMobileCanvasSize();
     });
   </script>
 </body>
