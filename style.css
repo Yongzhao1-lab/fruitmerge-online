@@ -1698,3 +1698,262 @@ input {
     font-size: 13px;
   }
 }
+/* =========================================================
+   Full Game Area Cover Start Screen
+   让封面覆盖整个游戏区域，而不是只覆盖中间 Canvas
+   ========================================================= */
+
+.game-viewport {
+  position: relative;
+}
+
+.viewport-start-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #14171f;
+}
+
+.viewport-start-overlay.hidden {
+  display: none !important;
+}
+
+.viewport-start-overlay .cover-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 24% 18%, rgba(255,255,255,0.24), transparent 24%),
+    radial-gradient(circle at 78% 18%, rgba(255,255,255,0.16), transparent 24%),
+    linear-gradient(180deg, #ffe17d 0%, #ffbd54 42%, #ff8b58 100%);
+}
+
+.viewport-start-overlay .cover-art::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.18), transparent 34%),
+    radial-gradient(circle at center, transparent 0 28%, rgba(86, 46, 13, 0.25) 100%);
+}
+
+.viewport-start-overlay .cover-fruit-row {
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  transform: translateX(-50%);
+}
+
+.viewport-start-overlay .cover-fruit-row img {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 10px rgba(80, 42, 8, 0.28));
+}
+
+.viewport-start-overlay .cover-fruit-row img:nth-child(1) {
+  transform: rotate(-10deg) translateY(8px);
+}
+
+.viewport-start-overlay .cover-fruit-row img:nth-child(2) {
+  transform: rotate(8deg) translateY(-4px);
+}
+
+.viewport-start-overlay .cover-fruit-row img:nth-child(3) {
+  transform: rotate(-5deg) translateY(4px);
+}
+
+.viewport-start-overlay .cover-fruit-row img:nth-child(4) {
+  transform: rotate(10deg) translateY(10px);
+}
+
+.viewport-start-overlay .cover-title {
+  position: absolute;
+  left: 50%;
+  top: 24%;
+  width: 120%;
+  transform: translateX(-50%) rotate(-2deg);
+  text-align: center;
+  font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+  line-height: 0.86;
+  letter-spacing: -0.055em;
+  text-shadow:
+    0 8px 0 rgba(95, 49, 9, 0.24),
+    0 18px 34px rgba(77, 35, 4, 0.32);
+}
+
+.viewport-start-overlay .cover-title span,
+.viewport-start-overlay .cover-title strong {
+  display: block;
+  font-weight: 1000;
+}
+
+.viewport-start-overlay .cover-title span {
+  color: #76db36;
+  font-size: clamp(96px, 10vw, 160px);
+  -webkit-text-stroke: 5px #5b3512;
+}
+
+.viewport-start-overlay .cover-title strong {
+  color: #ffd33f;
+  font-size: clamp(90px, 9vw, 150px);
+  -webkit-text-stroke: 5px #5b3512;
+}
+
+.viewport-start-overlay .cover-fruit-bottom {
+  position: absolute;
+  left: 50%;
+  bottom: 3%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  gap: 10px;
+  transform: translateX(-50%);
+}
+
+.viewport-start-overlay .cover-fruit-bottom img {
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 12px rgba(70, 35, 6, 0.30));
+}
+
+.viewport-start-overlay .cover-fruit-bottom img:nth-child(1) {
+  width: 138px;
+  height: 138px;
+  transform: rotate(-7deg);
+}
+
+.viewport-start-overlay .cover-fruit-bottom img:nth-child(2) {
+  width: 116px;
+  height: 116px;
+  transform: rotate(5deg) translateY(8px);
+}
+
+.viewport-start-overlay .cover-fruit-bottom img:nth-child(3) {
+  width: 126px;
+  height: 126px;
+  transform: rotate(8deg);
+}
+
+.viewport-start-overlay .cover-mask {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    radial-gradient(circle at center, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.56)),
+    rgba(0, 0, 0, 0.28);
+}
+
+.viewport-start-overlay .cover-play-button {
+  position: relative;
+  z-index: 3;
+  min-width: 176px;
+  height: 58px;
+  padding: 0 26px;
+  border: 0;
+  border-radius: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #fff;
+  background: linear-gradient(180deg, #25d969 0%, #12b956 100%);
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.30),
+    inset 0 4px 10px rgba(255, 255, 255, 0.22);
+  font-size: 20px;
+  font-weight: 1000;
+  letter-spacing: 0.01em;
+  transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
+}
+
+.viewport-start-overlay .cover-play-button span {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.viewport-start-overlay .cover-play-button:hover {
+  transform: translateY(-2px) scale(1.03);
+  filter: brightness(1.04);
+  box-shadow:
+    0 22px 42px rgba(0, 0, 0, 0.34),
+    inset 0 4px 10px rgba(255, 255, 255, 0.28);
+}
+
+.viewport-start-overlay .cover-play-button:active {
+  transform: scale(0.96);
+}
+
+/* 手机端封面 */
+@media (max-width: 880px) {
+  .viewport-start-overlay .cover-fruit-row {
+    top: 6%;
+    gap: 6px;
+  }
+
+  .viewport-start-overlay .cover-fruit-row img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .viewport-start-overlay .cover-title {
+    top: 28%;
+  }
+
+  .viewport-start-overlay .cover-title span {
+    font-size: 52px;
+    -webkit-text-stroke: 2px #5b3512;
+  }
+
+  .viewport-start-overlay .cover-title strong {
+    font-size: 48px;
+    -webkit-text-stroke: 2px #5b3512;
+  }
+
+  .viewport-start-overlay .cover-fruit-bottom {
+    bottom: 5%;
+    gap: 0;
+  }
+
+  .viewport-start-overlay .cover-fruit-bottom img {
+    width: 42px;
+    height: 42px;
+  }
+
+  .viewport-start-overlay .cover-fruit-bottom img:nth-child(1) {
+    width: 54px;
+    height: 54px;
+  }
+
+  .viewport-start-overlay .cover-fruit-bottom img:nth-child(2) {
+    width: 48px;
+    height: 48px;
+  }
+
+  .viewport-start-overlay .cover-fruit-bottom img:nth-child(3) {
+    width: 50px;
+    height: 50px;
+  }
+
+  .viewport-start-overlay .cover-play-button {
+    min-width: 118px;
+    height: 40px;
+    padding: 0 15px;
+    border-radius: 11px;
+    font-size: 13px;
+  }
+
+  .viewport-start-overlay .cover-play-button span {
+    font-size: 13px;
+  }
+}
