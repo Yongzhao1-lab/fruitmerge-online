@@ -46,9 +46,7 @@ input {
   font: inherit;
 }
 
-/* =========================
-   Portal Layout
-========================= */
+/* Portal */
 
 .portal-shell {
   min-height: 100vh;
@@ -86,7 +84,7 @@ input {
   line-height: 1;
   font-weight: 1000;
   background: linear-gradient(135deg, #8847ff, #bd64ff);
-  box-shadow: 0 10px 26px rgba(136, 71, 255, 0.30);
+  box-shadow: 0 10px 26px rgba(136, 71, 255, 0.3);
   white-space: nowrap;
 }
 
@@ -178,9 +176,7 @@ input {
   padding: 0 12px 42px 0;
 }
 
-/* =========================
-   Game Player
-========================= */
+/* Game */
 
 .game-player {
   overflow: hidden;
@@ -191,9 +187,11 @@ input {
 .game-viewport {
   height: min(570px, calc(100vh - 148px));
   min-height: 520px;
+  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
   background:
     radial-gradient(circle at 48% 0%, rgba(255, 255, 255, 0.18), transparent 32%),
     linear-gradient(180deg, #c88b4a 0 29%, #b77727 29% 47%, #fff0b7 47% 100%);
@@ -201,26 +199,24 @@ input {
 
 .game-scene {
   position: relative;
-  width: min(100%, 860px);
-  height: 500px;
-  display: grid;
-  grid-template-columns: 190px 350px 190px;
-  gap: 16px;
-  align-items: center;
-  justify-content: center;
+  width: min(100%, 900px);
+  aspect-ratio: 16 / 9;
+  min-height: 500px;
+  max-height: 520px;
+  margin: 0 auto;
 }
 
-.game-bg-layer {
+.scene-bg {
   position: absolute;
   inset: 0;
   pointer-events: none;
 }
 
-.game-bg-layer::before {
+.scene-bg::before {
   content: "";
   position: absolute;
-  left: 24%;
-  right: 24%;
+  left: 26%;
+  right: 26%;
   bottom: 0;
   height: 46%;
   opacity: 0.16;
@@ -229,29 +225,22 @@ input {
     linear-gradient(80deg, transparent 0 76%, #8a5a1d 76% 79%, transparent 79% 100%);
 }
 
-.scene-left,
-.scene-center,
-.scene-right {
-  position: relative;
+/* Left HUD */
+
+.scene-left {
+  position: absolute;
+  left: 4%;
+  top: 4%;
+  width: 21%;
+  height: 88%;
   z-index: 2;
 }
 
-/* =========================
-   Left HUD
-========================= */
-
-.scene-left {
-  height: 500px;
-  display: grid;
-  grid-template-rows: 112px 1fr 52px;
-  gap: 12px;
-}
-
 .score-orb {
-  width: 128px;
-  height: 112px;
-  margin: 0 auto;
-  padding: 12px;
+  width: 64%;
+  aspect-ratio: 1.1;
+  margin: 0 auto 3%;
+  padding: 2.4%;
   display: grid;
   place-items: center;
   align-content: center;
@@ -267,33 +256,33 @@ input {
 }
 
 .score-orb span {
-  font-size: 17px;
+  font-size: clamp(10px, 1.2vw, 17px);
   font-weight: 1000;
   line-height: 1;
 }
 
 .score-orb strong {
   margin: 2px 0;
-  font-size: 30px;
+  font-size: clamp(18px, 2.2vw, 30px);
   line-height: 1;
   color: #fff0a7;
   font-weight: 1000;
 }
 
 .score-orb small {
-  font-size: 9px;
+  font-size: clamp(7px, 0.7vw, 9px);
   font-weight: 1000;
   text-transform: uppercase;
 }
 
 .score-orb b {
-  font-size: 16px;
+  font-size: clamp(10px, 1.1vw, 16px);
 }
 
 .score-panel {
-  width: 190px;
-  min-height: 0;
-  padding: 14px 12px;
+  width: 100%;
+  height: 66%;
+  padding: 7% 6%;
   border-radius: 26px;
   color: #704615;
   background: linear-gradient(180deg, rgba(255, 250, 215, 0.98), rgba(238, 210, 136, 0.96));
@@ -304,32 +293,31 @@ input {
 
 .panel-title {
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 5%;
 }
 
 .panel-title h2 {
   margin: 0;
-  font-size: 22px;
+  font-size: clamp(14px, 1.6vw, 22px);
   line-height: 1;
   font-weight: 1000;
 }
 
 .panel-title p {
-  margin: 4px 0 0;
-  font-size: 11px;
+  margin: 3px 0 0;
+  font-size: clamp(9px, 0.85vw, 11px);
   color: #9d7a45;
   font-weight: 800;
 }
 
-/* 去掉重复的 NOW 分数块 */
+.sr-only,
 .current-score-box {
   display: none !important;
 }
 
-/* 新版时间卡片；如果 HTML 里用了 .time-card，会显示这个 */
 .time-card {
-  margin-bottom: 10px;
-  padding: 11px 10px;
+  margin-bottom: 6%;
+  padding: 7% 6%;
   border-radius: 16px;
   text-align: center;
   background: linear-gradient(180deg, #fff7df 0%, #ffe4aa 100%);
@@ -340,7 +328,7 @@ input {
   display: block;
   margin-bottom: 4px;
   color: #8b6934;
-  font-size: 10px;
+  font-size: clamp(8px, 0.8vw, 10px);
   font-weight: 1000;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -349,31 +337,17 @@ input {
 .time-card strong {
   display: block;
   color: #5f3d12;
-  font-size: 22px;
+  font-size: clamp(16px, 1.5vw, 22px);
   line-height: 1;
   font-weight: 1000;
 }
 
-/* 兼容旧 HTML 的 time-row，如果你还没改 HTML，也不会坏 */
-.time-row {
-  margin-bottom: 9px;
-  padding: 9px 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 15px;
-  color: #76521d;
-  background: rgba(255, 255, 255, 0.34);
-  font-size: 12px;
-  font-weight: 900;
-}
-
 .top-runs-title {
-  margin: 8px 0 7px;
-  padding-top: 8px;
+  margin: 5% 0 4%;
+  padding-top: 5%;
   border-top: 1px solid rgba(120, 80, 24, 0.17);
   text-align: center;
-  font-size: 12px;
+  font-size: clamp(9px, 0.8vw, 12px);
   font-weight: 1000;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -418,22 +392,23 @@ input {
 
 .leaderboard-main strong {
   color: #6f4713;
-  font-size: 11px;
+  font-size: clamp(9px, 0.82vw, 11px);
   line-height: 1.05;
 }
 
 .leaderboard-main span {
   color: #90734c;
-  font-size: 10px;
+  font-size: clamp(8px, 0.76vw, 10px);
 }
 
 .leaderboard-score {
   color: #71480e;
-  font-size: 12px;
+  font-size: clamp(10px, 0.9vw, 12px);
   font-weight: 1000;
 }
 
 .quick-buttons {
+  margin-top: 5%;
   display: flex;
   justify-content: center;
   gap: 12px;
@@ -452,21 +427,23 @@ input {
   box-shadow: 0 8px 16px rgba(79, 38, 8, 0.16);
 }
 
-/* =========================
-   Center Game Area
-========================= */
+/* Center */
 
 .scene-center {
+  position: absolute;
+  left: 31.5%;
+  top: 7%;
+  width: 37%;
+  z-index: 3;
   display: grid;
   justify-items: center;
-  align-items: center;
 }
 
 .glass-top {
-  width: 260px;
+  width: 74%;
   height: 42px;
   margin-bottom: -8px;
-  border: 6px solid rgba(255, 225, 112, 0.90);
+  border: 6px solid rgba(255, 225, 112, 0.9);
   border-bottom: 0;
   border-radius: 14px 14px 0 0;
   transform: perspective(280px) rotateX(48deg);
@@ -476,7 +453,7 @@ input {
 
 .canvas-frame {
   position: relative;
-  width: 350px;
+  width: 100%;
   padding: 6px;
   border-radius: 20px 20px 24px 24px;
   background: linear-gradient(180deg, #ffe579, #f0c64e);
@@ -495,9 +472,7 @@ input {
   touch-action: none;
 }
 
-/* =========================
-   Overlay
-========================= */
+/* Overlay */
 
 .game-overlay,
 .game-over-panel {
@@ -508,7 +483,7 @@ input {
   place-items: center;
   padding: 14px;
   border-radius: 14px 14px 18px 18px;
-  background: rgba(70, 42, 12, 0.20);
+  background: rgba(70, 42, 12, 0.2);
   backdrop-filter: blur(8px);
 }
 
@@ -622,20 +597,21 @@ input {
   background: rgba(255, 255, 255, 0.72);
 }
 
-/* =========================
-   Right HUD
-========================= */
+/* Right */
 
 .scene-right {
-  height: 500px;
-  display: grid;
-  grid-template-rows: 148px 1fr 42px;
-  gap: 12px;
+  position: absolute;
+  right: 4%;
+  top: 7%;
+  width: 21%;
+  height: 84%;
+  z-index: 2;
 }
 
 .next-panel {
   position: relative;
-  padding: 14px;
+  width: 100%;
+  padding: 7%;
   border-radius: 36px;
   text-align: center;
   color: #704615;
@@ -650,7 +626,7 @@ input {
 .next-panel h2 {
   margin: 0 0 5px;
   color: #fff8dc;
-  font-size: 24px;
+  font-size: clamp(18px, 1.8vw, 24px);
   line-height: 1;
   font-weight: 1000;
 }
@@ -711,13 +687,14 @@ input {
 }
 
 .evolution-panel {
+  margin-top: 7%;
   text-align: center;
 }
 
 .evolution-panel h2 {
   margin: 0 0 8px;
   color: #fff4c6;
-  font-size: 18px;
+  font-size: clamp(14px, 1.35vw, 18px);
   line-height: 1.1;
   font-weight: 1000;
   text-shadow: 0 2px 0 rgba(92, 54, 14, 0.35);
@@ -730,7 +707,7 @@ input {
   margin: 0 auto;
   border-radius: 50%;
   background:
-    radial-gradient(circle at center, transparent 0 37%, rgba(255,255,255,0.80) 38% 39%, transparent 40%),
+    radial-gradient(circle at center, transparent 0 37%, rgba(255,255,255,0.8) 38% 39%, transparent 40%),
     radial-gradient(circle at center, transparent 0 40%, rgba(211, 255, 112, 0.86) 41% 73%, transparent 74%),
     radial-gradient(circle at 30% 20%, rgba(255,255,255,0.72) 0 7px, transparent 8px);
   box-shadow:
@@ -781,7 +758,9 @@ input {
 .evolution-item:nth-child(11) { transform: rotate(240deg) translate(62px) rotate(-240deg); }
 
 .share-current {
+  width: 100%;
   height: 40px;
+  margin-top: 7%;
   border: 0;
   border-radius: 999px;
   cursor: pointer;
@@ -791,9 +770,7 @@ input {
   box-shadow: 0 8px 16px rgba(79, 38, 8, 0.14);
 }
 
-/* =========================
-   Toolbar
-========================= */
+/* Toolbar */
 
 .game-toolbar {
   min-height: 64px;
@@ -847,6 +824,10 @@ input {
   font-size: 17px;
 }
 
+.toolbar-actions button.liked {
+  background: #ff4d75;
+}
+
 .ad-placeholder {
   height: 88px;
   margin-top: 12px;
@@ -854,9 +835,7 @@ input {
   background: #1b1c26;
 }
 
-/* =========================
-   Right Rail
-========================= */
+/* Right rail */
 
 .right-rail {
   grid-area: rail;
@@ -909,9 +888,7 @@ input {
   font-size: 12px;
 }
 
-/* =========================
-   Content Below
-========================= */
+/* Content */
 
 .content-section,
 .related-section {
@@ -1002,9 +979,7 @@ input {
 .thumb-three { background: linear-gradient(135deg, #ffb347, #ffcc33); }
 .thumb-four { background: linear-gradient(135deg, #ffe259, #ffa751); }
 
-/* =========================
-   Tablet
-========================= */
+/* Tablet */
 
 @media (max-width: 1180px) {
   .portal-shell {
@@ -1023,18 +998,11 @@ input {
   }
 
   .game-scene {
-    width: min(100%, 820px);
-    grid-template-columns: 180px 340px 180px;
-  }
-
-  .canvas-frame {
-    width: 340px;
+    width: min(100%, 860px);
   }
 }
 
-/* =========================
-   Mobile Compact Layout
-========================= */
+/* Mobile */
 
 @media (max-width: 880px) {
   html,
@@ -1043,7 +1011,6 @@ input {
   }
 
   .portal-shell {
-    display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 58px 1fr;
     grid-template-areas:
@@ -1057,7 +1024,6 @@ input {
   }
 
   .portal-header {
-    grid-area: top;
     height: 58px;
     padding: 7px 8px;
     gap: 8px;
@@ -1101,13 +1067,11 @@ input {
   }
 
   .portal-main {
-    grid-area: main;
     padding: 0;
   }
 
   .game-player {
     border-radius: 0;
-    overflow: hidden;
   }
 
   .game-viewport {
@@ -1115,74 +1079,23 @@ input {
     min-height: 0;
     padding: 10px 6px 12px;
     align-items: flex-start;
-    overflow: hidden;
   }
 
   .game-scene {
-    width: 100%;
-    max-width: 430px;
-    height: auto;
+    width: min(100%, 430px);
     min-height: 0;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 76px minmax(0, 1fr) 76px;
-    gap: 6px;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .game-bg-layer::before {
-    left: 18%;
-    right: 18%;
-    opacity: 0.12;
-  }
-
-  .scene-left,
-  .scene-right {
-    height: auto;
-    display: grid;
-    align-self: center;
-    gap: 6px;
-  }
-
-  .scene-left {
-    grid-template-rows: auto auto auto;
-  }
-
-  .scene-right {
-    grid-template-rows: auto auto auto;
+    max-height: none;
   }
 
   .score-orb {
-    width: 72px;
-    height: 76px;
-    margin: 0 auto;
-    padding: 6px;
-    border-radius: 20px;
-  }
-
-  .score-orb span {
-    font-size: 9px;
-  }
-
-  .score-orb strong {
-    margin: 2px 0;
-    font-size: 17px;
-  }
-
-  .score-orb small {
-    font-size: 7px;
-  }
-
-  .score-orb b {
-    font-size: 10px;
+    width: 65%;
   }
 
   .score-panel {
-    width: 76px;
-    padding: 7px 5px;
-    border-width: 2px;
+    height: 64%;
     border-radius: 16px;
+    border-width: 2px;
+    padding: 6px 5px;
   }
 
   .panel-title {
@@ -1197,51 +1110,32 @@ input {
     display: none;
   }
 
-  .current-score-box {
-    display: none !important;
-  }
-
   .time-card {
-    margin-bottom: 6px;
     padding: 6px 4px;
-    border-radius: 11px;
+    border-radius: 10px;
+    margin-bottom: 5px;
   }
 
   .time-card span {
-    margin-bottom: 2px;
     font-size: 7px;
-    letter-spacing: 0.03em;
+    margin-bottom: 2px;
   }
 
   .time-card strong {
     font-size: 12px;
   }
 
-  .time-row {
-    margin-bottom: 5px;
-    padding: 5px 4px;
-    border-radius: 10px;
-    font-size: 8px;
-    gap: 3px;
-  }
-
   .top-runs-title {
-    margin: 6px 0 4px;
+    margin: 5px 0 4px;
     padding-top: 5px;
     font-size: 8px;
-    letter-spacing: 0.04em;
   }
 
   .leaderboard-list {
     gap: 4px;
   }
 
-  .leaderboard-item:nth-child(n + 4) {
-    display: none !important;
-  }
-
   .leaderboard-item {
-    display: grid;
     grid-template-columns: 16px 1fr;
     gap: 4px;
     padding: 4px;
@@ -1273,30 +1167,18 @@ input {
     font-size: 13px;
   }
 
-  .scene-center {
-    width: 100%;
-    min-width: 0;
-  }
-
   .glass-top {
-    width: 72%;
     height: 22px;
     margin-bottom: -5px;
     border-width: 4px;
-    border-bottom: 0;
-    border-radius: 10px 10px 0 0;
   }
 
   .canvas-frame {
-    width: 100%;
-    max-width: 240px;
     padding: 4px;
     border-radius: 14px;
   }
 
   #gameCanvas {
-    width: 100%;
-    height: auto;
     border-radius: 10px;
   }
 
@@ -1344,28 +1226,6 @@ input {
     font-size: 26px;
   }
 
-  .game-over-meta {
-    gap: 6px;
-    margin-bottom: 7px;
-  }
-
-  .game-over-meta div {
-    padding: 5px;
-    border-radius: 10px;
-  }
-
-  .game-over-meta span {
-    font-size: 8px;
-  }
-
-  .game-over-meta strong {
-    font-size: 10px;
-  }
-
-  .game-over-actions {
-    gap: 6px;
-  }
-
   .game-over-actions button {
     height: 30px;
     border-radius: 10px;
@@ -1373,18 +1233,13 @@ input {
   }
 
   .next-panel {
-    width: 76px;
-    padding: 7px 5px;
     border-radius: 16px;
+    padding: 7px 5px;
   }
 
   .next-panel h2 {
-    margin-bottom: 4px;
     font-size: 12px;
-  }
-
-  .next-main {
-    gap: 1px;
+    margin-bottom: 4px;
   }
 
   .next-main canvas {
@@ -1415,11 +1270,6 @@ input {
     width: 28px;
     height: 28px;
     font-size: 16px;
-  }
-
-  .evolution-panel {
-    width: 76px;
-    margin: 0 auto;
   }
 
   .evolution-panel h2 {
@@ -1458,7 +1308,6 @@ input {
   .share-current {
     height: 28px;
     font-size: 8px;
-    border-radius: 999px;
   }
 
   .game-toolbar {
@@ -1509,274 +1358,5 @@ input {
   .info-grid,
   .related-grid {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 390px) {
-  .portal-header {
-    height: 54px;
-  }
-
-  .brand {
-    font-size: 18px;
-  }
-
-  .brand-mark {
-    width: 32px;
-    height: 32px;
-  }
-
-  .top-nav a {
-    height: 32px;
-    padding: 0 9px;
-    font-size: 11px;
-  }
-
-  .game-viewport {
-    padding: 8px 4px 10px;
-  }
-
-  .game-scene {
-    grid-template-columns: 70px minmax(0, 1fr) 70px;
-    gap: 5px;
-  }
-
-  .score-orb,
-  .score-panel,
-  .next-panel,
-  .evolution-panel {
-    width: 70px;
-  }
-
-  .canvas-frame {
-    max-width: 226px;
-  }
-
-  .evolution-circle {
-    width: 68px;
-    height: 68px;
-  }
-
-  .evolution-item:nth-child(1)  { transform: rotate(-90deg) translate(24px) rotate(90deg); }
-  .evolution-item:nth-child(2)  { transform: rotate(-57deg) translate(24px) rotate(57deg); }
-  .evolution-item:nth-child(3)  { transform: rotate(-24deg) translate(24px) rotate(24deg); }
-  .evolution-item:nth-child(4)  { transform: rotate(9deg) translate(24px) rotate(-9deg); }
-  .evolution-item:nth-child(5)  { transform: rotate(42deg) translate(24px) rotate(-42deg); }
-  .evolution-item:nth-child(6)  { transform: rotate(75deg) translate(24px) rotate(-75deg); }
-  .evolution-item:nth-child(7)  { transform: rotate(108deg) translate(24px) rotate(-108deg); }
-  .evolution-item:nth-child(8)  { transform: rotate(141deg) translate(24px) rotate(-141deg); }
-  .evolution-item:nth-child(9)  { transform: rotate(174deg) translate(24px) rotate(-174deg); }
-  .evolution-item:nth-child(10) { transform: rotate(207deg) translate(24px) rotate(-207deg); }
-  .evolution-item:nth-child(11) { transform: rotate(240deg) translate(24px) rotate(-240deg); }
-}
-/* =========================================================
-   Desktop Layout Emergency Fix
-   修复：游戏主界面整体右偏、左侧被裁、游戏框跑偏
-   ========================================================= */
-
-@media (min-width: 881px) {
-  .portal-main {
-    overflow: hidden !important;
-    padding: 0 12px 42px 0 !important;
-  }
-
-  .game-player {
-    width: 100% !important;
-    overflow: hidden !important;
-    border-radius: 0 0 18px 18px !important;
-  }
-
-  .game-viewport {
-    width: 100% !important;
-    height: min(560px, calc(100vh - 148px)) !important;
-    min-height: 500px !important;
-    padding: 0 !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    overflow: hidden !important;
-  }
-
-  .game-scene {
-    position: relative !important;
-    width: 820px !important;
-    max-width: calc(100vw - 210px) !important;
-    height: 486px !important;
-    margin: 0 auto !important;
-
-    display: grid !important;
-    grid-template-columns: 176px 334px 176px !important;
-    gap: 14px !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    transform: none !important;
-    left: auto !important;
-    right: auto !important;
-  }
-
-  .scene-left,
-  .scene-center,
-  .scene-right {
-    position: relative !important;
-    z-index: 2 !important;
-    transform: none !important;
-    left: auto !important;
-    right: auto !important;
-    margin: 0 !important;
-  }
-
-  .scene-left {
-    width: 176px !important;
-    height: 486px !important;
-    display: grid !important;
-    grid-template-rows: 104px 1fr 48px !important;
-    gap: 10px !important;
-    align-items: start !important;
-  }
-
-  .scene-center {
-    width: 334px !important;
-    height: auto !important;
-    display: grid !important;
-    justify-items: center !important;
-    align-items: center !important;
-  }
-
-  .scene-right {
-    width: 176px !important;
-    height: 486px !important;
-    display: grid !important;
-    grid-template-rows: 140px 1fr 38px !important;
-    gap: 10px !important;
-    align-items: start !important;
-  }
-
-  .score-orb {
-    width: 120px !important;
-    height: 104px !important;
-  }
-
-  .score-orb strong {
-    font-size: 27px !important;
-  }
-
-  .score-panel {
-    width: 176px !important;
-    max-height: 322px !important;
-    padding: 12px 10px !important;
-    overflow: hidden !important;
-  }
-
-  .panel-title h2 {
-    font-size: 20px !important;
-  }
-
-  .time-row,
-  .time-card {
-    margin-bottom: 7px !important;
-  }
-
-  .leaderboard-list {
-    gap: 5px !important;
-  }
-
-  .leaderboard-item {
-    padding: 6px 7px !important;
-  }
-
-  .leaderboard-item:nth-child(n + 4) {
-    display: none !important;
-  }
-
-  .quick-buttons button {
-    width: 42px !important;
-    height: 42px !important;
-  }
-
-  .glass-top {
-    width: 248px !important;
-    height: 38px !important;
-    margin-bottom: -7px !important;
-  }
-
-  .canvas-frame {
-    width: 334px !important;
-    padding: 6px !important;
-    transform: none !important;
-    left: auto !important;
-    right: auto !important;
-  }
-
-  #gameCanvas {
-    width: 100% !important;
-    height: auto !important;
-  }
-
-  .next-panel {
-    width: 176px !important;
-    min-height: 134px !important;
-    padding: 12px !important;
-  }
-
-  .next-panel h2 {
-    font-size: 22px !important;
-  }
-
-  .next-main canvas {
-    width: 46px !important;
-    height: 46px !important;
-  }
-
-  .next-mini-row canvas {
-    width: 26px !important;
-    height: 26px !important;
-  }
-
-  .restart-button {
-    width: 40px !important;
-    height: 40px !important;
-    left: -14px !important;
-  }
-
-  .evolution-panel {
-    width: 176px !important;
-  }
-
-  .evolution-panel h2 {
-    font-size: 16px !important;
-    margin-bottom: 7px !important;
-  }
-
-  .evolution-circle {
-    width: 158px !important;
-    height: 158px !important;
-  }
-
-  .evolution-item {
-    width: 30px !important;
-    height: 30px !important;
-    margin: -15px 0 0 -15px !important;
-  }
-
-  .evolution-item img {
-    width: 24px !important;
-    height: 24px !important;
-  }
-
-  .evolution-item:nth-child(1)  { transform: rotate(-90deg) translate(58px) rotate(90deg) !important; }
-  .evolution-item:nth-child(2)  { transform: rotate(-57deg) translate(58px) rotate(57deg) !important; }
-  .evolution-item:nth-child(3)  { transform: rotate(-24deg) translate(58px) rotate(24deg) !important; }
-  .evolution-item:nth-child(4)  { transform: rotate(9deg) translate(58px) rotate(-9deg) !important; }
-  .evolution-item:nth-child(5)  { transform: rotate(42deg) translate(58px) rotate(-42deg) !important; }
-  .evolution-item:nth-child(6)  { transform: rotate(75deg) translate(58px) rotate(-75deg) !important; }
-  .evolution-item:nth-child(7)  { transform: rotate(108deg) translate(58px) rotate(-108deg) !important; }
-  .evolution-item:nth-child(8)  { transform: rotate(141deg) translate(58px) rotate(-141deg) !important; }
-  .evolution-item:nth-child(9)  { transform: rotate(174deg) translate(58px) rotate(-174deg) !important; }
-  .evolution-item:nth-child(10) { transform: rotate(207deg) translate(58px) rotate(-207deg) !important; }
-  .evolution-item:nth-child(11) { transform: rotate(240deg) translate(58px) rotate(-240deg) !important; }
-
-  .share-current {
-    height: 38px !important;
   }
 }
