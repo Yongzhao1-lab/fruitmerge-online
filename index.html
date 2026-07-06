@@ -276,6 +276,32 @@
               PLAY NOW
             </button>
           </div>
+
+          <div class="mobile-game-hud" aria-label="Mobile game status">
+            <div class="mobile-hud-pill">
+              <span>Score</span>
+              <strong id="mobileScore">0</strong>
+            </div>
+
+            <div class="mobile-hud-pill">
+              <span>Best</span>
+              <strong id="mobileBestScore">0</strong>
+            </div>
+
+            <div class="mobile-hud-pill">
+              <span>Time</span>
+              <strong id="mobileTime">00:00</strong>
+            </div>
+
+            <div class="mobile-hud-pill mobile-next-pill">
+              <span>Next</span>
+              <canvas id="mobileNextFruitCanvas" width="42" height="42"></canvas>
+            </div>
+          </div>
+
+          <button id="mobileExitButton" class="mobile-exit-button" type="button">
+            Exit
+          </button>
         </div>
 
         <div class="game-toolbar">
@@ -460,6 +486,12 @@
       const shareCurrentButton = document.getElementById("shareCurrentButton");
       const shareScoreButton = document.getElementById("shareScoreButton");
       const gamePlayer = document.querySelector(".game-player");
+      const startButton = document.getElementById("startButton");
+      const mobileExitButton = document.getElementById("mobileExitButton");
+
+      function isMobileScreen() {
+        return window.matchMedia("(max-width: 880px)").matches;
+      }
 
       function getShareText() {
         const scoreEl = document.getElementById("score");
@@ -497,6 +529,49 @@
         }
       }
 
+      function enterMobilePlayMode() {
+        if (!isMobileScreen()) return;
+
+        document.body.classList.add("mobile-playing");
+
+        const target = gamePlayer || document.documentElement;
+
+        if (target && document.fullscreenEnabled && target.requestFullscreen) {
+          target.requestFullscreen().catch(() => {});
+        }
+      }
+
+      function exitMobilePlayMode() {
+        document.body.classList.remove("mobile-playing");
+
+        if (document.fullscreenElement) {
+          document.exitFullscreen?.().catch(() => {});
+        }
+      }
+
+      function syncMobileHud() {
+        const score = document.getElementById("score")?.textContent || "0";
+        const best = document.getElementById("bestScore")?.textContent || "0";
+        const time = document.getElementById("time")?.textContent || "00:00";
+
+        const mobileScore = document.getElementById("mobileScore");
+        const mobileBestScore = document.getElementById("mobileBestScore");
+        const mobileTime = document.getElementById("mobileTime");
+
+        if (mobileScore) mobileScore.textContent = score;
+        if (mobileBestScore) mobileBestScore.textContent = best;
+        if (mobileTime) mobileTime.textContent = time;
+
+        const sourceCanvas = document.getElementById("nextFruitCanvas0");
+        const targetCanvas = document.getElementById("mobileNextFruitCanvas");
+
+        if (sourceCanvas && targetCanvas) {
+          const targetContext = targetCanvas.getContext("2d");
+          targetContext.clearRect(0, 0, targetCanvas.width, targetCanvas.height);
+          targetContext.drawImage(sourceCanvas, 0, 0, targetCanvas.width, targetCanvas.height);
+        }
+      }
+
       if (toolbarLikeButton) {
         const liked = localStorage.getItem("fruitMergeLiked") === "yes";
         toolbarLikeButton.classList.toggle("liked", liked);
@@ -518,6 +593,23 @@
 
       toolbarFullscreenButton?.addEventListener("click", toggleFullscreen);
       fullscreenButton?.addEventListener("click", toggleFullscreen);
+
+      startButton?.addEventListener("click", () => {
+        enterMobilePlayMode();
+      });
+
+      mobileExitButton?.addEventListener("click", () => {
+        exitMobilePlayMode();
+      });
+
+      document.addEventListener("fullscreenchange", () => {
+        if (!document.fullscreenElement && isMobileScreen()) {
+          document.body.classList.remove("mobile-playing");
+        }
+      });
+
+      setInterval(syncMobileHud, 300);
+      syncMobileHud();
     });
   </script>
 </body>
