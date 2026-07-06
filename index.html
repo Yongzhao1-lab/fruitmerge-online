@@ -536,30 +536,44 @@
         return window.matchMedia("(max-width: 880px)").matches;
       }
 
-      function getShareText() {
+      function getShareData() {
         const scoreEl = document.getElementById("score");
         const currentScore = scoreEl ? scoreEl.textContent : "0";
 
-        return `I scored ${currentScore} in Fruit Merge Online! Can you beat me? https://fruitmerge.online`;
+        return {
+          title: "Fruit Merge Online",
+          text: `I scored ${currentScore} in Fruit Merge Online! Can you beat me?`,
+          url: "https://fruitmerge.online/"
+        };
+      }
+
+      async function copyShareText(data) {
+        const shareText = `${data.text}\n${data.url}`;
+
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(shareText);
+            alert("Share text copied!");
+            return true;
+          }
+        } catch (error) {}
+
+        window.prompt("Copy and share your score:", shareText);
+        return false;
       }
 
       async function shareGame() {
-        const text = getShareText();
+        const data = getShareData();
 
         try {
           if (navigator.share) {
-            await navigator.share({
-              title: "Fruit Merge Online",
-              text,
-              url: "https://fruitmerge.online"
-            });
-          } else if (navigator.clipboard) {
-            await navigator.clipboard.writeText(text);
-            alert("Score copied!");
-          } else {
-            alert(text);
+            await navigator.share(data);
+            return true;
           }
         } catch (error) {}
+
+        await copyShareText(data);
+        return false;
       }
 
       function openMobileMenu() {
@@ -581,6 +595,7 @@
 
         document.body.classList.add("mobile-playing");
         document.body.classList.remove("mobile-menu-open");
+        closeMobileMenu();
         window.scrollTo(0, 0);
 
         const target = gamePlayer || document.documentElement;
@@ -605,7 +620,7 @@
       function exitMobilePlayMode() {
         closeMobileMenu();
 
-        document.body.classList.remove("mobile-playing");
+        document.body.classList.remove("mobile-playing", "mobile-menu-open");
 
         if (document.fullscreenElement) {
           document.exitFullscreen?.().catch(() => {});
@@ -669,12 +684,28 @@
         });
       }
 
-      toolbarShareButton?.addEventListener("click", shareGame);
-      shareCurrentButton?.addEventListener("click", shareGame);
-      shareScoreButton?.addEventListener("click", shareGame);
+      toolbarShareButton?.addEventListener("click", async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        await shareGame();
+      });
 
-      mobileShareButton?.addEventListener("click", () => {
-        shareGame();
+      shareCurrentButton?.addEventListener("click", async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        await shareGame();
+      });
+
+      shareScoreButton?.addEventListener("click", async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        await shareGame();
+      });
+
+      mobileShareButton?.addEventListener("click", async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        await shareGame();
         closeMobileMenu();
       });
 
@@ -685,25 +716,42 @@
         enterMobilePlayMode();
       });
 
-      mobileMenuButton?.addEventListener("click", () => {
+      mobileMenuButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         openMobileMenu();
       });
 
-      mobileResumeButton?.addEventListener("click", () => {
+      mobileResumeButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         closeMobileMenu();
       });
 
-      mobileMusicButton?.addEventListener("click", () => {
+      mobileMusicButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
         musicToggleButton?.click();
         closeMobileMenu();
       });
 
-      mobileRestartButton?.addEventListener("click", () => {
-        restartButton?.click();
-        closeMobileMenu();
+      mobileRestartButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const confirmed = window.confirm("Restart this run?");
+
+        if (confirmed) {
+          restartButton?.click();
+          closeMobileMenu();
+        }
       });
 
-      mobileExitButton?.addEventListener("click", () => {
+      mobileExitButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
         exitMobilePlayMode();
       });
 
