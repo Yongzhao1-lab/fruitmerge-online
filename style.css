@@ -1435,8 +1435,9 @@ a {
 }
 
 /* =========================================================
-   Mobile Immersive Portrait Mode - Premium Arcade Layout
+   Mobile Immersive Portrait Mode - No Canvas Stretch
    竖屏沉浸式：顶部 HUD + 大游戏区 + 右上角菜单按钮
+   关键：保持 420:560 比例，禁止拉伸水果
    ========================================================= */
 
 @media (max-width: 880px) {
@@ -1539,7 +1540,6 @@ a {
     filter: blur(12px);
   }
 
-  /* 顶部 HUD */
   body.mobile-playing .mobile-game-hud {
     position: fixed !important;
     left: 10px !important;
@@ -1593,7 +1593,6 @@ a {
     margin: -1px auto 0 !important;
   }
 
-  /* 右上角菜单按钮 */
   body.mobile-playing .mobile-menu-button {
     position: fixed !important;
     right: 10px !important;
@@ -1616,17 +1615,15 @@ a {
     font-weight: 1000 !important;
   }
 
-  /* 主游戏框 */
   body.mobile-playing .scene-center {
     position: absolute !important;
     left: 50% !important;
-    top: max(111px, calc(env(safe-area-inset-top) + 74px)) !important;
-    bottom: max(20px, env(safe-area-inset-bottom)) !important;
-    width: min(96vw, 520px) !important;
+    top: max(112px, calc(env(safe-area-inset-top) + 74px)) !important;
+    width: min(94vw, calc((100dvh - 140px) * 0.75), 430px) !important;
     transform: translateX(-50%) !important;
     display: grid !important;
-    grid-template-rows: auto 1fr !important;
-    align-content: stretch !important;
+    grid-template-rows: auto auto !important;
+    align-content: start !important;
     justify-items: center !important;
     z-index: 10000 !important;
   }
@@ -1645,7 +1642,8 @@ a {
 
   body.mobile-playing .canvas-frame {
     width: 100% !important;
-    height: 100% !important;
+    height: auto !important;
+    aspect-ratio: 420 / 560 !important;
     min-height: 0 !important;
     padding: 5px !important;
     border-radius: 26px !important;
@@ -1654,20 +1652,20 @@ a {
     box-shadow:
       inset 0 0 0 2px rgba(255,255,255,0.42),
       0 20px 46px rgba(95, 57, 10, 0.28) !important;
-    display: flex !important;
-    align-items: stretch !important;
+    display: grid !important;
+    place-items: stretch !important;
   }
 
   body.mobile-playing #gameCanvas {
     width: 100% !important;
     height: 100% !important;
+    aspect-ratio: 420 / 560 !important;
     display: block !important;
     border-radius: 22px !important;
     background: #eef8f5 !important;
     touch-action: none !important;
   }
 
-  /* 菜单弹层 */
   body.mobile-playing .mobile-game-menu {
     position: fixed !important;
     inset: 0 !important;
@@ -1801,9 +1799,8 @@ a {
   }
 
   body.mobile-playing .scene-center {
-    top: max(100px, calc(env(safe-area-inset-top) + 66px)) !important;
-    bottom: max(14px, env(safe-area-inset-bottom)) !important;
-    width: 97vw !important;
+    top: max(102px, calc(env(safe-area-inset-top) + 66px)) !important;
+    width: min(96vw, calc((100dvh - 124px) * 0.75), 410px) !important;
   }
 
   body.mobile-playing .glass-top {
