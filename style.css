@@ -1435,9 +1435,9 @@ a {
 }
 
 /* =========================================================
-   Mobile Immersive Portrait Mode - No Canvas Stretch
+   Mobile Immersive Portrait Mode - Reduced Blank Space
    竖屏沉浸式：顶部 HUD + 大游戏区 + 右上角菜单按钮
-   关键：保持 420:560 比例，禁止拉伸水果
+   关键：保持 420:560 比例，不拉伸，同时尽量减少底部留白
    ========================================================= */
 
 @media (max-width: 880px) {
@@ -1507,9 +1507,9 @@ a {
     content: "";
     position: absolute;
     left: 50%;
-    bottom: 74px;
-    width: 72vw;
-    max-width: 460px;
+    bottom: 54px;
+    width: 76vw;
+    max-width: 500px;
     height: 100px;
     transform: translateX(-50%);
     background:
@@ -1531,9 +1531,9 @@ a {
     content: "";
     position: absolute;
     left: 50%;
-    bottom: 62px;
-    width: 78vw;
-    max-width: 480px;
+    bottom: 42px;
+    width: 82vw;
+    max-width: 520px;
     height: 80px;
     transform: translateX(-50%);
     background: radial-gradient(ellipse at center, rgba(116, 72, 17, 0.18), transparent 72%);
@@ -1618,8 +1618,8 @@ a {
   body.mobile-playing .scene-center {
     position: absolute !important;
     left: 50% !important;
-    top: max(112px, calc(env(safe-area-inset-top) + 74px)) !important;
-    width: min(94vw, calc((100dvh - 140px) * 0.75), 430px) !important;
+    top: max(100px, calc(env(safe-area-inset-top) + 66px)) !important;
+    width: min(114vw, calc((100dvh - 116px) * 0.75), 520px) !important;
     transform: translateX(-50%) !important;
     display: grid !important;
     grid-template-rows: auto auto !important;
@@ -1652,13 +1652,12 @@ a {
     box-shadow:
       inset 0 0 0 2px rgba(255,255,255,0.42),
       0 20px 46px rgba(95, 57, 10, 0.28) !important;
-    display: grid !important;
-    place-items: stretch !important;
+    display: block !important;
   }
 
   body.mobile-playing #gameCanvas {
     width: 100% !important;
-    height: 100% !important;
+    height: auto !important;
     aspect-ratio: 420 / 560 !important;
     display: block !important;
     border-radius: 22px !important;
@@ -1799,8 +1798,8 @@ a {
   }
 
   body.mobile-playing .scene-center {
-    top: max(102px, calc(env(safe-area-inset-top) + 66px)) !important;
-    width: min(96vw, calc((100dvh - 124px) * 0.75), 410px) !important;
+    top: max(94px, calc(env(safe-area-inset-top) + 60px)) !important;
+    width: min(118vw, calc((100dvh - 104px) * 0.75), 500px) !important;
   }
 
   body.mobile-playing .glass-top {
