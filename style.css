@@ -1957,3 +1957,39 @@ input {
     font-size: 13px;
   }
 }
+/* =========================================================
+   Hide unfinished related games area
+   等后续真实游戏做出来后再显示
+   ========================================================= */
+
+/* 隐藏 Related Games 整个模块 */
+#related-games {
+  display: none !important;
+}
+
+/* 隐藏顶部 More Games 导航 */
+.top-nav a[href="#related-games"] {
+  display: none !important;
+}
+
+/* 隐藏左侧指向 related games 的图标 */
+.icon-sidebar a[href="#related-games"] {
+  display: none !important;
+}
+
+/* 隐藏右侧 Hot Games 占位栏 */
+.right-rail {
+  display: none !important;
+}
+
+/* 右侧栏隐藏后，主页面重新占满宽度 */
+.portal-shell {
+  grid-template-columns: 58px minmax(0, 1fr) !important;
+  grid-template-areas:
+    "top top"
+    "side main" !important;
+}
+
+.portal-main {
+  padding-right: 0 !important;
+}
