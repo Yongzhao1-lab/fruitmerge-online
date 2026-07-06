@@ -176,35 +176,6 @@
                   aria-label="Fruit Merge Online game area"
                 ></canvas>
 
-                <div id="startOverlay" class="game-overlay cover-start-screen">
-                  <div class="cover-art" aria-hidden="true">
-                    <div class="cover-fruit-row">
-                      <img src="/assets/fruits/apple.png" alt="" />
-                      <img src="/assets/fruits/orange.png" alt="" />
-                      <img src="/assets/fruits/grape.png" alt="" />
-                      <img src="/assets/fruits/strawberry.png" alt="" />
-                    </div>
-
-                    <div class="cover-title">
-                      <span>Fruit</span>
-                      <strong>Merge</strong>
-                    </div>
-
-                    <div class="cover-fruit-bottom">
-                      <img src="/assets/fruits/watermelon.png" alt="" />
-                      <img src="/assets/fruits/pineapple.png" alt="" />
-                      <img src="/assets/fruits/peach.png" alt="" />
-                    </div>
-                  </div>
-
-                  <div class="cover-mask"></div>
-
-                  <button id="startButton" class="cover-play-button" type="button" aria-label="Play Fruit Merge Online">
-                    <span>▶</span>
-                    PLAY NOW
-                  </button>
-                </div>
-
                 <div id="gameOverPanel" class="game-over-panel hidden">
                   <div class="game-over-card">
                     <p class="game-over-badge" id="gameOverBadge">Game Over</p>
@@ -217,6 +188,7 @@
                         <span>Time</span>
                         <strong id="gameOverTime">00:00</strong>
                       </div>
+
                       <div>
                         <span>Best</span>
                         <strong id="gameOverBest">0</strong>
@@ -274,6 +246,35 @@
               </button>
             </aside>
           </div>
+
+          <div id="startOverlay" class="viewport-start-overlay">
+            <div class="cover-art" aria-hidden="true">
+              <div class="cover-fruit-row">
+                <img src="/assets/fruits/apple.png" alt="" />
+                <img src="/assets/fruits/orange.png" alt="" />
+                <img src="/assets/fruits/grape.png" alt="" />
+                <img src="/assets/fruits/strawberry.png" alt="" />
+              </div>
+
+              <div class="cover-title">
+                <span>Fruit</span>
+                <strong>Merge</strong>
+              </div>
+
+              <div class="cover-fruit-bottom">
+                <img src="/assets/fruits/watermelon.png" alt="" />
+                <img src="/assets/fruits/pineapple.png" alt="" />
+                <img src="/assets/fruits/peach.png" alt="" />
+              </div>
+            </div>
+
+            <div class="cover-mask"></div>
+
+            <button id="startButton" class="cover-play-button" type="button" aria-label="Play Fruit Merge Online">
+              <span>▶</span>
+              PLAY NOW
+            </button>
+          </div>
         </div>
 
         <div class="game-toolbar">
@@ -301,6 +302,7 @@
             <p class="section-kicker">MORE GAMES</p>
             <h2>Related Games</h2>
           </div>
+
           <a href="#game">Play again</a>
         </div>
 
@@ -445,6 +447,7 @@
       const toolbarFullscreenButton = document.getElementById("toolbarFullscreenButton");
       const fullscreenButton = document.getElementById("fullscreenButton");
       const shareCurrentButton = document.getElementById("shareCurrentButton");
+      const shareScoreButton = document.getElementById("shareScoreButton");
       const gamePlayer = document.querySelector(".game-player");
       const startOverlay = document.getElementById("startOverlay");
       const startButton = document.getElementById("startButton");
@@ -452,6 +455,7 @@
       function getShareText() {
         const scoreEl = document.getElementById("score");
         const currentScore = scoreEl ? scoreEl.textContent : "0";
+
         return `I scored ${currentScore} in Fruit Merge Online! Can you beat me? https://fruitmerge.online`;
       }
 
@@ -501,12 +505,16 @@
 
       toolbarShareButton?.addEventListener("click", shareGame);
       shareCurrentButton?.addEventListener("click", shareGame);
+      shareScoreButton?.addEventListener("click", shareGame);
+
       toolbarFullscreenButton?.addEventListener("click", toggleFullscreen);
       fullscreenButton?.addEventListener("click", toggleFullscreen);
 
       if (startOverlay && startButton) {
         startOverlay.addEventListener("click", (event) => {
-          const clickedCover = event.target.closest(".cover-art") || event.target.closest(".cover-mask");
+          const clickedCover =
+            event.target.closest(".cover-art") ||
+            event.target.closest(".cover-mask");
 
           if (clickedCover) {
             startButton.click();
