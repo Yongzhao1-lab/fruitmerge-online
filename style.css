@@ -1036,3 +1036,535 @@ input {
     grid-template-columns: 1fr;
   }
 }
+/* =========================================================
+   Mobile Compact Game Layout Fix
+   目标：手机端保持和电脑端一致的紧凑游戏界面
+   ========================================================= */
+
+@media (max-width: 880px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .portal-shell {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 58px 1fr;
+    grid-template-areas:
+      "top"
+      "main";
+  }
+
+  .icon-sidebar,
+  .right-rail {
+    display: none !important;
+  }
+
+  .portal-header {
+    grid-area: top;
+    height: 58px;
+    padding: 7px 8px;
+    gap: 8px;
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+
+  .brand {
+    flex: 0 0 auto;
+    padding: 6px 12px 6px 6px;
+    font-size: 20px;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+  }
+
+  .search-box {
+    display: none !important;
+  }
+
+  .top-nav {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+
+  .top-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .top-nav a {
+    height: 34px;
+    padding: 0 10px;
+    font-size: 12px;
+    border-radius: 999px;
+  }
+
+  .portal-main {
+    grid-area: main;
+    padding: 0;
+  }
+
+  .game-player {
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  .game-viewport {
+    height: auto;
+    min-height: 0;
+    padding: 10px 6px 12px;
+    align-items: flex-start;
+    overflow: hidden;
+  }
+
+  .game-scene {
+    width: 100%;
+    max-width: 430px;
+    height: auto;
+    min-height: 0;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr) 76px;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .game-bg-layer::before {
+    left: 18%;
+    right: 18%;
+    opacity: 0.12;
+  }
+
+  .scene-left,
+  .scene-right {
+    height: auto;
+    display: grid;
+    align-self: center;
+    gap: 6px;
+  }
+
+  .scene-left {
+    grid-template-rows: auto auto auto;
+  }
+
+  .scene-right {
+    grid-template-rows: auto auto auto;
+  }
+
+  /* 左侧 Score */
+  .score-orb {
+    width: 72px;
+    height: 76px;
+    margin: 0 auto;
+    padding: 6px;
+    border-radius: 20px;
+  }
+
+  .score-orb span {
+    font-size: 9px;
+  }
+
+  .score-orb strong {
+    margin: 2px 0;
+    font-size: 17px;
+  }
+
+  .score-orb small {
+    font-size: 7px;
+  }
+
+  .score-orb b {
+    font-size: 10px;
+  }
+
+  /* 左侧排行榜 */
+  .score-panel {
+    width: 76px;
+    padding: 7px 5px;
+    border-width: 2px;
+    border-radius: 16px;
+  }
+
+  .panel-title {
+    margin-bottom: 5px;
+  }
+
+  .panel-title h2 {
+    font-size: 11px;
+  }
+
+  .panel-title p {
+    display: none;
+  }
+
+  .current-score-box {
+    margin-bottom: 5px;
+    padding: 6px 4px;
+    border-radius: 12px;
+  }
+
+  .current-score-box span {
+    font-size: 8px;
+  }
+
+  .current-score-box strong {
+    margin-top: 2px;
+    font-size: 14px;
+  }
+
+  .time-row {
+    font-size: 8px;
+    gap: 3px;
+  }
+
+  .top-runs-title {
+    margin: 6px 0 4px;
+    padding-top: 5px;
+    font-size: 8px;
+    letter-spacing: 0.04em;
+  }
+
+  .leaderboard-list {
+    gap: 4px;
+  }
+
+  .leaderboard-item:nth-child(n + 4) {
+    display: none !important;
+  }
+
+  .leaderboard-item {
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 10px;
+  }
+
+  .leaderboard-rank {
+    width: 16px;
+    height: 16px;
+    font-size: 8px;
+  }
+
+  .leaderboard-main {
+    display: none;
+  }
+
+  .leaderboard-score {
+    justify-self: end;
+    font-size: 9px;
+  }
+
+  .quick-buttons {
+    gap: 5px;
+  }
+
+  .quick-buttons button {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  /* 中间游戏框 */
+  .scene-center {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .glass-top {
+    width: 72%;
+    height: 22px;
+    margin-bottom: -5px;
+    border-width: 4px;
+    border-bottom: 0;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .canvas-frame {
+    width: 100%;
+    max-width: 240px;
+    padding: 4px;
+    border-radius: 14px;
+  }
+
+  #gameCanvas {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+
+  /* Start / Game Over 弹窗 */
+  .game-overlay,
+  .game-over-panel {
+    inset: 4px;
+    padding: 8px;
+    border-radius: 10px;
+  }
+
+  .overlay-card,
+  .game-over-card {
+    width: min(92%, 210px);
+    padding: 12px 10px;
+    border-width: 2px;
+    border-radius: 16px;
+  }
+
+  .overlay-kicker,
+  .game-over-badge {
+    margin-bottom: 5px;
+    font-size: 8px;
+  }
+
+  .overlay-card h2,
+  .game-over-card h2 {
+    margin-bottom: 6px;
+    font-size: 18px;
+  }
+
+  .overlay-card p,
+  .game-over-tip {
+    margin-bottom: 9px;
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .overlay-card button {
+    padding: 8px 14px;
+    font-size: 11px;
+  }
+
+  .game-over-score {
+    margin: 4px 0 7px;
+    font-size: 26px;
+  }
+
+  .game-over-meta {
+    gap: 6px;
+    margin-bottom: 7px;
+  }
+
+  .game-over-meta div {
+    padding: 5px;
+    border-radius: 10px;
+  }
+
+  .game-over-meta span {
+    font-size: 8px;
+  }
+
+  .game-over-meta strong {
+    font-size: 10px;
+  }
+
+  .game-over-actions {
+    gap: 6px;
+  }
+
+  .game-over-actions button {
+    height: 30px;
+    border-radius: 10px;
+    font-size: 10px;
+  }
+
+  /* 右侧 Next */
+  .next-panel {
+    width: 76px;
+    padding: 7px 5px;
+    border-radius: 16px;
+  }
+
+  .next-panel h2 {
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+
+  .next-main {
+    gap: 1px;
+  }
+
+  .next-main canvas {
+    width: 34px;
+    height: 34px;
+  }
+
+  .next-main span {
+    font-size: 8px;
+  }
+
+  .next-mini-row {
+    margin-top: 4px;
+    gap: 5px;
+  }
+
+  .next-mini-row canvas {
+    width: 20px;
+    height: 20px;
+  }
+
+  .next-mini-row small {
+    font-size: 7px;
+  }
+
+  .restart-button {
+    left: -8px;
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+
+  /* 右侧进化圈 */
+  .evolution-panel {
+    width: 76px;
+    margin: 0 auto;
+  }
+
+  .evolution-panel h2 {
+    margin-bottom: 5px;
+    font-size: 9px;
+  }
+
+  .evolution-circle {
+    width: 72px;
+    height: 72px;
+  }
+
+  .evolution-item {
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+  }
+
+  .evolution-item img {
+    width: 12px;
+    height: 12px;
+  }
+
+  .evolution-item:nth-child(1)  { transform: rotate(-90deg) translate(26px) rotate(90deg); }
+  .evolution-item:nth-child(2)  { transform: rotate(-57deg) translate(26px) rotate(57deg); }
+  .evolution-item:nth-child(3)  { transform: rotate(-24deg) translate(26px) rotate(24deg); }
+  .evolution-item:nth-child(4)  { transform: rotate(9deg) translate(26px) rotate(-9deg); }
+  .evolution-item:nth-child(5)  { transform: rotate(42deg) translate(26px) rotate(-42deg); }
+  .evolution-item:nth-child(6)  { transform: rotate(75deg) translate(26px) rotate(-75deg); }
+  .evolution-item:nth-child(7)  { transform: rotate(108deg) translate(26px) rotate(-108deg); }
+  .evolution-item:nth-child(8)  { transform: rotate(141deg) translate(26px) rotate(-141deg); }
+  .evolution-item:nth-child(9)  { transform: rotate(174deg) translate(26px) rotate(-174deg); }
+  .evolution-item:nth-child(10) { transform: rotate(207deg) translate(26px) rotate(-207deg); }
+  .evolution-item:nth-child(11) { transform: rotate(240deg) translate(26px) rotate(-240deg); }
+
+  .share-current {
+    height: 28px;
+    font-size: 8px;
+    border-radius: 999px;
+  }
+
+  /* 下方工具栏 */
+  .game-toolbar {
+    min-height: 48px;
+    padding: 7px 8px;
+  }
+
+  .game-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    font-size: 20px;
+  }
+
+  .game-info {
+    gap: 8px;
+  }
+
+  .game-info h1 {
+    font-size: 14px;
+  }
+
+  .game-info p {
+    margin-top: 2px;
+    font-size: 10px;
+  }
+
+  .toolbar-actions {
+    gap: 5px;
+  }
+
+  .toolbar-actions button {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .ad-placeholder {
+    display: none;
+  }
+
+  .content-section,
+  .related-section {
+    margin-top: 12px;
+    padding: 18px;
+  }
+}
+
+@media (max-width: 390px) {
+  .portal-header {
+    height: 54px;
+  }
+
+  .brand {
+    font-size: 18px;
+  }
+
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+  }
+
+  .top-nav a {
+    height: 32px;
+    padding: 0 9px;
+    font-size: 11px;
+  }
+
+  .game-viewport {
+    padding: 8px 4px 10px;
+  }
+
+  .game-scene {
+    grid-template-columns: 70px minmax(0, 1fr) 70px;
+    gap: 5px;
+  }
+
+  .score-orb,
+  .score-panel,
+  .next-panel,
+  .evolution-panel {
+    width: 70px;
+  }
+
+  .canvas-frame {
+    max-width: 226px;
+  }
+
+  .evolution-circle {
+    width: 68px;
+    height: 68px;
+  }
+
+  .evolution-item:nth-child(1)  { transform: rotate(-90deg) translate(24px) rotate(90deg); }
+  .evolution-item:nth-child(2)  { transform: rotate(-57deg) translate(24px) rotate(57deg); }
+  .evolution-item:nth-child(3)  { transform: rotate(-24deg) translate(24px) rotate(24deg); }
+  .evolution-item:nth-child(4)  { transform: rotate(9deg) translate(24px) rotate(-9deg); }
+  .evolution-item:nth-child(5)  { transform: rotate(42deg) translate(24px) rotate(-42deg); }
+  .evolution-item:nth-child(6)  { transform: rotate(75deg) translate(24px) rotate(-75deg); }
+  .evolution-item:nth-child(7)  { transform: rotate(108deg) translate(24px) rotate(-108deg); }
+  .evolution-item:nth-child(8)  { transform: rotate(141deg) translate(24px) rotate(-141deg); }
+  .evolution-item:nth-child(9)  { transform: rotate(174deg) translate(24px) rotate(-174deg); }
+  .evolution-item:nth-child(10) { transform: rotate(207deg) translate(24px) rotate(-207deg); }
+  .evolution-item:nth-child(11) { transform: rotate(240deg) translate(24px) rotate(-240deg); }
+}
