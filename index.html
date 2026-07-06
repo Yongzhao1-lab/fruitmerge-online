@@ -8,30 +8,32 @@
 
   <meta
     name="description"
-    content="Play Fruit Merge Online for free. Drop fruits, merge matching fruits, unlock bigger fruits, and challenge your best score in this relaxing browser puzzle game."
+    content="Play Fruit Merge Online for free. Drop cute fruits, merge matching fruits, unlock bigger fruits, and challenge your best score directly in your browser. No download required."
   />
 
   <meta
     name="keywords"
-    content="fruit merge, fruit merge online, fruit merge game, merge fruit game, watermelon game, browser puzzle game"
+    content="fruit merge, fruit merge online, fruit merge game, merge fruit game, watermelon game, browser puzzle game, merge fruits online, fruit drop merge game"
   />
 
+  <meta name="robots" content="index, follow, max-image-preview:large" />
   <link rel="canonical" href="https://fruitmerge.online/" />
 
   <meta property="og:title" content="Fruit Merge Online - Play Free Fruit Merge Game" />
-  <meta property="og:description" content="Drop fruits, merge matching fruits, unlock bigger fruits, and challenge your best score." />
+  <meta property="og:description" content="Drop cute fruits, merge matching fruits, unlock bigger fruits, and challenge your best score. Play free in your browser." />
   <meta property="og:url" content="https://fruitmerge.online/" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://fruitmerge.online/og-image.svg" />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Fruit Merge Online - Play Free Fruit Merge Game" />
-  <meta name="twitter:description" content="Drop fruits, merge matching fruits, and challenge your best score." />
+  <meta name="twitter:description" content="Drop cute fruits, merge matching fruits, and challenge your best score." />
   <meta name="twitter:image" content="https://fruitmerge.online/og-image.svg" />
 
   <meta name="theme-color" content="#070912" />
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="/style.css" as="style" />
   <link rel="stylesheet" href="/style.css" />
 
   <script type="application/ld+json">
@@ -104,27 +106,26 @@
       <nav class="top-nav" aria-label="Main navigation">
         <a href="#game">Play</a>
         <a href="#how-to-play">How to Play</a>
-        <a href="#related-games">More Games</a>
+        <a href="#features">Features</a>
         <a href="#faq">FAQ</a>
       </nav>
     </header>
 
-    <aside class="icon-sidebar" aria-label="Game categories">
+    <aside class="icon-sidebar" aria-label="Game navigation">
       <a href="/" aria-label="Home">🏠</a>
       <a href="#game" aria-label="Play">❤️</a>
-      <a href="#related-games" aria-label="Puzzle">🧩</a>
-      <a href="#tips" aria-label="Tips">🎯</a>
+      <a href="#how-to-play" aria-label="How to play">🎯</a>
       <a href="#levels" aria-label="Levels">🏆</a>
       <a href="#faq" aria-label="FAQ">❔</a>
     </aside>
 
     <main class="portal-main">
-      <section class="game-player game-shell" id="game">
+      <section class="game-player game-shell" id="game" aria-label="Fruit Merge Online game">
         <div class="game-viewport">
           <div class="game-scene">
             <div class="scene-bg"></div>
 
-            <aside class="scene-left">
+            <aside class="scene-left" aria-label="Score panel">
               <div class="score-orb">
                 <span>Score</span>
                 <strong id="score">0</strong>
@@ -210,7 +211,7 @@
               </div>
             </section>
 
-            <aside class="scene-right">
+            <aside class="scene-right" aria-label="Next fruit and evolution panel">
               <div class="next-panel">
                 <h2>Next</h2>
 
@@ -250,10 +251,10 @@
           <div id="startOverlay" class="viewport-start-overlay">
             <div class="cover-art" aria-hidden="true">
               <div class="cover-fruit-row">
-                <img src="/assets/fruits/apple.png" alt="" />
-                <img src="/assets/fruits/orange.png" alt="" />
-                <img src="/assets/fruits/grape.png" alt="" />
-                <img src="/assets/fruits/strawberry.png" alt="" />
+                <span>🍎</span>
+                <span>🍊</span>
+                <span>🍇</span>
+                <span>🍓</span>
               </div>
 
               <div class="cover-title">
@@ -262,9 +263,9 @@
               </div>
 
               <div class="cover-fruit-bottom">
-                <img src="/assets/fruits/watermelon.png" alt="" />
-                <img src="/assets/fruits/pineapple.png" alt="" />
-                <img src="/assets/fruits/peach.png" alt="" />
+                <span>🍉</span>
+                <span>🍍</span>
+                <span>🍑</span>
               </div>
             </div>
 
@@ -294,41 +295,24 @@
         </div>
       </section>
 
-      <section class="ad-placeholder" aria-label="Ad placeholder"></section>
+      <section class="content-section" id="features">
+        <p class="section-kicker">FEATURES</p>
+        <h2>Why Play Fruit Merge Online?</h2>
 
-      <section class="related-section" id="related-games">
-        <div class="section-title-row">
-          <div>
-            <p class="section-kicker">MORE GAMES</p>
-            <h2>Related Games</h2>
-          </div>
-
-          <a href="#game">Play again</a>
-        </div>
-
-        <div class="related-grid">
-          <article class="game-card">
-            <div class="game-thumb thumb-one">🍉</div>
-            <h3>Watermelon Merge</h3>
-            <p>Matching</p>
+        <div class="info-grid">
+          <article>
+            <h3>Free Browser Game</h3>
+            <p>Play instantly online without downloads, installation, or account sign-up.</p>
           </article>
 
-          <article class="game-card">
-            <div class="game-thumb thumb-two">🍓</div>
-            <h3>Fruit Drop</h3>
-            <p>Puzzle</p>
+          <article>
+            <h3>Cute Fruit Evolution</h3>
+            <p>Merge small fruits into bigger fruits and unlock the full evolution chain.</p>
           </article>
 
-          <article class="game-card">
-            <div class="game-thumb thumb-three">🍊</div>
-            <h3>Juicy Match</h3>
-            <p>Casual</p>
-          </article>
-
-          <article class="game-card">
-            <div class="game-thumb thumb-four">🍍</div>
-            <h3>Pineapple Stack</h3>
-            <p>Arcade</p>
+          <article>
+            <h3>Local High Scores</h3>
+            <p>Your best score and recent top runs are saved locally in your browser.</p>
           </article>
         </div>
       </section>
@@ -356,34 +340,78 @@
       </section>
 
       <section class="content-section" id="tips">
-        <p class="section-kicker">TIPS</p>
-        <h2>Fruit Merge Tips</h2>
+        <p class="section-kicker">STRATEGY</p>
+        <h2>Best Strategy to Reach Dragon Fruit</h2>
 
         <div class="info-grid">
           <article>
-            <h3>Use the Corners</h3>
-            <p>Place larger fruits near the corners to build a stable base and reduce random rolling.</p>
+            <h3>Build from the Corners</h3>
+            <p>Place larger fruits near the edges to create a stable base and reduce random rolling.</p>
           </article>
 
           <article>
-            <h3>Watch the Next Fruits</h3>
-            <p>The next fruit preview helps you plan your placement before dropping.</p>
+            <h3>Plan with Next Fruits</h3>
+            <p>Use the next fruit preview to prepare merges instead of dropping fruits randomly.</p>
           </article>
 
           <article>
             <h3>Keep the Center Open</h3>
-            <p>A clean center gives new fruits more space to fall and merge naturally.</p>
+            <p>A clean center gives fruits room to fall, settle, and merge naturally.</p>
           </article>
         </div>
       </section>
 
       <section class="content-section" id="levels">
         <p class="section-kicker">FRUIT LEVELS</p>
-        <h2>Fruit Evolution Levels</h2>
+        <h2>Fruit Evolution Table</h2>
 
-        <p class="wide-text">
-          Cherry → Strawberry → Grape → Orange → Apple → Peach → Pineapple → Watermelon → Grapefruit → Melon → Dragon Fruit
-        </p>
+        <div class="evolution-table-wrap">
+          <table class="evolution-table">
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Fruit</th>
+                <th>Score Value</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr><td>1</td><td>Cherry</td><td>5</td></tr>
+              <tr><td>2</td><td>Strawberry</td><td>10</td></tr>
+              <tr><td>3</td><td>Grape</td><td>20</td></tr>
+              <tr><td>4</td><td>Orange</td><td>40</td></tr>
+              <tr><td>5</td><td>Apple</td><td>80</td></tr>
+              <tr><td>6</td><td>Peach</td><td>160</td></tr>
+              <tr><td>7</td><td>Pineapple</td><td>320</td></tr>
+              <tr><td>8</td><td>Watermelon</td><td>640</td></tr>
+              <tr><td>9</td><td>Grapefruit</td><td>1280</td></tr>
+              <tr><td>10</td><td>Melon</td><td>2560</td></tr>
+              <tr><td>11</td><td>Dragon Fruit</td><td>5120</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="content-section" id="controls">
+        <p class="section-kicker">CONTROLS</p>
+        <h2>Desktop and Mobile Controls</h2>
+
+        <div class="info-grid">
+          <article>
+            <h3>Desktop</h3>
+            <p>Move your mouse to aim. Click the game area to drop the current fruit.</p>
+          </article>
+
+          <article>
+            <h3>Mobile</h3>
+            <p>Tap or drag on the game area to choose a drop position, then release to drop.</p>
+          </article>
+
+          <article>
+            <h3>Restart</h3>
+            <p>Use the restart button when you want to reset the board and try a new strategy.</p>
+          </article>
+        </div>
       </section>
 
       <section class="content-section" id="faq">
@@ -403,40 +431,23 @@
 
           <article>
             <h3>Does Fruit Merge Online save my score?</h3>
-            <p>Your best score and local top runs are saved in your browser.</p>
+            <p>Your best score and local top runs are saved in your browser using local browser storage.</p>
           </article>
         </div>
       </section>
     </main>
-
-    <aside class="right-rail" aria-label="Hot games">
-      <h2>Hot</h2>
-
-      <a class="hot-card" href="#game">
-        <span>HOT</span>
-        <div>🍉</div>
-        <strong>Fruit Merge</strong>
-      </a>
-
-      <a class="hot-card" href="#related-games">
-        <span>HOT</span>
-        <div>🍰</div>
-        <strong>Piece of Cake</strong>
-      </a>
-
-      <a class="hot-card" href="#related-games">
-        <span>HOT</span>
-        <div>🧩</div>
-        <strong>Maze Puzzle</strong>
-      </a>
-
-      <a class="hot-card" href="#related-games">
-        <span>HOT</span>
-        <div>🎯</div>
-        <strong>Color Sort</strong>
-      </a>
-    </aside>
   </div>
+
+  <footer class="site-footer">
+    <nav aria-label="Footer navigation">
+      <a href="/about.html">About</a>
+      <a href="/privacy-policy.html">Privacy Policy</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/contact.html">Contact</a>
+    </nav>
+
+    <p>© 2026 Fruit Merge Online. Free browser puzzle game.</p>
+  </footer>
 
   <script src="/game.js"></script>
 
@@ -449,8 +460,6 @@
       const shareCurrentButton = document.getElementById("shareCurrentButton");
       const shareScoreButton = document.getElementById("shareScoreButton");
       const gamePlayer = document.querySelector(".game-player");
-      const startOverlay = document.getElementById("startOverlay");
-      const startButton = document.getElementById("startButton");
 
       function getShareText() {
         const scoreEl = document.getElementById("score");
@@ -509,18 +518,6 @@
 
       toolbarFullscreenButton?.addEventListener("click", toggleFullscreen);
       fullscreenButton?.addEventListener("click", toggleFullscreen);
-
-      if (startOverlay && startButton) {
-        startOverlay.addEventListener("click", (event) => {
-          const clickedCover =
-            event.target.closest(".cover-art") ||
-            event.target.closest(".cover-mask");
-
-          if (clickedCover) {
-            startButton.click();
-          }
-        });
-      }
     });
   </script>
 </body>
