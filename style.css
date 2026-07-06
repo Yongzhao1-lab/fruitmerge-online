@@ -2671,3 +2671,358 @@ a {
     z-index: 10040 !important;
   }
 }
+/* =========================================================
+   Mobile Immersive Stable Fix
+   手机端稳定版：不拉伸、不变形、顶部 HUD 完整显示
+   ========================================================= */
+
+@media (max-width: 880px) {
+  body.mobile-playing {
+    overflow: hidden !important;
+    background: #fff1b8 !important;
+    overscroll-behavior: none !important;
+    touch-action: none !important;
+  }
+
+  body.mobile-playing .portal-header,
+  body.mobile-playing .icon-sidebar,
+  body.mobile-playing .game-toolbar,
+  body.mobile-playing .content-section,
+  body.mobile-playing .site-footer,
+  body.mobile-playing .scene-left,
+  body.mobile-playing .scene-right {
+    display: none !important;
+  }
+
+  body.mobile-playing .portal-shell,
+  body.mobile-playing .portal-main,
+  body.mobile-playing .game-player,
+  body.mobile-playing .game-viewport {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 0 !important;
+    z-index: 9999 !important;
+    background:
+      radial-gradient(circle at 50% 8%, rgba(255,255,255,0.18), transparent 25%),
+      linear-gradient(
+        180deg,
+        #cf914c 0%,
+        #c38331 24%,
+        #fff0b4 24%,
+        #fff4c9 100%
+      ) !important;
+  }
+
+  body.mobile-playing .game-scene {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+    aspect-ratio: auto !important;
+  }
+
+  /* 顶部 HUD：明确往下放，避免被手机状态栏/浏览器区域裁掉 */
+  body.mobile-playing .mobile-game-hud {
+    position: fixed !important;
+    left: 8px !important;
+    right: 58px !important;
+    top: max(18px, calc(env(safe-area-inset-top) + 14px)) !important;
+    z-index: 10050 !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+    pointer-events: none !important;
+  }
+
+  body.mobile-playing .mobile-hud-pill {
+    min-height: 42px !important;
+    padding: 5px 3px !important;
+    border-radius: 14px !important;
+    text-align: center !important;
+    color: #5d3a13 !important;
+    background:
+      linear-gradient(180deg, rgba(255,249,218,0.93), rgba(255,213,112,0.78)) !important;
+    border: 1.5px solid rgba(255,255,255,0.72) !important;
+    box-shadow:
+      0 7px 16px rgba(108,67,14,0.16),
+      inset 0 1px 0 rgba(255,255,255,0.84) !important;
+    backdrop-filter: blur(10px) !important;
+  }
+
+  body.mobile-playing .mobile-hud-pill span {
+    display: block !important;
+    margin-bottom: 2px !important;
+    font-size: 7px !important;
+    font-weight: 1000 !important;
+    line-height: 1 !important;
+    opacity: 0.74 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+  }
+
+  body.mobile-playing .mobile-hud-pill strong {
+    display: block !important;
+    font-size: 14px !important;
+    line-height: 1.05 !important;
+    font-weight: 1000 !important;
+    color: #6a4115 !important;
+  }
+
+  body.mobile-playing .mobile-next-pill canvas {
+    display: block !important;
+    width: 24px !important;
+    height: 24px !important;
+    margin: -1px auto 0 !important;
+  }
+
+  body.mobile-playing .mobile-menu-button {
+    position: fixed !important;
+    right: 8px !important;
+    top: max(18px, calc(env(safe-area-inset-top) + 14px)) !important;
+    z-index: 10060 !important;
+    display: grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    height: 42px !important;
+    border-radius: 14px !important;
+    color: #6a4115 !important;
+    background:
+      radial-gradient(circle at 30% 22%, rgba(255,255,255,0.88), transparent 25%),
+      linear-gradient(180deg, rgba(255,249,218,0.94), rgba(255,207,89,0.84)) !important;
+    border: 1.5px solid rgba(255,255,255,0.72) !important;
+    box-shadow:
+      0 7px 16px rgba(108,67,14,0.16),
+      inset 0 1px 0 rgba(255,255,255,0.84) !important;
+    font-size: 19px !important;
+    font-weight: 1000 !important;
+  }
+
+  /*
+    关键：保持 420 / 560 原始比例。
+    不再用 420 / 840，因为那会让水果变形。
+  */
+  body.mobile-playing .scene-center {
+    position: absolute !important;
+    left: 50% !important;
+    top: max(72px, calc(env(safe-area-inset-top) + 68px)) !important;
+    width: min(
+      calc(100vw - 10px),
+      calc((100dvh - 88px) * 420 / 560),
+      420px
+    ) !important;
+    transform: translateX(-50%) !important;
+    display: grid !important;
+    grid-template-rows: auto auto !important;
+    align-content: start !important;
+    justify-items: center !important;
+    z-index: 10000 !important;
+  }
+
+  body.mobile-playing .glass-top {
+    display: block !important;
+    width: 43% !important;
+    height: 12px !important;
+    border-radius: 18px 18px 0 0 !important;
+    background:
+      linear-gradient(180deg, rgba(255,239,126,0.96), rgba(245,194,62,0.96)) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.60),
+      0 6px 12px rgba(115,73,16,0.14) !important;
+  }
+
+  body.mobile-playing .canvas-frame {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 420 / 560 !important;
+    padding: 4px !important;
+    border-radius: 22px !important;
+    background:
+      linear-gradient(180deg, #ffe96f 0%, #f3c544 100%) !important;
+    box-shadow:
+      inset 0 0 0 2px rgba(255,255,255,0.42),
+      0 18px 38px rgba(95,57,10,0.20) !important;
+    display: block !important;
+    overflow: hidden !important;
+  }
+
+  body.mobile-playing #gameCanvas {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 420 / 560 !important;
+    display: block !important;
+    border-radius: 18px !important;
+    background: #eef8f5 !important;
+    touch-action: none !important;
+  }
+
+  body.mobile-playing .game-over-panel {
+    inset: 4px !important;
+    border-radius: 18px !important;
+    z-index: 10070 !important;
+  }
+
+  body.mobile-playing .game-over-card {
+    width: min(84%, 280px) !important;
+  }
+
+  body.mobile-playing .mobile-game-menu {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 10080 !important;
+    display: grid !important;
+    place-items: center !important;
+    padding: 20px !important;
+    background: rgba(66,38,7,0.32) !important;
+    backdrop-filter: blur(10px) !important;
+  }
+
+  body.mobile-playing .mobile-game-menu.hidden {
+    display: none !important;
+  }
+
+  body.mobile-playing .mobile-menu-card {
+    width: min(86vw, 340px) !important;
+    padding: 22px 20px 20px !important;
+    border-radius: 28px !important;
+    color: #6a4115 !important;
+    background:
+      linear-gradient(180deg, rgba(255,249,220,0.96), rgba(255,221,139,0.92)) !important;
+    border: 2px solid rgba(255,255,255,0.72) !important;
+    box-shadow:
+      0 24px 54px rgba(64,38,8,0.30),
+      inset 0 1px 0 rgba(255,255,255,0.86) !important;
+    text-align: center !important;
+  }
+
+  body.mobile-playing .mobile-menu-title span {
+    display: block !important;
+    margin-bottom: 4px !important;
+    color: #8a622b !important;
+    font-size: 12px !important;
+    font-weight: 1000 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.12em !important;
+  }
+
+  body.mobile-playing .mobile-menu-title strong {
+    display: block !important;
+    margin-bottom: 18px !important;
+    font-size: 28px !important;
+    line-height: 1 !important;
+    font-weight: 1000 !important;
+  }
+
+  body.mobile-playing .mobile-menu-actions {
+    display: grid !important;
+    gap: 10px !important;
+  }
+
+  body.mobile-playing .mobile-menu-actions button {
+    width: 100% !important;
+    height: 48px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    cursor: pointer !important;
+    color: #6a4115 !important;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,211,103,0.84)) !important;
+    box-shadow:
+      0 8px 16px rgba(99,60,10,0.14),
+      inset 0 1px 0 rgba(255,255,255,0.90) !important;
+    font-size: 16px !important;
+    font-weight: 1000 !important;
+  }
+
+  body.mobile-playing .mobile-menu-actions .mobile-menu-primary {
+    color: #fff !important;
+    background: linear-gradient(180deg, #25d969 0%, #12b956 100%) !important;
+  }
+
+  body.mobile-playing .mobile-menu-actions .mobile-menu-danger {
+    color: #fff !important;
+    background: linear-gradient(180deg, #ff8b64 0%, #ef6042 100%) !important;
+  }
+
+  body.mobile-playing .mobile-share-popover {
+    position: fixed !important;
+    right: 8px !important;
+    top: max(68px, calc(env(safe-area-inset-top) + 64px)) !important;
+    z-index: 10090 !important;
+    display: block !important;
+    width: min(312px, calc(100vw - 16px)) !important;
+  }
+
+  body.mobile-playing .mobile-share-popover.hidden {
+    display: none !important;
+  }
+
+  body.mobile-playing .mobile-share-card {
+    padding: 14px !important;
+    border-radius: 22px !important;
+    color: #6a4115 !important;
+    background:
+      linear-gradient(180deg, rgba(255,249,220,0.96), rgba(255,221,139,0.92)) !important;
+    border: 2px solid rgba(255,255,255,0.72) !important;
+    box-shadow:
+      0 18px 42px rgba(64,38,8,0.22),
+      inset 0 1px 0 rgba(255,255,255,0.86) !important;
+  }
+
+  body.mobile-playing .viewport-start-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    z-index: 10100 !important;
+  }
+}
+
+@media (max-width: 390px) {
+  body.mobile-playing .mobile-game-hud {
+    left: 6px !important;
+    right: 54px !important;
+    gap: 4px !important;
+    top: max(16px, calc(env(safe-area-inset-top) + 12px)) !important;
+  }
+
+  body.mobile-playing .mobile-hud-pill {
+    min-height: 39px !important;
+    padding: 4px 3px !important;
+    border-radius: 13px !important;
+  }
+
+  body.mobile-playing .mobile-hud-pill span {
+    font-size: 6px !important;
+  }
+
+  body.mobile-playing .mobile-hud-pill strong {
+    font-size: 13px !important;
+  }
+
+  body.mobile-playing .mobile-menu-button {
+    right: 6px !important;
+    top: max(16px, calc(env(safe-area-inset-top) + 12px)) !important;
+    width: 42px !important;
+    height: 39px !important;
+    border-radius: 13px !important;
+  }
+
+  body.mobile-playing .scene-center {
+    top: max(66px, calc(env(safe-area-inset-top) + 62px)) !important;
+    width: min(
+      calc(100vw - 8px),
+      calc((100dvh - 82px) * 420 / 560),
+      420px
+    ) !important;
+  }
+}
