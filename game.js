@@ -1,1469 +1,1306 @@
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+"use strict";
 
-const GAME_WIDTH = Number(canvas.getAttribute("width")) || 420;
-const GAME_HEIGHT = Number(canvas.getAttribute("height")) || 560;
-
-function setupCanvasDpi() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-  canvas.style.maxWidth = "100%";
-  canvas.style.height = "auto";
-
-  canvas.width = Math.floor(GAME_WIDTH * dpr);
-  canvas.height = Math.floor(GAME_HEIGHT * dpr);
-
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = "high";
-}
-
-setupCanvasDpi();
-window.addEventListener("resize", setupCanvasDpi);
-
-const scoreElement = document.getElementById("score");
-const timeElement = document.getElementById("time");
-const bestScoreElement = document.getElementById("bestScore");
-const nextFruitNameElement = document.getElementById("nextFruitName");
-
-const restartButton = document.getElementById("restartButton");
-const startButton = document.getElementById("startButton");
-const playAgainButton = document.getElementById("playAgainButton");
-const shareScoreButton = document.getElementById("shareScoreButton");
-const shareCurrentButton = document.getElementById("shareCurrentButton");
-const musicToggleButton = document.getElementById("musicToggleButton");
-const fullscreenButton = document.getElementById("fullscreenButton");
-
-const startOverlay = document.getElementById("startOverlay");
-const gameOverPanel = document.getElementById("gameOverPanel");
-const gameOverBadge = document.getElementById("gameOverBadge");
-const gameOverScore = document.getElementById("gameOverScore");
-const gameOverTime = document.getElementById("gameOverTime");
-const gameOverBest = document.getElementById("gameOverBest");
-const gameOverTip = document.getElementById("gameOverTip");
-
-const leaderboardList = document.getElementById("leaderboardList");
-const evolutionBar = document.getElementById("evolutionBar");
-
-const nextCanvases = [
-  document.getElementById("nextFruitCanvas0"),
-  document.getElementById("nextFruitCanvas1"),
-  document.getElementById("nextFruitCanvas2")
-].filter(Boolean);
-
-const nextContexts = nextCanvases.map((item) => {
-  const c = item.getContext("2d");
-  c.imageSmoothingEnabled = true;
-  c.imageSmoothingQuality = "high";
-  return c;
-});
-
-const ASSET_VERSION = "v=20260706-clean-fruit-arcade-final";
-
-const fruits = [
-  { name: "Cherry", radius: 15, score: 5, type: "cherry", files: ["cherry.png"], color: "#ff4a42", visualScale: 1.4 },
-  { name: "Strawberry", radius: 20, score: 10, type: "strawberry", files: ["strawberry.png"], color: "#ff5148", visualScale: 1.3 },
-  { name: "Grape", radius: 25, score: 20, type: "grape", files: ["grape.png"], color: "#a65bff", visualScale: 1.18 },
-  { name: "Orange", radius: 32, score: 40, type: "orange", files: ["orange.png"], color: "#ff9f2e", visualScale: 1.14 },
-  { name: "Apple", radius: 39, score: 80, type: "apple", files: ["apple.png"], color: "#f64340", visualScale: 1.12 },
-  { name: "Peach", radius: 48, score: 160, type: "peach", files: ["peach.png"], color: "#ff9872", visualScale: 1.1 },
-  { name: "Pineapple", radius: 57, score: 320, type: "pineapple", files: ["pineapple.png"], color: "#ffc238", visualScale: 1.02 },
-  { name: "Watermelon", radius: 68, score: 640, type: "watermelon", files: ["watermelon.png"], color: "#30c765", visualScale: 1.04 },
-  { name: "Grapefruit", radius: 80, score: 1280, type: "grapefruit", files: ["grapefruit.png", "pomelo.png", "yuzu.png", "lemon.png"], color: "#ffe45b", visualScale: 1.02 },
-  { name: "Melon", radius: 92, score: 2560, type: "melon", files: ["melon.png", "hami-melon.png", "honeydew.png", "cantaloupe.png"], color: "#d9e66d", visualScale: 1 },
-  { name: "Dragon Fruit", radius: 106, score: 5120, type: "dragonfruit", files: ["dragonfruit.png", "dragon-fruit.png", "dragon_fruit.png", "pitaya.png"], color: "#ff5098", visualScale: 0.98 }
-];
-
-const fruitImages = new Map();
-
-let balls = [];
-let currentFruit;
-let nextQueue = [];
-
-let mouseX = GAME_WIDTH / 2;
-let score = 0;
-let bestScore = Number(localStorage.getItem("fruitMergeBestScore")) || 0;
-let bestTime = Number(localStorage.getItem("fruitMergeBestTime")) || 0;
-let highestUnlocked = Number(localStorage.getItem("fruitMergeHighestUnlocked")) || 0;
-
-let isGameStarted = false;
-let isGameOver = false;
-let canDrop = true;
-let gameStartTime = 0;
-let survivalTime = 0;
-
-let floatingTexts = [];
-let mergeBursts = [];
-let screenShake = 0;
-
-let audioContext = null;
-let soundReady = false;
-let musicEnabled = localStorage.getItem("fruitMergeMusic") !== "off";
-let musicTimer = null;
-let musicStep = 0;
-
-const gravity = 0.6;
-const friction = 0.965;
-const floorFriction = 0.94;
-
-const dropLineY = 86;
-const spawnY = 46;
-
-const initialDropVelocity = 2.45;
-const maxHorizontalSpeed = 0.28;
-const maxVerticalSpeed = 7.2;
-
-const collisionSolverIterations = 5;
-const collisionCorrection = 0.18;
-const maxCorrectionPerFrame = 1.05;
-const collisionTightness = 0.86;
-const mergeDistanceFactor = 0.91;
-const collisionSlop = 1.8;
-const verticalCorrectionFactor = 0.42;
-
-const sleepSpeedLimit = 0.18;
-const sleepFramesRequired = 12;
-const wakeSpeedThreshold = 1.25;
-
-function setText(element, value) {
-  if (element) element.textContent = value;
-}
-
-function showElement(element) {
-  if (element) element.classList.remove("hidden");
-}
-
-function hideElement(element) {
-  if (element) element.classList.add("hidden");
-}
-
-function initAudio() {
-  if (soundReady) {
-    if (audioContext && audioContext.state === "suspended") {
-      audioContext.resume().catch(() => {});
-    }
-    return;
-  }
-
-  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-  if (!AudioContextClass) return;
-
-  audioContext = new AudioContextClass();
-  audioContext.resume().catch(() => {});
-  soundReady = true;
-}
-
-function playTone(frequency, duration, type = "sine", volume = 0.04, delay = 0) {
-  if (!audioContext) return;
-
-  const startAt = audioContext.currentTime + delay;
-  const oscillator = audioContext.createOscillator();
-  const gain = audioContext.createGain();
-
-  oscillator.type = type;
-  oscillator.frequency.setValueAtTime(frequency, startAt);
-
-  gain.gain.setValueAtTime(0.0001, startAt);
-  gain.gain.exponentialRampToValueAtTime(volume, startAt + 0.025);
-  gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
-
-  oscillator.connect(gain);
-  gain.connect(audioContext.destination);
-
-  oscillator.start(startAt);
-  oscillator.stop(startAt + duration + 0.03);
-}
-
-function playDropSound() {
-  playTone(620, 0.04, "triangle", 0.042);
-  playTone(320, 0.06, "sine", 0.022, 0.03);
-}
-
-function playMergeSound(level) {
-  const frequency = 460 + level * 38;
-  playTone(frequency, 0.065, "sine", 0.04);
-  playTone(frequency * 1.24, 0.08, "triangle", 0.024, 0.04);
-}
-
-function playBigMergeSound() {
-  playTone(640, 0.08, "sine", 0.045);
-  playTone(850, 0.12, "sine", 0.034, 0.07);
-}
-
-function playGameOverSound() {
-  playTone(240, 0.14, "sawtooth", 0.025);
-  playTone(160, 0.18, "sawtooth", 0.018, 0.12);
-}
-
-function startMusic() {
-  if (!musicEnabled) return;
-  initAudio();
-  if (!audioContext) return;
-  if (musicTimer) return;
-
-  const melody = [392, 440, 523.25, 440, 329.63, 392, 493.88, 392];
-  const bass = [196, 220, 261.63, 220];
-
-  musicTimer = setInterval(() => {
-    if (!musicEnabled || !audioContext || document.hidden) return;
-
-    const note = melody[musicStep % melody.length];
-    const bassNote = bass[Math.floor(musicStep / 2) % bass.length];
-
-    playTone(note, 0.42, "sine", 0.009);
-    playTone(bassNote, 0.52, "sine", 0.005, 0.02);
-
-    musicStep += 1;
-  }, 680);
-}
-
-function stopMusic() {
-  if (musicTimer) {
-    clearInterval(musicTimer);
-    musicTimer = null;
-  }
-}
-
-function updateMusicButton() {
-  if (!musicToggleButton) return;
-  musicToggleButton.textContent = musicEnabled ? "Music On" : "Music Off";
-  musicToggleButton.classList.toggle("music-off", !musicEnabled);
-}
-
-function toggleMusic() {
-  musicEnabled = !musicEnabled;
-  localStorage.setItem("fruitMergeMusic", musicEnabled ? "on" : "off");
-  updateMusicButton();
-
-  if (musicEnabled) {
-    startMusic();
-  } else {
-    stopMusic();
-  }
-}
-
-function vibrate(ms) {
-  if (navigator.vibrate) navigator.vibrate(ms);
-}
-
-function loadFruitImage(index, fileIndex = 0) {
-  const fruit = fruits[index];
-  const file = fruit.files[fileIndex];
-
-  if (!file) {
-    fruitImages.set(index, { image: null, loaded: false, failed: true });
-    return;
-  }
-
-  const image = new Image();
-
-  fruitImages.set(index, { image, loaded: false, failed: false });
-
-  image.onload = () => {
-    fruitImages.set(index, { image, loaded: true, failed: false });
-    updateNextFruit();
-    updateEvolutionBar();
-  };
-
-  image.onerror = () => {
-    loadFruitImage(index, fileIndex + 1);
-  };
-
-  image.src = `/assets/fruits/${file}?${ASSET_VERSION}`;
-}
-
-function preloadFruitImages() {
-  fruits.forEach((_, index) => loadFruitImage(index));
-}
-
-function randomStartLevel() {
-  const stage = getDifficultyStage();
-  const random = Math.random();
-
-  if (stage === 0) {
-    if (random < 0.2) return 0;
-    if (random < 0.45) return 1;
-    if (random < 0.74) return 2;
-    return 3;
-  }
-
-  if (stage === 1) {
-    if (random < 0.08) return 0;
-    if (random < 0.25) return 1;
-    if (random < 0.5) return 2;
-    if (random < 0.75) return 3;
-    if (random < 0.92) return 4;
-    return 5;
-  }
-
-  if (stage === 2) {
-    if (random < 0.18) return 2;
-    if (random < 0.42) return 3;
-    if (random < 0.67) return 4;
-    if (random < 0.88) return 5;
-    return 6;
-  }
-
-  if (random < 0.16) return 3;
-  if (random < 0.39) return 4;
-  if (random < 0.63) return 5;
-  if (random < 0.85) return 6;
-  return 7;
-}
-
-function getDifficultyStage() {
-  if (survivalTime < 30) return 0;
-  if (survivalTime < 60) return 1;
-  if (survivalTime < 90) return 2;
-  return 3;
-}
-
-function getStageName() {
-  const stage = getDifficultyStage();
-  if (stage === 0) return "Warm Up";
-  if (stage === 1) return "Pressure";
-  if (stage === 2) return "Hard";
-  return "Expert";
-}
-
-function getDangerLimit() {
-  const stage = getDifficultyStage();
-  if (stage === 0) return 56;
-  if (stage === 1) return 42;
-  if (stage === 2) return 32;
-  return 24;
-}
-
-function getDropCooldown() {
-  const stage = getDifficultyStage();
-  if (stage === 0) return 300;
-  if (stage === 1) return 270;
-  if (stage === 2) return 240;
-  return 220;
-}
-
-function createFruit(x, y, level) {
-  return {
-    x,
-    y,
-    vx: 0,
-    vy: 0,
-    level,
-    radius: fruits[level].radius,
-    dangerFrames: 0,
-    age: 0,
-    popFrames: 0,
-    sleepFrames: 0,
-    asleep: false
-  };
-}
-
-function getFruitSpeed(ball) {
-  return Math.abs(ball.vx) + Math.abs(ball.vy);
-}
-
-function wakeFruit(ball) {
-  ball.asleep = false;
-  ball.sleepFrames = 0;
-}
-
-function isFruitSupported(ball) {
-  if (ball.y + ball.radius >= GAME_HEIGHT - 1.5) return true;
-
-  let supportCount = 0;
-
-  for (const other of balls) {
-    if (other === ball) continue;
-
-    const dx = other.x - ball.x;
-    const dy = other.y - ball.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    const supportDistance = (ball.radius + other.radius) * 0.95;
-    const isBelow = other.y > ball.y + ball.radius * 0.1;
-    const isClose = distance < supportDistance;
-    const stable = other.asleep || getFruitSpeed(other) < 0.18;
-
-    if (isBelow && isClose && stable) supportCount += 1;
-  }
-
-  return supportCount >= 1;
-}
-
-function updateSleepStates() {
-  for (const ball of balls) {
-    if (ball.asleep) continue;
-    if (ball.age < 32) continue;
-    if (ball.popFrames > 0) continue;
-
-    const speed = getFruitSpeed(ball);
-    const stable = speed < sleepSpeedLimit;
-    const supported = isFruitSupported(ball);
-
-    if (stable && supported) {
-      ball.sleepFrames += 1;
-      ball.vx *= 0.45;
-      ball.vy *= 0.45;
-
-      if (Math.abs(ball.vx) < 0.035) ball.vx = 0;
-      if (Math.abs(ball.vy) < 0.06) ball.vy = 0;
-    } else {
-      ball.sleepFrames = Math.max(0, ball.sleepFrames - 1);
-    }
-
-    if (ball.sleepFrames > sleepFramesRequired) {
-      ball.asleep = true;
-      ball.sleepFrames = sleepFramesRequired;
-      ball.vx = 0;
-      ball.vy = 0;
-
-      if (ball.y + ball.radius > GAME_HEIGHT) {
-        ball.y = GAME_HEIGHT - ball.radius;
-      }
-    }
-  }
-}
-
-function setupEvolutionBar() {
-  if (!evolutionBar) return;
-
-  evolutionBar.innerHTML = "";
-
-  fruits.forEach((fruit, index) => {
-    const item = document.createElement("div");
-    item.className = "evolution-item";
-    item.dataset.level = String(index);
-    item.title = fruit.name;
-
-    const img = document.createElement("img");
-    img.alt = fruit.name;
-
-    item.appendChild(img);
-    evolutionBar.appendChild(item);
-  });
-
-  updateEvolutionBar();
-}
-
-function updateEvolutionBar(currentLevel = highestUnlocked) {
-  if (!evolutionBar) return;
-
-  const items = evolutionBar.querySelectorAll(".evolution-item");
-
-  items.forEach((item) => {
-    const level = Number(item.dataset.level);
-    const img = item.querySelector("img");
-    const record = fruitImages.get(level);
-
-    item.classList.toggle("unlocked", level <= highestUnlocked);
-    item.classList.toggle("current", level === currentLevel);
-
-    if (img && record && record.loaded && record.image) {
-      img.src = record.image.src;
-    }
-  });
-}
-
-function setupRound(showStartScreen = true) {
-  balls = [];
-  floatingTexts = [];
-  mergeBursts = [];
-
-  score = 0;
-  survivalTime = 0;
-  isGameOver = false;
-  isGameStarted = !showStartScreen;
-  canDrop = true;
-  mouseX = GAME_WIDTH / 2;
-  screenShake = 0;
-
-  setText(scoreElement, score);
-  setText(timeElement, "00:00");
-  setText(bestScoreElement, bestScore);
-
-  hideElement(gameOverPanel);
-
-  if (showStartScreen) {
-    showElement(startOverlay);
-  } else {
-    hideElement(startOverlay);
-    gameStartTime = performance.now();
-    startMusic();
-  }
-
-  currentFruit = createFruit(mouseX, spawnY, randomStartLevel());
-  nextQueue = [randomStartLevel(), randomStartLevel(), randomStartLevel()];
-
-  updateNextFruit();
-  updateEvolutionBar();
-  renderLeaderboard();
-}
-
-function updateNextFruit() {
-  if (!nextQueue.length) return;
-
-  const nextLevel = nextQueue[0];
-  setText(nextFruitNameElement, fruits[nextLevel].name);
-
-  nextCanvases.forEach((nextCanvas, index) => {
-    const nextCtx = nextContexts[index];
-    const level = nextQueue[index] ?? nextQueue[0];
-    const size = index === 0 ? 25 : 17;
-
-    nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
-    drawFruitIcon(nextCtx, nextCanvas.width / 2, nextCanvas.height / 2, size, level, false);
-  });
-}
-
-function updateSurvivalTime() {
-  if (!isGameStarted || isGameOver) return;
-
-  survivalTime = (performance.now() - gameStartTime) / 1000;
-  setText(timeElement, formatTime(survivalTime));
-}
-
-function formatTime(seconds) {
-  const total = Math.floor(seconds || 0);
-  const min = String(Math.floor(total / 60)).padStart(2, "0");
-  const sec = String(total % 60).padStart(2, "0");
-  return `${min}:${sec}`;
-}
-
-function getRunTitle(value) {
-  if (value >= 50000) return "Legend Run";
-  if (value >= 35000) return "Strong Run";
-  if (value >= 20000) return "Great Run";
-  if (value >= 10000) return "Nice Run";
-  return "Warm Up";
-}
-
-function getLeaderboard() {
-  try {
-    return JSON.parse(localStorage.getItem("fruitMergeLeaderboard")) || [];
-  } catch {
-    return [];
-  }
-}
-
-function saveLeaderboard(list) {
-  localStorage.setItem("fruitMergeLeaderboard", JSON.stringify(list));
-}
-
-function addRunToLeaderboard() {
-  if (!score && !survivalTime) return;
-
-  const list = getLeaderboard();
-
-  list.push({
-    score,
-    time: survivalTime,
-    title: getRunTitle(score),
-    date: new Date().toISOString()
-  });
-
-  list.sort((a, b) => {
-    if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
-    return (a.time || 0) - (b.time || 0);
-  });
-
-  saveLeaderboard(list.slice(0, 8));
-}
-
-function renderLeaderboard() {
-  if (!leaderboardList) return;
-
-  const list = getLeaderboard().slice(0, 5);
-
-  if (!list.length) {
-    leaderboardList.innerHTML = `
-      <div class="leaderboard-item">
-        <div class="leaderboard-rank">1</div>
-        <div class="leaderboard-main">
-          <strong>No run yet</strong>
-          <span>Start your first game</span>
-        </div>
-        <div class="leaderboard-score">0</div>
-      </div>
-    `;
-    return;
-  }
-
-  leaderboardList.innerHTML = list.map((item, index) => `
-    <div class="leaderboard-item">
-      <div class="leaderboard-rank">${index + 1}</div>
-      <div class="leaderboard-main">
-        <strong>${item.title || getRunTitle(item.score || 0)}</strong>
-        <span>${formatTime(item.time || 0)}</span>
-      </div>
-      <div class="leaderboard-score">${item.score || 0}</div>
-    </div>
-  `).join("");
-}
-
-function getMaxDangerRatio() {
-  let maxDangerFrames = 0;
-
-  for (const ball of balls) {
-    if (ball.dangerFrames > maxDangerFrames) {
-      maxDangerFrames = ball.dangerFrames;
-    }
-  }
-
-  return Math.min(1, maxDangerFrames / getDangerLimit());
-}
-
-function drawBackground() {
-  const dangerRatio = getMaxDangerRatio();
-  const time = performance.now();
-  const pulse = 0.5 + Math.sin(time / 120) * 0.5;
-  const dangerActive = dangerRatio > 0.35;
-
-  ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-
-  const bg = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
-  bg.addColorStop(0, "#f7fffb");
-  bg.addColorStop(0.44, "#edf9f6");
-  bg.addColorStop(1, "#e3f6ef");
-
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-
-  ctx.fillStyle = "rgba(143, 219, 172, 0.16)";
-  ctx.fillRect(0, GAME_HEIGHT - 72, GAME_WIDTH, 72);
-
-  const topAlpha = dangerActive
-    ? 0.12 + dangerRatio * 0.24 + pulse * 0.06
-    : 0.045;
-
-  ctx.fillStyle = `rgba(255, 112, 88, ${topAlpha})`;
-  ctx.fillRect(0, 0, GAME_WIDTH, dropLineY);
-
-  ctx.strokeStyle = dangerActive
-    ? `rgba(255, 80, 65, ${0.78 + pulse * 0.22})`
-    : "rgba(29, 190, 170, 0.86)";
-
-  ctx.lineWidth = dangerActive ? 4 + pulse * 1.1 : 3;
-  ctx.setLineDash([8, 8]);
-
-  ctx.beginPath();
-  ctx.moveTo(0, dropLineY);
-  ctx.lineTo(GAME_WIDTH, dropLineY);
-  ctx.stroke();
-
-  ctx.setLineDash([]);
-
-  drawCanvasLabel(dangerActive ? "Warning!" : "Danger Line", 12, dropLineY - 18, "left", dangerActive);
-  drawCanvasLabel(getStageName(), GAME_WIDTH - 12, dropLineY - 18, "right", dangerActive);
-
-  if (dangerActive && !isGameOver) {
-    drawDangerCountdown(dangerRatio);
-  }
-}
-
-function drawCanvasLabel(text, x, y, align = "left", danger = false) {
-  ctx.save();
-
-  ctx.font = "bold 13px Arial";
-  ctx.textBaseline = "middle";
-
-  const width = ctx.measureText(text).width;
-  const paddingX = 8;
-  const boxWidth = width + paddingX * 2;
-  const boxHeight = 22;
-
-  let boxX = x;
-
-  if (align === "right") {
-    boxX = x - boxWidth;
-    ctx.textAlign = "right";
-  } else {
-    ctx.textAlign = "left";
-  }
-
-  ctx.fillStyle = danger ? "rgba(255,255,255,0.94)" : "rgba(255,255,255,0.84)";
-  ctx.fillRect(boxX, y - boxHeight / 2, boxWidth, boxHeight);
-
-  ctx.fillStyle = danger ? "#ff4c3d" : "#078c83";
-
-  if (align === "right") {
-    ctx.fillText(text, x - paddingX, y);
-  } else {
-    ctx.fillText(text, x + paddingX, y);
-  }
-
-  ctx.restore();
-}
-
-function drawDangerCountdown(dangerRatio) {
-  let number = 3;
-
-  if (dangerRatio > 0.66) number = 1;
-  else if (dangerRatio > 0.5) number = 2;
-
-  ctx.save();
-  ctx.globalAlpha = 0.16 + dangerRatio * 0.34;
-  ctx.fillStyle = "#ff4c3d";
-  ctx.font = "bold 76px Arial";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(String(number), GAME_WIDTH / 2, dropLineY + 72);
-  ctx.restore();
-}
-
-function drawAimLine() {
-  if (!isGameStarted || isGameOver || !currentFruit) return;
-
-  ctx.save();
-  ctx.strokeStyle = "rgba(255, 213, 91, 0.65)";
-  ctx.lineWidth = 2;
-  ctx.setLineDash([6, 8]);
-
-  ctx.beginPath();
-  ctx.moveTo(mouseX, spawnY + currentFruit.radius + 8);
-  ctx.lineTo(mouseX, GAME_HEIGHT - 10);
-  ctx.stroke();
-
-  ctx.setLineDash([]);
-  ctx.restore();
-}
-
-function drawFruit(ball) {
-  let scale = 1;
-
-  if (ball.popFrames > 0) {
-    scale = 1 + ball.popFrames / 130;
-  }
-
-  drawFruitIcon(ctx, ball.x, ball.y, ball.radius * scale, ball.level, true);
-}
-
-function drawFruitIcon(targetCtx, x, y, radius, level, showShadow = true) {
-  const fruit = fruits[level];
-  let record = fruitImages.get(level);
-
-  if (!record || !record.loaded || !record.image) {
-    for (let i = level - 1; i >= 0; i--) {
-      const fallback = fruitImages.get(i);
-      if (fallback && fallback.loaded && fallback.image) {
-        record = fallback;
-        break;
-      }
-    }
-  }
-
-  const isMainCanvas = targetCtx === ctx;
-  const canvasW = isMainCanvas ? GAME_WIDTH : targetCtx.canvas.width;
-  const canvasH = isMainCanvas ? GAME_HEIGHT : targetCtx.canvas.height;
-
-  let visualSize = Math.round(radius * 2 * (fruit.visualScale || 1));
-
-  if (!showShadow) {
-    const maxPreviewSize = Math.floor(Math.min(canvasW, canvasH) * 0.86);
-    visualSize = Math.min(visualSize, maxPreviewSize);
-  }
-
-  let drawX = Math.round(x - visualSize / 2);
-  let drawY = Math.round(y - visualSize / 2);
-
-  const padding = showShadow ? 4 : 1;
-
-  if (drawX < padding) drawX = padding;
-  if (drawX + visualSize > canvasW - padding) drawX = canvasW - padding - visualSize;
-  if (drawY < padding) drawY = padding;
-  if (drawY + visualSize > canvasH - padding) drawY = canvasH - padding - visualSize;
-
-  if (showShadow) {
-    targetCtx.save();
-    targetCtx.globalAlpha = 0.025;
-    targetCtx.fillStyle = "#0ea5a2";
-    targetCtx.beginPath();
-    targetCtx.ellipse(
-      Math.round(x),
-      Math.round(y + radius * 0.68),
-      Math.round(radius * 0.38),
-      Math.max(2, Math.round(radius * 0.05)),
-      0,
-      0,
-      Math.PI * 2
-    );
-    targetCtx.fill();
-    targetCtx.restore();
-  }
-
-  if (record && record.loaded && record.image) {
-    targetCtx.drawImage(record.image, drawX, drawY, visualSize, visualSize);
-    return;
-  }
-
-  targetCtx.save();
-  targetCtx.globalAlpha = 0.35;
-  targetCtx.fillStyle = fruit.color || "#cccccc";
-  targetCtx.beginPath();
-  targetCtx.arc(Math.round(x), Math.round(y), Math.max(6, radius * 0.5), 0, Math.PI * 2);
-  targetCtx.fill();
-  targetCtx.restore();
-}
-
-function keepFruitInside(ball) {
-  if (ball.x - ball.radius < 0) {
-    ball.x = ball.radius;
-    ball.vx = 0;
-  }
-
-  if (ball.x + ball.radius > GAME_WIDTH) {
-    ball.x = GAME_WIDTH - ball.radius;
-    ball.vx = 0;
-  }
-
-  if (ball.y + ball.radius > GAME_HEIGHT) {
-    ball.y = GAME_HEIGHT - ball.radius;
-
-    if (ball.vy > 0) ball.vy = 0;
-
-    ball.vx *= floorFriction;
-
-    if (Math.abs(ball.vx) < 0.025) ball.vx = 0;
-  }
-}
-
-function updatePhysics() {
-  if (isGameOver || !isGameStarted) return;
-
-  updateSurvivalTime();
-
-  for (const ball of balls) {
-    ball.age += 1;
-
-    if (ball.popFrames > 0) ball.popFrames -= 1;
-
-    if (ball.asleep) {
-      ball.vx = 0;
-      ball.vy = 0;
-      continue;
-    }
-
-    ball.vy += gravity;
-    ball.x += ball.vx;
-    ball.y += ball.vy;
-
-    ball.vx *= friction;
-
-    if (Math.abs(ball.vx) < 0.008) ball.vx = 0;
-    if (Math.abs(ball.vy) < 0.008) ball.vy = 0;
-
-    ball.vx = clamp(ball.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
-    ball.vy = clamp(ball.vy, -1.0, maxVerticalSpeed);
-
-    keepFruitInside(ball);
-  }
-
-  updateEffects();
-  handleCollisions();
-  updateSleepStates();
-  checkGameOver();
-}
-
-function handleCollisions() {
-  for (let pass = 0; pass < collisionSolverIterations; pass++) {
-    for (let i = 0; i < balls.length; i++) {
-      for (let j = i + 1; j < balls.length; j++) {
-        const a = balls[i];
-        const b = balls[j];
-
-        let dx = b.x - a.x;
-        let dy = b.y - a.y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < 0.001) {
-          distance = 0.001;
-          dx = 0.001;
-          dy = 0;
-        }
-
-        const realDistance = a.radius + b.radius;
-        const minDistance = realDistance * collisionTightness;
-        const mergeDistance = realDistance * mergeDistanceFactor;
-
-        if (
-          pass === 0 &&
-          a.level === b.level &&
-          a.level < fruits.length - 1 &&
-          distance < mergeDistance
-        ) {
-          mergeFruits(i, j, a, b);
-          return;
-        }
-
-        if (distance >= minDistance) continue;
-
-        const overlap = minDistance - distance;
-        if (overlap < collisionSlop) continue;
-
-        const nx = dx / distance;
-        const ny = dy / distance;
-        const effectiveOverlap = overlap - collisionSlop;
-
-        const aSpeed = getFruitSpeed(a);
-        const bSpeed = getFruitSpeed(b);
-        const totalSpeed = aSpeed + bSpeed;
-
-        if (totalSpeed > wakeSpeedThreshold) {
-          if (!a.asleep || bSpeed > wakeSpeedThreshold) wakeFruit(a);
-          if (!b.asleep || aSpeed > wakeSpeedThreshold) wakeFruit(b);
-        }
-
-        const massA = a.radius * a.radius;
-        const massB = b.radius * b.radius;
-        const totalMass = massA + massB;
-
-        let moveA = a.asleep ? 0 : massB / totalMass;
-        let moveB = b.asleep ? 0 : massA / totalMass;
-
-        if (a.asleep && !b.asleep) {
-          moveA = 0;
-          moveB = 1;
-        }
-
-        if (b.asleep && !a.asleep) {
-          moveA = 1;
-          moveB = 0;
-        }
-
-        if (a.asleep && b.asleep) continue;
-
-        const moveTotal = moveA + moveB || 1;
-        const correctionAmount = Math.min(
-          effectiveOverlap * collisionCorrection,
-          maxCorrectionPerFrame
-        );
-
-        const correctionX = nx * correctionAmount;
-        const correctionY = ny * correctionAmount * verticalCorrectionFactor;
-
-        a.x -= correctionX * (moveA / moveTotal);
-        b.x += correctionX * (moveB / moveTotal);
-        a.y -= correctionY * (moveA / moveTotal);
-        b.y += correctionY * (moveB / moveTotal);
-
-        if (!a.asleep) {
-          a.vx *= 0.54;
-          a.vy *= 0.92;
-        }
-
-        if (!b.asleep) {
-          b.vx *= 0.54;
-          b.vy *= 0.92;
-        }
-
-        if (a.y + a.radius > GAME_HEIGHT - 6) {
-          a.vx *= floorFriction;
-          if (Math.abs(a.vx) < 0.03) a.vx = 0;
-          if (Math.abs(a.vy) < 0.08) a.vy = 0;
-        }
-
-        if (b.y + b.radius > GAME_HEIGHT - 6) {
-          b.vx *= floorFriction;
-          if (Math.abs(b.vx) < 0.03) b.vx = 0;
-          if (Math.abs(b.vy) < 0.08) b.vy = 0;
-        }
-
-        a.vx = clamp(a.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
-        b.vx = clamp(b.vx, -maxHorizontalSpeed, maxHorizontalSpeed);
-        a.vy = clamp(a.vy, -1.0, maxVerticalSpeed);
-        b.vy = clamp(b.vy, -1.0, maxVerticalSpeed);
-
-        keepFruitInside(a);
-        keepFruitInside(b);
-      }
-    }
-  }
-}
-
-function mergeFruits(indexA, indexB, a, b) {
-  const newLevel = a.level + 1;
-  const gainedScore = fruits[newLevel].score;
-
-  const newFruit = createFruit((a.x + b.x) / 2, (a.y + b.y) / 2, newLevel);
-
-  newFruit.vx = (a.vx + b.vx) * 0.03;
-  newFruit.vy = Math.min((a.vy + b.vy) * 0.03, 0.06);
-  newFruit.popFrames = 8;
-
-  balls.splice(indexB, 1);
-  balls.splice(indexA, 1);
-  balls.push(newFruit);
-
-  score += gainedScore;
-  setText(scoreElement, score);
-
-  if (newLevel > highestUnlocked) {
-    highestUnlocked = newLevel;
-    localStorage.setItem("fruitMergeHighestUnlocked", highestUnlocked);
-  }
-
-  updateEvolutionBar(newLevel);
-  addFloatingText(newFruit.x, newFruit.y - newFruit.radius, `+${gainedScore}`);
-  addMergeBurst(newFruit.x, newFruit.y, newFruit.radius, fruits[newLevel].color);
-
-  playMergeSound(newLevel);
-
-  if (newLevel >= 7) {
-    addFloatingText(newFruit.x, newFruit.y - newFruit.radius - 24, "Cool Merge!");
-    screenShake = 2;
-    playBigMergeSound();
-    vibrate(25);
-  }
-
-  if (score > bestScore) {
-    bestScore = score;
-    localStorage.setItem("fruitMergeBestScore", bestScore);
-    setText(bestScoreElement, bestScore);
-  }
-}
-
-function addFloatingText(x, y, text) {
-  floatingTexts.push({ x, y, text, life: 42, alpha: 1 });
-}
-
-function addMergeBurst(x, y, radius, color) {
-  for (let i = 0; i < 8; i++) {
-    const angle = (Math.PI * 2 / 8) * i;
-
-    mergeBursts.push({
-      x,
-      y,
-      vx: Math.cos(angle) * (0.6 + radius * 0.004),
-      vy: Math.sin(angle) * (0.6 + radius * 0.004),
-      radius: Math.max(2, radius * 0.034),
-      color,
-      life: 18,
-      alpha: 0.68
-    });
-  }
-}
-
-function updateEffects() {
-  for (const text of floatingTexts) {
-    text.y -= 0.55;
-    text.life -= 1;
-    text.alpha = Math.max(0, text.life / 42);
-  }
-
-  floatingTexts = floatingTexts.filter((text) => text.life > 0);
-
-  for (const burst of mergeBursts) {
-    burst.x += burst.vx;
-    burst.y += burst.vy;
-    burst.vy += 0.02;
-    burst.life -= 1;
-    burst.alpha = Math.max(0, burst.life / 18);
-  }
-
-  mergeBursts = mergeBursts.filter((burst) => burst.life > 0);
-
-  if (screenShake > 0) screenShake -= 1;
-}
-
-function drawEffects() {
-  for (const burst of mergeBursts) {
-    ctx.save();
-    ctx.globalAlpha = burst.alpha;
-    ctx.fillStyle = burst.color;
-    ctx.beginPath();
-    ctx.arc(burst.x, burst.y, burst.radius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-
-  for (const text of floatingTexts) {
-    ctx.save();
-    ctx.globalAlpha = text.alpha;
-    ctx.fillStyle = "#0f766e";
-    ctx.font = "bold 18px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(text.text, text.x, text.y);
-    ctx.restore();
-  }
-}
-
-function checkGameOver() {
-  const dangerLimit = getDangerLimit();
-
-  for (const ball of balls) {
-    const fruitTop = ball.y - ball.radius;
-    const fruitCenter = ball.y;
-
-    const isOldEnough = ball.age > 45;
-    const isAboveDangerLine = fruitTop < dropLineY - 2;
-    const isCenterNearTop = fruitCenter < dropLineY + 34;
-
-    if (isOldEnough && (isAboveDangerLine || isCenterNearTop)) {
-      ball.dangerFrames += 1;
-    } else {
-      ball.dangerFrames = Math.max(0, ball.dangerFrames - 3);
-    }
-
-    if (ball.dangerFrames > dangerLimit) {
-      endGame();
-      break;
-    }
-  }
-}
-
-function endGame() {
-  if (isGameOver) return;
-
-  isGameOver = true;
-  isGameStarted = false;
-
-  const oldBest = bestScore;
-
-  if (score > bestScore) {
-    bestScore = score;
-    localStorage.setItem("fruitMergeBestScore", bestScore);
-  }
-
-  if (survivalTime > bestTime) {
-    bestTime = survivalTime;
-    localStorage.setItem("fruitMergeBestTime", bestTime);
-  }
-
-  addRunToLeaderboard();
-  renderLeaderboard();
-
-  setText(bestScoreElement, bestScore);
-  setText(gameOverBadge, getRunTitle(score));
-  setText(gameOverScore, score);
-  setText(gameOverTime, formatTime(survivalTime));
-  setText(gameOverBest, bestScore);
-
-  const gap = Math.max(0, bestScore - score);
-
-  if (score > oldBest) {
-    setText(gameOverTip, `New personal best! You beat your record by ${score - oldBest} points.`);
-  } else if (gap > 0) {
-    setText(gameOverTip, `Only ${gap} points away from your best score.`);
-  } else {
-    setText(gameOverTip, "Great run! Keep merging to beat your best score.");
-  }
-
-  showElement(gameOverPanel);
-  stopMusic();
-  playGameOverSound();
-  vibrate(60);
-}
-
-function draw() {
-  const shakeX = screenShake > 0 ? (Math.random() - 0.5) * screenShake : 0;
-  const shakeY = screenShake > 0 ? (Math.random() - 0.5) * screenShake : 0;
-
-  ctx.save();
-  ctx.translate(shakeX, shakeY);
-
-  drawBackground();
-  drawAimLine();
-
-  const sortedBalls = balls.slice().sort((a, b) => a.y - b.y);
-
-  for (const ball of sortedBalls) {
-    drawFruit(ball);
-  }
-
-  if (!isGameOver && isGameStarted && currentFruit) {
-    currentFruit.x = mouseX;
-    drawFruit(currentFruit);
-  }
-
-  drawEffects();
-  ctx.restore();
-}
-
-function gameLoop() {
-  updatePhysics();
-  draw();
-  requestAnimationFrame(gameLoop);
-}
-
-function dropFruit() {
-  if (isGameOver || !isGameStarted || !canDrop || !currentFruit) return;
-
-  initAudio();
-  startMusic();
-
-  canDrop = false;
-
-  const fruit = createFruit(mouseX, spawnY, currentFruit.level);
-  fruit.vy = initialDropVelocity;
-
-  balls.push(fruit);
-  playDropSound();
-
-  const nextLevel = nextQueue.shift();
-  currentFruit = createFruit(mouseX, spawnY, nextLevel);
-  nextQueue.push(randomStartLevel());
-
-  updateNextFruit();
-
-  setTimeout(() => {
-    canDrop = true;
-  }, getDropCooldown());
-}
-
-function updateMousePosition(clientX) {
-  const rect = canvas.getBoundingClientRect();
-  const scaleX = GAME_WIDTH / rect.width;
-
-  mouseX = (clientX - rect.left) * scaleX;
-
-  const radius = currentFruit ? currentFruit.radius : 24;
-  const margin = 8;
-
-  mouseX = Math.max(radius + margin, Math.min(GAME_WIDTH - radius - margin, mouseX));
-}
-
-function shareScore() {
-  const text = `I scored ${score || 0} in Fruit Merge Online! Can you beat me? https://fruitmerge.online`;
-
-  if (navigator.share) {
-    navigator.share({
-      title: "Fruit Merge Online",
-      text,
-      url: "https://fruitmerge.online"
-    }).catch(() => {});
-    return;
-  }
-
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => {
-      alert("Score copied!");
-    }).catch(() => {
-      alert(text);
-    });
-  } else {
-    alert(text);
-  }
-}
-
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value));
-}
-
-canvas.addEventListener("mousemove", (event) => {
-  updateMousePosition(event.clientX);
-});
-
-canvas.addEventListener("click", () => {
-  dropFruit();
-});
-
-canvas.addEventListener(
-  "touchmove",
-  (event) => {
-    event.preventDefault();
-    updateMousePosition(event.touches[0].clientX);
-  },
-  { passive: false }
-);
-
-canvas.addEventListener(
-  "touchend",
-  (event) => {
-    event.preventDefault();
-    dropFruit();
-  },
-  { passive: false }
-);
-
-startButton?.addEventListener("click", () => {
-  initAudio();
-  setupRound(false);
-});
-
-restartButton?.addEventListener("click", () => {
-  initAudio();
-  setupRound(false);
-});
-
-playAgainButton?.addEventListener("click", () => {
-  initAudio();
-  setupRound(false);
-});
-
-shareScoreButton?.addEventListener("click", shareScore);
-shareCurrentButton?.addEventListener("click", shareScore);
-
-musicToggleButton?.addEventListener("click", () => {
-  initAudio();
-  toggleMusic();
-});
-
-fullscreenButton?.addEventListener("click", () => {
-  const target = document.querySelector(".game-shell") || document.documentElement;
-
-  if (!document.fullscreenElement) {
-    target.requestFullscreen?.();
-  } else {
-    document.exitFullscreen?.();
-  }
-});
-
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) stopMusic();
-  else if (musicEnabled && isGameStarted && !isGameOver) startMusic();
-});
-
-updateMusicButton();
-preloadFruitImages();
-setupEvolutionBar();
-setupRound(true);
-gameLoop();
 /* =========================================================
-   Cover Start + Better Arcade Audio
-   封面点击开始 + 更轻快的休闲小游戏音乐
+   Fruit Merge Online - Final Stable game.js
+   Core rules:
+   - Canvas internal size stays 420 x 560.
+   - CSS can scale canvas visually.
+   - All input coordinates are converted through getBoundingClientRect().
+   - Desktop: move mouse to aim, click to drop.
+   - Mobile: tap where you want the fruit to drop.
    ========================================================= */
 
 (() => {
-  const startOverlayFix = document.getElementById("startOverlay");
-  const startButtonFix = document.getElementById("startButton");
+  /* =========================
+     DOM
+     ========================= */
 
-  if (startOverlayFix && startButtonFix) {
-    startOverlayFix.addEventListener("click", (event) => {
-      const clickedCover = event.target.closest(".cover-art") || event.target.closest(".cover-mask");
+  const canvas = document.getElementById("gameCanvas");
+  if (!canvas) return;
 
-      if (clickedCover) {
-        startButtonFix.click();
+  const ctx = canvas.getContext("2d");
+
+  const scoreEl = document.getElementById("score");
+  const panelScoreEl = document.getElementById("panelScore");
+  const timeEl = document.getElementById("time");
+  const bestScoreEl = document.getElementById("bestScore");
+
+  const nextFruitNameEl = document.getElementById("nextFruitName");
+  const nextFruitCanvas0 = document.getElementById("nextFruitCanvas0");
+  const nextFruitCanvas1 = document.getElementById("nextFruitCanvas1");
+  const nextFruitCanvas2 = document.getElementById("nextFruitCanvas2");
+
+  const restartButton = document.getElementById("restartButton");
+  const startButton = document.getElementById("startButton");
+  const playAgainButton = document.getElementById("playAgainButton");
+
+  const startOverlay = document.getElementById("startOverlay");
+  const gameOverPanel = document.getElementById("gameOverPanel");
+  const gameOverOverlay = document.getElementById("gameOverOverlay");
+
+  const gameOverBadge = document.getElementById("gameOverBadge");
+  const gameOverScore = document.getElementById("gameOverScore");
+  const gameOverTime = document.getElementById("gameOverTime");
+  const gameOverBest = document.getElementById("gameOverBest");
+  const gameOverTip = document.getElementById("gameOverTip");
+
+  const leaderboardList = document.getElementById("leaderboardList");
+  const musicToggleButton = document.getElementById("musicToggleButton");
+
+  /* =========================
+     Canvas constants
+     ========================= */
+
+  const WORLD_WIDTH = 420;
+  const WORLD_HEIGHT = 560;
+
+  canvas.width = WORLD_WIDTH;
+  canvas.height = WORLD_HEIGHT;
+
+  const WALL_LEFT = 12;
+  const WALL_RIGHT = WORLD_WIDTH - 12;
+  const FLOOR_Y = WORLD_HEIGHT - 12;
+  const CEILING_Y = 0;
+  const DANGER_LINE_Y = 92;
+
+  const GRAVITY = 1500;
+  const WALL_BOUNCE = 0.28;
+  const FLOOR_BOUNCE = 0.22;
+  const FRICTION = 0.985;
+  const POSITION_ITERATIONS = 3;
+
+  const DROP_Y = 42;
+  const DROP_COOLDOWN = 420;
+  const GAME_OVER_HOLD = 1900;
+
+  const LOCAL_BEST_KEY = "fruitMergeBestScore_v2";
+  const LOCAL_RUNS_KEY = "fruitMergeTopRuns_v2";
+
+  /* =========================
+     Fruit data
+     ========================= */
+
+  const fruits = [
+    {
+      name: "Cherry",
+      radius: 15,
+      score: 5,
+      type: "cherry",
+      files: ["cherry.png"],
+      color: "#ff4a42",
+      emoji: "🍒",
+      visualScale: 1.35
+    },
+    {
+      name: "Strawberry",
+      radius: 20,
+      score: 10,
+      type: "strawberry",
+      files: ["strawberry.png"],
+      color: "#ff5148",
+      emoji: "🍓",
+      visualScale: 1.26
+    },
+    {
+      name: "Grape",
+      radius: 25,
+      score: 20,
+      type: "grape",
+      files: ["grape.png"],
+      color: "#a65bff",
+      emoji: "🍇",
+      visualScale: 1.16
+    },
+    {
+      name: "Orange",
+      radius: 32,
+      score: 40,
+      type: "orange",
+      files: ["orange.png"],
+      color: "#ff9f2e",
+      emoji: "🍊",
+      visualScale: 1.12
+    },
+    {
+      name: "Apple",
+      radius: 39,
+      score: 80,
+      type: "apple",
+      files: ["apple.png"],
+      color: "#f64340",
+      emoji: "🍎",
+      visualScale: 1.1
+    },
+    {
+      name: "Peach",
+      radius: 48,
+      score: 160,
+      type: "peach",
+      files: ["peach.png"],
+      color: "#ff9872",
+      emoji: "🍑",
+      visualScale: 1.08
+    },
+    {
+      name: "Pineapple",
+      radius: 57,
+      score: 320,
+      type: "pineapple",
+      files: ["pineapple.png"],
+      color: "#ffc238",
+      emoji: "🍍",
+      visualScale: 1.02
+    },
+    {
+      name: "Watermelon",
+      radius: 68,
+      score: 640,
+      type: "watermelon",
+      files: ["watermelon.png"],
+      color: "#30c765",
+      emoji: "🍉",
+      visualScale: 1.02
+    },
+    {
+      name: "Grapefruit",
+      radius: 80,
+      score: 1280,
+      type: "grapefruit",
+      files: ["grapefruit.png", "pomelo.png", "yuzu.png", "lemon.png"],
+      color: "#ffe45b",
+      emoji: "🍋",
+      visualScale: 1
+    },
+    {
+      name: "Melon",
+      radius: 92,
+      score: 2560,
+      type: "melon",
+      files: ["melon.png", "hami-melon.png", "honeydew.png", "cantaloupe.png"],
+      color: "#d9e66d",
+      emoji: "🍈",
+      visualScale: 0.98
+    },
+    {
+      name: "Dragon Fruit",
+      radius: 106,
+      score: 5120,
+      type: "dragonfruit",
+      files: ["dragonfruit.png", "dragon-fruit.png", "dragon_fruit.png", "pitaya.png"],
+      color: "#ff5098",
+      emoji: "🐉",
+      visualScale: 0.96
+    }
+  ];
+
+  /* =========================
+     Assets
+     ========================= */
+
+  const fruitImages = new Map();
+
+  function loadFruitImage(fruit) {
+    const image = new Image();
+    const files = [...fruit.files];
+    let index = 0;
+
+    const setNextSource = () => {
+      if (index >= files.length) {
+        fruitImages.set(fruit.type, {
+          image: null,
+          loaded: false,
+          failed: true
+        });
+        return;
       }
+
+      image.src = `/assets/fruits/${files[index]}`;
+    };
+
+    fruitImages.set(fruit.type, {
+      image,
+      loaded: false,
+      failed: false
     });
+
+    image.onload = () => {
+      fruitImages.set(fruit.type, {
+        image,
+        loaded: true,
+        failed: false
+      });
+    };
+
+    image.onerror = () => {
+      index += 1;
+      setNextSource();
+    };
+
+    setNextSource();
   }
-})();
 
-(() => {
-  let arcadeLoopTimer = null;
-  let arcadeStep = 0;
+  fruits.forEach(loadFruitImage);
 
-  const melody = [
-    523.25, 587.33, 659.25, 783.99,
-    659.25, 587.33, 523.25, 392.00,
-    440.00, 523.25, 587.33, 659.25,
-    587.33, 523.25, 440.00, 392.00
-  ];
+  /* =========================
+     State
+     ========================= */
 
-  const bass = [
-    130.81, 196.00, 146.83, 220.00,
-    164.81, 246.94, 146.83, 196.00
-  ];
+  let fruitId = 1;
 
-  function ensureArcadeAudio() {
-    initAudio();
+  let fruitBodies = [];
+  let nextQueue = [];
 
-    if (audioContext && audioContext.state === "suspended") {
+  let score = 0;
+  let bestScore = loadBestScore();
+
+  let running = false;
+  let gameOver = false;
+  let canDrop = false;
+
+  let aimX = WORLD_WIDTH / 2;
+  let lastFrameTime = performance.now();
+  let gameStartTime = 0;
+  let elapsedMs = 0;
+
+  let warningTimer = 0;
+  let lastDropAt = 0;
+  let lastPointerDropAt = 0;
+
+  let animationFrameId = null;
+
+  /* =========================
+     Utility
+     ========================= */
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function randomInt(maxExclusive) {
+    return Math.floor(Math.random() * maxExclusive);
+  }
+
+  function formatTime(ms) {
+    const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+    const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+    const seconds = String(totalSeconds % 60).padStart(2, "0");
+    return `${minutes}:${seconds}`;
+  }
+
+  function loadBestScore() {
+    const saved = Number(localStorage.getItem(LOCAL_BEST_KEY) || "0");
+    return Number.isFinite(saved) ? saved : 0;
+  }
+
+  function saveBestScore(value) {
+    localStorage.setItem(LOCAL_BEST_KEY, String(value));
+  }
+
+  function getTopRuns() {
+    try {
+      const runs = JSON.parse(localStorage.getItem(LOCAL_RUNS_KEY) || "[]");
+      return Array.isArray(runs) ? runs : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveRun(finalScore, finalTime) {
+    const runs = getTopRuns();
+
+    runs.push({
+      score: finalScore,
+      time: finalTime,
+      date: new Date().toISOString()
+    });
+
+    runs.sort((a, b) => Number(b.score || 0) - Number(a.score || 0));
+
+    localStorage.setItem(LOCAL_RUNS_KEY, JSON.stringify(runs.slice(0, 5)));
+  }
+
+  function getCanvasPointFromClient(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+
+    const scaleX = WORLD_WIDTH / rect.width;
+    const scaleY = WORLD_HEIGHT / rect.height;
+
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
+  }
+
+  function getCurrentFruitIndex() {
+    return nextQueue[0] ?? 0;
+  }
+
+  function getDropRadius() {
+    const fruit = fruits[getCurrentFruitIndex()];
+    return fruit ? fruit.radius : 15;
+  }
+
+  function setAimByClientX(clientX) {
+    const point = getCanvasPointFromClient(clientX, 0);
+    const radius = getDropRadius();
+
+    aimX = clamp(point.x, WALL_LEFT + radius, WALL_RIGHT - radius);
+  }
+
+  function isMobilePointer(event) {
+    return event.pointerType === "touch" || event.pointerType === "pen";
+  }
+
+  function isPrimaryPointer(event) {
+    return event.isPrimary !== false;
+  }
+
+  function isValidGameInput() {
+    return running && !gameOver;
+  }
+
+  /* =========================
+     UI
+     ========================= */
+
+  function updateScoreUI() {
+    if (scoreEl) scoreEl.textContent = String(score);
+    if (panelScoreEl) panelScoreEl.textContent = String(score);
+    if (bestScoreEl) bestScoreEl.textContent = String(bestScore);
+  }
+
+  function updateTimeUI() {
+    if (timeEl) timeEl.textContent = formatTime(elapsedMs);
+  }
+
+  function updateLeaderboardUI() {
+    if (!leaderboardList) return;
+
+    const runs = getTopRuns();
+
+    if (!runs.length) {
+      leaderboardList.innerHTML = `
+        <div class="leaderboard-item">
+          <div class="leaderboard-rank">1</div>
+          <div class="leaderboard-main">
+            <strong>No run yet</strong>
+            <span>Start your first game</span>
+          </div>
+          <div class="leaderboard-score">0</div>
+        </div>
+      `;
+      return;
+    }
+
+    leaderboardList.innerHTML = runs.slice(0, 5).map((run, index) => {
+      const safeScore = Number(run.score || 0);
+      const safeTime = run.time || "00:00";
+
+      return `
+        <div class="leaderboard-item">
+          <div class="leaderboard-rank">${index + 1}</div>
+          <div class="leaderboard-main">
+            <strong>${safeScore}</strong>
+            <span>${safeTime}</span>
+          </div>
+          <div class="leaderboard-score">${safeScore}</div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function drawFruitPreview(canvasEl, fruitIndex) {
+    if (!canvasEl) return;
+
+    const previewCtx = canvasEl.getContext("2d");
+    const width = canvasEl.width;
+    const height = canvasEl.height;
+
+    previewCtx.clearRect(0, 0, width, height);
+
+    const fruit = fruits[fruitIndex];
+    if (!fruit) return;
+
+    drawFruitGraphic(previewCtx, fruitIndex, width / 2, height / 2, Math.min(width, height) * 0.36, 0, true);
+  }
+
+  function updateNextUI() {
+    const firstIndex = nextQueue[0] ?? 0;
+    const secondIndex = nextQueue[1] ?? 0;
+    const thirdIndex = nextQueue[2] ?? 0;
+
+    if (nextFruitNameEl) {
+      nextFruitNameEl.textContent = fruits[firstIndex]?.name || "Cherry";
+    }
+
+    drawFruitPreview(nextFruitCanvas0, firstIndex);
+    drawFruitPreview(nextFruitCanvas1, secondIndex);
+    drawFruitPreview(nextFruitCanvas2, thirdIndex);
+  }
+
+  function showStartOverlay() {
+    startOverlay?.classList.remove("hidden");
+  }
+
+  function hideStartOverlay() {
+    startOverlay?.classList.add("hidden");
+  }
+
+  function hideGameOver() {
+    gameOverPanel?.classList.add("hidden");
+    gameOverOverlay?.classList.add("hidden");
+  }
+
+  function showGameOver() {
+    if (gameOverBadge) gameOverBadge.textContent = score >= bestScore ? "New Best" : "Game Over";
+    if (gameOverScore) gameOverScore.textContent = String(score);
+    if (gameOverTime) gameOverTime.textContent = formatTime(elapsedMs);
+    if (gameOverBest) gameOverBest.textContent = String(bestScore);
+
+    if (gameOverTip) {
+      if (score >= 3000) {
+        gameOverTip.textContent = "Great run! You are close to mastering the fruit chain.";
+      } else if (score >= 1000) {
+        gameOverTip.textContent = "Nice score! Try keeping larger fruits near the sides.";
+      } else {
+        gameOverTip.textContent = "Keep the center open and use the next fruit preview.";
+      }
+    }
+
+    gameOverPanel?.classList.remove("hidden");
+    gameOverOverlay?.classList.remove("hidden");
+  }
+
+  /* =========================
+     Next Queue
+     ========================= */
+
+  function getRandomSpawnIndex() {
+    return randomInt(5);
+  }
+
+  function refillQueue() {
+    while (nextQueue.length < 3) {
+      nextQueue.push(getRandomSpawnIndex());
+    }
+  }
+
+  function consumeNextFruit() {
+    const index = nextQueue.shift() ?? getRandomSpawnIndex();
+    nextQueue.push(getRandomSpawnIndex());
+    updateNextUI();
+    return index;
+  }
+
+  /* =========================
+     Fruit body
+     ========================= */
+
+  function createFruitBody(index, x, y) {
+    const fruit = fruits[index];
+
+    return {
+      id: fruitId++,
+      index,
+      x,
+      y,
+      vx: (Math.random() - 0.5) * 18,
+      vy: 0,
+      r: fruit.radius,
+      rotation: Math.random() * Math.PI * 2,
+      angularVelocity: (Math.random() - 0.5) * 1.6,
+      bornAt: performance.now(),
+      merging: false,
+      settledAt: 0
+    };
+  }
+
+  function dropFruit() {
+    if (!isValidGameInput()) return;
+    if (!canDrop) return;
+
+    const now = performance.now();
+
+    if (now - lastDropAt < DROP_COOLDOWN) return;
+
+    const fruitIndex = consumeNextFruit();
+    const fruit = fruits[fruitIndex];
+
+    const x = clamp(aimX, WALL_LEFT + fruit.radius, WALL_RIGHT - fruit.radius);
+    const body = createFruitBody(fruitIndex, x, DROP_Y);
+
+    fruitBodies.push(body);
+
+    canDrop = false;
+    lastDropAt = now;
+
+    playDropSound();
+
+    setTimeout(() => {
+      if (running && !gameOver) {
+        canDrop = true;
+      }
+    }, DROP_COOLDOWN);
+  }
+
+  function mergeFruits(a, b) {
+    if (a.merging || b.merging) return;
+    if (a.index !== b.index) return;
+    if (a.index >= fruits.length - 1) return;
+
+    a.merging = true;
+    b.merging = true;
+
+    const nextIndex = a.index + 1;
+    const nextFruit = fruits[nextIndex];
+
+    const mergedX = clamp((a.x + b.x) / 2, WALL_LEFT + nextFruit.radius, WALL_RIGHT - nextFruit.radius);
+    const mergedY = clamp((a.y + b.y) / 2, CEILING_Y + nextFruit.radius, FLOOR_Y - nextFruit.radius);
+
+    const merged = createFruitBody(nextIndex, mergedX, mergedY);
+
+    merged.vx = (a.vx + b.vx) * 0.22;
+    merged.vy = Math.min((a.vy + b.vy) * 0.18, 120);
+    merged.angularVelocity = (Math.random() - 0.5) * 1.8;
+
+    fruitBodies = fruitBodies.filter((fruit) => fruit.id !== a.id && fruit.id !== b.id);
+    fruitBodies.push(merged);
+
+    score += nextFruit.score;
+    bestScore = Math.max(bestScore, score);
+
+    saveBestScore(bestScore);
+    updateScoreUI();
+
+    playMergeSound(nextIndex);
+  }
+
+  /* =========================
+     Physics
+     ========================= */
+
+  function updatePhysics(dt) {
+    const seconds = dt / 1000;
+    const subSteps = Math.max(1, Math.min(3, Math.ceil(seconds / 0.012)));
+    const step = seconds / subSteps;
+
+    for (let s = 0; s < subSteps; s += 1) {
+      integrate(step);
+
+      for (let i = 0; i < POSITION_ITERATIONS; i += 1) {
+        resolveWalls();
+        resolveCollisions();
+      }
+
+      resolveMergePairs();
+    }
+  }
+
+  function integrate(step) {
+    for (const body of fruitBodies) {
+      body.vy += GRAVITY * step;
+
+      body.x += body.vx * step;
+      body.y += body.vy * step;
+
+      body.rotation += body.angularVelocity * step;
+
+      body.vx *= FRICTION;
+      body.angularVelocity *= 0.995;
+    }
+  }
+
+  function resolveWalls() {
+    for (const body of fruitBodies) {
+      if (body.x - body.r < WALL_LEFT) {
+        body.x = WALL_LEFT + body.r;
+        body.vx = Math.abs(body.vx) * WALL_BOUNCE;
+      }
+
+      if (body.x + body.r > WALL_RIGHT) {
+        body.x = WALL_RIGHT - body.r;
+        body.vx = -Math.abs(body.vx) * WALL_BOUNCE;
+      }
+
+      if (body.y + body.r > FLOOR_Y) {
+        body.y = FLOOR_Y - body.r;
+
+        if (Math.abs(body.vy) < 80) {
+          body.vy = 0;
+          body.settledAt = performance.now();
+        } else {
+          body.vy = -Math.abs(body.vy) * FLOOR_BOUNCE;
+        }
+
+        body.vx *= 0.88;
+        body.angularVelocity *= 0.88;
+      }
+    }
+  }
+
+  function resolveCollisions() {
+    for (let i = 0; i < fruitBodies.length; i += 1) {
+      for (let j = i + 1; j < fruitBodies.length; j += 1) {
+        const a = fruitBodies[i];
+        const b = fruitBodies[j];
+
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const distanceSq = dx * dx + dy * dy;
+        const minDistance = a.r + b.r;
+
+        if (distanceSq <= 0 || distanceSq >= minDistance * minDistance) continue;
+
+        const distance = Math.sqrt(distanceSq);
+        const nx = dx / distance;
+        const ny = dy / distance;
+
+        const overlap = minDistance - distance;
+        const correction = overlap * 0.5;
+
+        a.x -= nx * correction;
+        a.y -= ny * correction;
+        b.x += nx * correction;
+        b.y += ny * correction;
+
+        const relativeVx = b.vx - a.vx;
+        const relativeVy = b.vy - a.vy;
+        const velocityAlongNormal = relativeVx * nx + relativeVy * ny;
+
+        if (velocityAlongNormal > 0) continue;
+
+        const restitution = 0.12;
+        const impulse = -(1 + restitution) * velocityAlongNormal * 0.5;
+
+        const impulseX = impulse * nx;
+        const impulseY = impulse * ny;
+
+        a.vx -= impulseX;
+        a.vy -= impulseY;
+        b.vx += impulseX;
+        b.vy += impulseY;
+
+        const tangentX = -ny;
+        const tangentY = nx;
+        const tangentVelocity = relativeVx * tangentX + relativeVy * tangentY;
+        const frictionImpulse = tangentVelocity * 0.012;
+
+        a.vx += tangentX * frictionImpulse;
+        a.vy += tangentY * frictionImpulse;
+        b.vx -= tangentX * frictionImpulse;
+        b.vy -= tangentY * frictionImpulse;
+      }
+    }
+  }
+
+  function resolveMergePairs() {
+    let mergeA = null;
+    let mergeB = null;
+    let bestDistance = Infinity;
+
+    for (let i = 0; i < fruitBodies.length; i += 1) {
+      for (let j = i + 1; j < fruitBodies.length; j += 1) {
+        const a = fruitBodies[i];
+        const b = fruitBodies[j];
+
+        if (a.merging || b.merging) continue;
+        if (a.index !== b.index) continue;
+        if (a.index >= fruits.length - 1) continue;
+
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const mergeDistance = (a.r + b.r) * 0.82;
+
+        if (distance <= mergeDistance && distance < bestDistance) {
+          bestDistance = distance;
+          mergeA = a;
+          mergeB = b;
+        }
+      }
+    }
+
+    if (mergeA && mergeB) {
+      mergeFruits(mergeA, mergeB);
+    }
+  }
+
+  function updateGameOverState(dt) {
+    const now = performance.now();
+
+    const dangerFruit = fruitBodies.some((body) => {
+      if (now - body.bornAt < 1200) return false;
+
+      const aboveLine = body.y - body.r < DANGER_LINE_Y;
+      const slowEnough = Math.abs(body.vy) < 95;
+
+      return aboveLine && slowEnough;
+    });
+
+    if (dangerFruit) {
+      warningTimer += dt;
+    } else {
+      warningTimer = Math.max(0, warningTimer - dt * 2.4);
+    }
+
+    if (warningTimer >= GAME_OVER_HOLD) {
+      endGame();
+    }
+  }
+
+  /* =========================
+     Drawing
+     ========================= */
+
+  function clearCanvas() {
+    ctx.clearRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+  }
+
+  function drawBackground() {
+    const gradient = ctx.createLinearGradient(0, 0, 0, WORLD_HEIGHT);
+    gradient.addColorStop(0, "#e9fff8");
+    gradient.addColorStop(0.42, "#f3fffb");
+    gradient.addColorStop(1, "#e0f6ef");
+
+    ctx.fillStyle = gradient;
+    roundRect(ctx, WALL_LEFT, 6, WALL_RIGHT - WALL_LEFT, FLOOR_Y + 2, 18);
+    ctx.fill();
+
+    ctx.save();
+
+    ctx.strokeStyle = "rgba(255, 112, 91, 0.72)";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 8]);
+    ctx.beginPath();
+    ctx.moveTo(WALL_LEFT + 8, DANGER_LINE_Y);
+    ctx.lineTo(WALL_RIGHT - 8, DANGER_LINE_Y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = "rgba(255, 94, 86, 0.88)";
+    ctx.font = "900 11px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText("DANGER LINE", WALL_LEFT + 12, DANGER_LINE_Y - 8);
+
+    ctx.strokeStyle = "rgba(78, 131, 116, 0.18)";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(WALL_LEFT, 6, WALL_RIGHT - WALL_LEFT, FLOOR_Y + 2);
+
+    ctx.restore();
+  }
+
+  function drawAimPreview() {
+    if (!running || gameOver || !canDrop) return;
+
+    const index = getCurrentFruitIndex();
+    const fruit = fruits[index];
+
+    const x = clamp(aimX, WALL_LEFT + fruit.radius, WALL_RIGHT - fruit.radius);
+    const y = DROP_Y;
+
+    ctx.save();
+
+    ctx.globalAlpha = 0.28;
+    ctx.strokeStyle = fruit.color;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 6]);
+    ctx.beginPath();
+    ctx.moveTo(x, 10);
+    ctx.lineTo(x, FLOOR_Y - 5);
+    ctx.stroke();
+
+    ctx.globalAlpha = 0.72;
+    drawFruitGraphic(ctx, index, x, y, fruit.radius, 0, false);
+
+    ctx.restore();
+  }
+
+  function drawFruitBodies() {
+    const sorted = [...fruitBodies].sort((a, b) => a.y - b.y);
+
+    for (const body of sorted) {
+      drawFruitGraphic(ctx, body.index, body.x, body.y, body.r, body.rotation, false);
+    }
+  }
+
+  function drawWarningOverlay() {
+    if (warningTimer <= 0) return;
+
+    const alpha = clamp(warningTimer / GAME_OVER_HOLD, 0, 1);
+
+    ctx.save();
+
+    ctx.globalAlpha = alpha * 0.18;
+    ctx.fillStyle = "#ff4a42";
+    ctx.fillRect(WALL_LEFT, 6, WALL_RIGHT - WALL_LEFT, FLOOR_Y);
+
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = "#ff554d";
+    ctx.font = "900 13px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("Too high!", WORLD_WIDTH / 2, DANGER_LINE_Y - 22);
+
+    ctx.restore();
+  }
+
+  function drawFruitGraphic(targetCtx, fruitIndex, x, y, radius, rotation = 0, preview = false) {
+    const fruit = fruits[fruitIndex];
+    if (!fruit) return;
+
+    const asset = fruitImages.get(fruit.type);
+    const drawRadius = preview ? radius * 1.18 : radius * fruit.visualScale;
+    const size = drawRadius * 2;
+
+    targetCtx.save();
+    targetCtx.translate(x, y);
+    targetCtx.rotate(rotation);
+
+    if (asset && asset.loaded && asset.image) {
+      targetCtx.drawImage(asset.image, -size / 2, -size / 2, size, size);
+    } else {
+      const gradient = targetCtx.createRadialGradient(
+        -radius * 0.35,
+        -radius * 0.35,
+        radius * 0.12,
+        0,
+        0,
+        radius
+      );
+
+      gradient.addColorStop(0, "#ffffff");
+      gradient.addColorStop(0.16, fruit.color);
+      gradient.addColorStop(1, shadeColor(fruit.color, -18));
+
+      targetCtx.fillStyle = gradient;
+      targetCtx.beginPath();
+      targetCtx.arc(0, 0, radius, 0, Math.PI * 2);
+      targetCtx.fill();
+
+      targetCtx.lineWidth = Math.max(2, radius * 0.08);
+      targetCtx.strokeStyle = "rgba(255,255,255,0.55)";
+      targetCtx.stroke();
+
+      targetCtx.font = `${Math.floor(radius * 1.05)}px serif`;
+      targetCtx.textAlign = "center";
+      targetCtx.textBaseline = "middle";
+      targetCtx.fillText(fruit.emoji, 0, 1);
+    }
+
+    targetCtx.restore();
+  }
+
+  function roundRect(targetCtx, x, y, width, height, radius) {
+    const r = Math.min(radius, width / 2, height / 2);
+
+    targetCtx.beginPath();
+    targetCtx.moveTo(x + r, y);
+    targetCtx.arcTo(x + width, y, x + width, y + height, r);
+    targetCtx.arcTo(x + width, y + height, x, y + height, r);
+    targetCtx.arcTo(x, y + height, x, y, r);
+    targetCtx.arcTo(x, y, x + width, y, r);
+    targetCtx.closePath();
+  }
+
+  function shadeColor(hex, percent) {
+    const normalized = hex.replace("#", "");
+    const num = parseInt(normalized, 16);
+
+    let r = (num >> 16) + percent;
+    let g = ((num >> 8) & 0x00ff) + percent;
+    let b = (num & 0x0000ff) + percent;
+
+    r = clamp(r, 0, 255);
+    g = clamp(g, 0, 255);
+    b = clamp(b, 0, 255);
+
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  function render() {
+    clearCanvas();
+    drawBackground();
+    drawAimPreview();
+    drawFruitBodies();
+    drawWarningOverlay();
+  }
+
+  /* =========================
+     Game lifecycle
+     ========================= */
+
+  function resetGame({ keepOverlay = false } = {}) {
+    fruitBodies = [];
+    nextQueue = [];
+    score = 0;
+    elapsedMs = 0;
+    warningTimer = 0;
+    lastDropAt = 0;
+    canDrop = false;
+    gameOver = false;
+    running = false;
+    aimX = WORLD_WIDTH / 2;
+
+    refillQueue();
+    updateScoreUI();
+    updateTimeUI();
+    updateNextUI();
+    updateLeaderboardUI();
+    hideGameOver();
+
+    if (!keepOverlay) {
+      hideStartOverlay();
+    }
+
+    render();
+  }
+
+  function startGame() {
+    resetGame({ keepOverlay: false });
+
+    running = true;
+    gameOver = false;
+    canDrop = true;
+
+    gameStartTime = performance.now();
+    lastFrameTime = performance.now();
+
+    hideStartOverlay();
+    hideGameOver();
+
+    startMusicIfEnabled();
+
+    if (!animationFrameId) {
+      animationFrameId = requestAnimationFrame(loop);
+    }
+  }
+
+  function restartGame() {
+    startGame();
+  }
+
+  function endGame() {
+    if (gameOver) return;
+
+    gameOver = true;
+    running = false;
+    canDrop = false;
+
+    bestScore = Math.max(bestScore, score);
+    saveBestScore(bestScore);
+
+    const finalTime = formatTime(elapsedMs);
+    saveRun(score, finalTime);
+
+    updateScoreUI();
+    updateLeaderboardUI();
+    showGameOver();
+
+    playGameOverSound();
+  }
+
+  function loop(now) {
+    animationFrameId = requestAnimationFrame(loop);
+
+    const dt = clamp(now - lastFrameTime, 0, 32);
+    lastFrameTime = now;
+
+    if (running && !gameOver) {
+      elapsedMs = now - gameStartTime;
+      updateTimeUI();
+      updatePhysics(dt);
+      updateGameOverState(dt);
+    }
+
+    render();
+  }
+
+  /* =========================
+     Input
+     ========================= */
+
+  function handlePointerMove(event) {
+    if (!isValidGameInput()) return;
+    if (!isPrimaryPointer(event)) return;
+
+    setAimByClientX(event.clientX);
+  }
+
+  function handlePointerDown(event) {
+    if (!isValidGameInput()) return;
+    if (!isPrimaryPointer(event)) return;
+
+    event.preventDefault();
+
+    setAimByClientX(event.clientX);
+
+    const now = performance.now();
+
+    if (isMobilePointer(event)) {
+      if (now - lastPointerDropAt < 180) return;
+      lastPointerDropAt = now;
+      dropFruit();
+      return;
+    }
+
+    if (event.pointerType === "mouse" || event.pointerType === "") {
+      dropFruit();
+    }
+  }
+
+  function handleMouseMove(event) {
+    if (!window.PointerEvent) {
+      if (!isValidGameInput()) return;
+      setAimByClientX(event.clientX);
+    }
+  }
+
+  function handleMouseDown(event) {
+    if (!window.PointerEvent) {
+      if (!isValidGameInput()) return;
+      event.preventDefault();
+      setAimByClientX(event.clientX);
+      dropFruit();
+    }
+  }
+
+  function handleTouchStart(event) {
+    if (window.PointerEvent) return;
+    if (!isValidGameInput()) return;
+
+    const touch = event.changedTouches && event.changedTouches[0];
+    if (!touch) return;
+
+    event.preventDefault();
+
+    setAimByClientX(touch.clientX);
+    dropFruit();
+  }
+
+  function handleTouchMove(event) {
+    if (window.PointerEvent) return;
+    if (!isValidGameInput()) return;
+
+    const touch = event.changedTouches && event.changedTouches[0];
+    if (!touch) return;
+
+    event.preventDefault();
+
+    setAimByClientX(touch.clientX);
+  }
+
+  canvas.addEventListener("pointermove", handlePointerMove, { passive: true });
+  canvas.addEventListener("pointerdown", handlePointerDown, { passive: false });
+
+  canvas.addEventListener("mousemove", handleMouseMove, { passive: true });
+  canvas.addEventListener("mousedown", handleMouseDown, { passive: false });
+
+  canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
+  canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+  /* =========================
+     Buttons
+     ========================= */
+
+  startButton?.addEventListener("click", (event) => {
+    event.preventDefault();
+    startGame();
+  });
+
+  restartButton?.addEventListener("click", (event) => {
+    event.preventDefault();
+    restartGame();
+  });
+
+  playAgainButton?.addEventListener("click", (event) => {
+    event.preventDefault();
+    restartGame();
+  });
+
+  musicToggleButton?.addEventListener("click", (event) => {
+    event.preventDefault();
+    toggleMusic();
+  });
+
+  /* =========================
+     Audio
+     ========================= */
+
+  let audioContext = null;
+  let masterGain = null;
+  let musicTimer = null;
+  let musicEnabled = localStorage.getItem("fruitMergeMusic") === "on";
+
+  function ensureAudio() {
+    if (audioContext) return;
+
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+
+    audioContext = new AudioContextClass();
+    masterGain = audioContext.createGain();
+    masterGain.gain.value = 0.045;
+    masterGain.connect(audioContext.destination);
+  }
+
+  function playTone({ frequency = 440, duration = 0.08, type = "sine", gain = 0.05 }) {
+    ensureAudio();
+
+    if (!audioContext || !masterGain) return;
+
+    if (audioContext.state === "suspended") {
       audioContext.resume().catch(() => {});
     }
 
-    return audioContext;
-  }
-
-  function arcadeTone(frequency, duration, type = "sine", volume = 0.02, delay = 0) {
-    const context = ensureArcadeAudio();
-
-    if (!context) return;
-
-    const startAt = context.currentTime + delay;
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
+    const oscillator = audioContext.createOscillator();
+    const toneGain = audioContext.createGain();
 
     oscillator.type = type;
-    oscillator.frequency.setValueAtTime(frequency, startAt);
+    oscillator.frequency.value = frequency;
 
-    gain.gain.setValueAtTime(0.0001, startAt);
-    gain.gain.exponentialRampToValueAtTime(volume, startAt + 0.025);
-    gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+    toneGain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+    toneGain.gain.exponentialRampToValueAtTime(gain, audioContext.currentTime + 0.01);
+    toneGain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
 
-    oscillator.connect(gain);
-    gain.connect(context.destination);
+    oscillator.connect(toneGain);
+    toneGain.connect(masterGain);
 
-    oscillator.start(startAt);
-    oscillator.stop(startAt + duration + 0.04);
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + duration + 0.02);
   }
 
-  startMusic = function () {
+  function playDropSound() {
+    playTone({
+      frequency: 280,
+      duration: 0.055,
+      type: "triangle",
+      gain: 0.022
+    });
+  }
+
+  function playMergeSound(index) {
+    playTone({
+      frequency: 420 + index * 42,
+      duration: 0.085,
+      type: "sine",
+      gain: 0.035
+    });
+
+    setTimeout(() => {
+      playTone({
+        frequency: 520 + index * 46,
+        duration: 0.07,
+        type: "triangle",
+        gain: 0.022
+      });
+    }, 45);
+  }
+
+  function playGameOverSound() {
+    playTone({
+      frequency: 260,
+      duration: 0.12,
+      type: "sawtooth",
+      gain: 0.025
+    });
+
+    setTimeout(() => {
+      playTone({
+        frequency: 190,
+        duration: 0.16,
+        type: "triangle",
+        gain: 0.022
+      });
+    }, 100);
+  }
+
+  function startMusicIfEnabled() {
     if (!musicEnabled) return;
+    startMusic();
+  }
 
-    ensureArcadeAudio();
+  function startMusic() {
+    ensureAudio();
 
-    if (arcadeLoopTimer) return;
+    if (!audioContext || musicTimer) return;
 
-    arcadeLoopTimer = setInterval(() => {
-      if (!musicEnabled || document.hidden || isGameOver || !isGameStarted) return;
-
-      const note = melody[arcadeStep % melody.length];
-      const harmony = melody[(arcadeStep + 4) % melody.length];
-      const bassNote = bass[Math.floor(arcadeStep / 2) % bass.length];
-
-      arcadeTone(note, 0.18, "triangle", 0.012);
-      arcadeTone(harmony, 0.12, "sine", 0.0045, 0.04);
-
-      if (arcadeStep % 2 === 0) {
-        arcadeTone(bassNote, 0.26, "sine", 0.004, 0.02);
-      }
-
-      arcadeStep += 1;
-    }, 430);
-  };
-
-  stopMusic = function () {
-    if (arcadeLoopTimer) {
-      clearInterval(arcadeLoopTimer);
-      arcadeLoopTimer = null;
+    if (audioContext.state === "suspended") {
+      audioContext.resume().catch(() => {});
     }
-  };
 
-  updateMusicButton = function () {
-    const button = document.getElementById("musicToggleButton");
+    const notes = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 880, 698.46];
+    let index = 0;
 
-    if (!button) return;
+    musicTimer = window.setInterval(() => {
+      if (!musicEnabled || !running || gameOver) return;
 
-    button.textContent = musicEnabled ? "♪" : "×";
-    button.classList.toggle("music-off", !musicEnabled);
-    button.title = musicEnabled ? "Music On" : "Music Off";
-  };
+      playTone({
+        frequency: notes[index % notes.length],
+        duration: 0.11,
+        type: "sine",
+        gain: 0.012
+      });
 
-  toggleMusic = function () {
+      index += 1;
+    }, 420);
+
+    updateMusicButton();
+  }
+
+  function stopMusic() {
+    if (musicTimer) {
+      clearInterval(musicTimer);
+      musicTimer = null;
+    }
+
+    updateMusicButton();
+  }
+
+  function toggleMusic() {
     musicEnabled = !musicEnabled;
     localStorage.setItem("fruitMergeMusic", musicEnabled ? "on" : "off");
-    updateMusicButton();
 
     if (musicEnabled) {
       startMusic();
     } else {
       stopMusic();
     }
-  };
 
-  playDropSound = function () {
-    arcadeTone(720, 0.035, "triangle", 0.035);
-    arcadeTone(420, 0.045, "sine", 0.014, 0.025);
-  };
+    updateMusicButton();
+  }
 
-  playMergeSound = function (level) {
-    const base = 480 + level * 35;
+  function updateMusicButton() {
+    if (!musicToggleButton) return;
 
-    arcadeTone(base, 0.055, "triangle", 0.032);
-    arcadeTone(base * 1.25, 0.075, "sine", 0.018, 0.045);
-  };
+    musicToggleButton.textContent = musicEnabled ? "♪" : "♫";
+    musicToggleButton.setAttribute("aria-pressed", musicEnabled ? "true" : "false");
+    musicToggleButton.classList.toggle("is-on", musicEnabled);
+  }
 
-  playBigMergeSound = function () {
-    arcadeTone(523.25, 0.07, "triangle", 0.034);
-    arcadeTone(659.25, 0.08, "triangle", 0.026, 0.055);
-    arcadeTone(783.99, 0.10, "sine", 0.022, 0.11);
-  };
+  /* =========================
+     Resize
+     ========================= */
 
-  playGameOverSound = function () {
-    arcadeTone(392.00, 0.12, "sine", 0.024);
-    arcadeTone(293.66, 0.16, "sine", 0.018, 0.12);
-    arcadeTone(196.00, 0.18, "sine", 0.014, 0.25);
-  };
+  window.addEventListener("resize", () => {
+    const radius = getDropRadius();
+    aimX = clamp(aimX, WALL_LEFT + radius, WALL_RIGHT - radius);
+    render();
+  });
 
-  updateMusicButton();
+  /* =========================
+     Init
+     ========================= */
+
+  function init() {
+    bestScore = loadBestScore();
+    resetGame({ keepOverlay: true });
+    showStartOverlay();
+    updateMusicButton();
+
+    if (!animationFrameId) {
+      lastFrameTime = performance.now();
+      animationFrameId = requestAnimationFrame(loop);
+    }
+  }
+
+  init();
 })();
