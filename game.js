@@ -5,14 +5,11 @@
    - Canvas internal size: 420 x 560
    - Desktop: move mouse to aim, click to drop
    - Mobile: tap where you want the fruit to drop
+   - Merge effects: particles + floating score
    - No JS resizing of canvas style
    ========================================================= */
 
 (() => {
-  /* =========================
-     DOM
-     ========================= */
-
   const canvas = document.getElementById("gameCanvas");
   if (!canvas) return;
 
@@ -45,10 +42,6 @@
   const leaderboardList = document.getElementById("leaderboardList");
   const musicToggleButton = document.getElementById("musicToggleButton");
 
-  /* =========================
-     Canvas constants
-     ========================= */
-
   const WORLD_WIDTH = 420;
   const WORLD_HEIGHT = 560;
 
@@ -68,16 +61,15 @@
   const FRICTION = 0.985;
   const POSITION_ITERATIONS = 3;
 
+  const PHYSICS_RADIUS_SCALE = 0.82;
+  const MUSIC_DEFAULT_ON = false;
+
   const DROP_Y = 42;
   const DROP_COOLDOWN = 420;
   const GAME_OVER_HOLD = 1900;
 
   const LOCAL_BEST_KEY = "fruitMergeBestScore_v2";
   const LOCAL_RUNS_KEY = "fruitMergeTopRuns_v2";
-
-  /* =========================
-     Fruit data
-     ========================= */
 
   const fruits = [
     {
@@ -192,10 +184,6 @@
     }
   ];
 
-  /* =========================
-     Assets
-     ========================= */
-
   const fruitImages = new Map();
 
   function loadFruitImage(fruit) {
@@ -243,14 +231,13 @@
 
   fruits.forEach(loadFruitImage);
 
-  /* =========================
-     Game state
-     ========================= */
-
   let fruitId = 1;
 
   let fruitBodies = [];
   let nextQueue = [];
+
+  let particles = [];
+  let scorePopups = [];
 
   let score = 0;
   let bestScore = loadBestScore();
@@ -271,12 +258,12 @@
 
   let animationFrameId = null;
 
-  /* =========================
-     Utility
-     ========================= */
-
   function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
+  }
+
+  function randomRange(min, max) {
+    return min + Math.random() * (max - min);
   }
 
   function randomInt(maxExclusive) {
@@ -338,9 +325,18 @@
     return nextQueue[0] ?? 0;
   }
 
-  function getDropRadius() {
-    const fruit = fruits[getCurrentFruitIndex()];
+  function getPhysicsRadius(index) {
+    const fruit = fruits[index];
+    return fruit ? fruit.radius * PHYSICS_RADIUS_SCALE : 15;
+  }
+
+  function getVisualRadius(index) {
+    const fruit = fruits[index];
     return fruit ? fruit.radius : 15;
+  }
+
+  function getDropRadius() {
+    return getPhysicsRadius(getCurrentFruitIndex());
   }
 
   function setAimByClientX(clientX) {
@@ -361,10 +357,6 @@
   function isValidGameInput() {
     return running && !gameOver;
   }
-
-  /* =========================
-     UI
-     ========================= */
 
   function updateScoreUI() {
     if (scoreEl) scoreEl.textContent = String(score);
@@ -488,10 +480,6 @@
     gameOverOverlay?.classList.remove("hidden");
   }
 
-  /* =========================
-     Next Queue
-     ========================= */
-
   function getRandomSpawnIndex() {
     return randomInt(5);
   }
@@ -509,12 +497,9 @@
     return index;
   }
 
-  /* =========================
-     Fruit body
-     ========================= */
-
   function createFruitBody(index, x, y) {
-    const fruit = fruits[index];
+    const physicsRadius = getPhysicsRadius(index);
+    const visualRadius = getVisualRadius(index);
 
     return {
       id: fruitId++,
@@ -523,7 +508,10 @@
       y,
       vx: (Math.random() - 0.5) * 18,
       vy: 0,
-      r: fruit.radius,
+      r: physicsRadius,
+      visualR: visualRadius,
+      popScale: 1,
+      popTimer: 0,
       rotation: Math.random() * Math.PI * 2,
       angularVelocity: (Math.random() - 0.5) * 1.6,
       bornAt: performance.now(),
@@ -539,9 +527,9 @@
     if (now - lastDropAt < DROP_COOLDOWN) return;
 
     const fruitIndex = consumeNextFruit();
-    const fruit = fruits[fruitIndex];
+    const physicsRadius = getPhysicsRadius(fruitIndex);
 
-    const x = clamp(aimX, WALL_LEFT + fruit.radius, WALL_RIGHT - fruit.radius);
+    const x = clamp(aimX, WALL_LEFT + physicsRadius, WALL_RIGHT - physicsRadius);
     const body = createFruitBody(fruitIndex, x, DROP_Y);
 
     fruitBodies.push(body);
@@ -568,17 +556,21 @@
 
     const nextIndex = a.index + 1;
     const nextFruit = fruits[nextIndex];
+    const nextPhysicsRadius = getPhysicsRadius(nextIndex);
+
+    const mergeX = (a.x + b.x) / 2;
+    const mergeY = (a.y + b.y) / 2;
 
     const mergedX = clamp(
-      (a.x + b.x) / 2,
-      WALL_LEFT + nextFruit.radius,
-      WALL_RIGHT - nextFruit.radius
+      mergeX,
+      WALL_LEFT + nextPhysicsRadius,
+      WALL_RIGHT - nextPhysicsRadius
     );
 
     const mergedY = clamp(
-      (a.y + b.y) / 2,
-      CEILING_Y + nextFruit.radius,
-      FLOOR_Y - nextFruit.radius
+      mergeY,
+      CEILING_Y + nextPhysicsRadius,
+      FLOOR_Y - nextPhysicsRadius
     );
 
     const merged = createFruitBody(nextIndex, mergedX, mergedY);
@@ -586,6 +578,8 @@
     merged.vx = (a.vx + b.vx) * 0.22;
     merged.vy = Math.min((a.vy + b.vy) * 0.18, 120);
     merged.angularVelocity = (Math.random() - 0.5) * 1.8;
+    merged.popScale = 1.28;
+    merged.popTimer = 180;
 
     fruitBodies = fruitBodies.filter((fruit) => fruit.id !== a.id && fruit.id !== b.id);
     fruitBodies.push(merged);
@@ -596,12 +590,107 @@
     saveBestScore(bestScore);
     updateScoreUI();
 
+    createMergeExplosion(mergedX, mergedY, nextFruit.color, nextIndex);
+    createScorePopup(mergedX, mergedY - 18, nextFruit.score);
+
     playMergeSound(nextIndex);
   }
 
-  /* =========================
-     Physics
-     ========================= */
+  function createMergeExplosion(x, y, color, fruitIndex) {
+    const count = clamp(12 + fruitIndex * 2, 12, 30);
+
+    for (let i = 0; i < count; i += 1) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = randomRange(70, 210);
+      const size = randomRange(2.5, 6.5);
+      const life = randomRange(380, 650);
+
+      particles.push({
+        x,
+        y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - randomRange(20, 80),
+        size,
+        life,
+        maxLife: life,
+        color,
+        gravity: randomRange(280, 520),
+        spin: randomRange(-4, 4),
+        rotation: Math.random() * Math.PI * 2,
+        shape: Math.random() > 0.45 ? "circle" : "spark"
+      });
+    }
+
+    for (let i = 0; i < 8; i += 1) {
+      const angle = (Math.PI * 2 * i) / 8;
+      const speed = randomRange(95, 160);
+
+      particles.push({
+        x,
+        y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        size: randomRange(2, 4),
+        life: 420,
+        maxLife: 420,
+        color: "#ffffff",
+        gravity: 180,
+        spin: randomRange(-6, 6),
+        rotation: Math.random() * Math.PI * 2,
+        shape: "spark"
+      });
+    }
+  }
+
+  function createScorePopup(x, y, value) {
+    scorePopups.push({
+      x,
+      y,
+      value,
+      life: 900,
+      maxLife: 900,
+      vy: -42,
+      scale: 1
+    });
+  }
+
+  function updateEffects(dt) {
+    const seconds = dt / 1000;
+
+    particles = particles.filter((particle) => {
+      particle.life -= dt;
+
+      if (particle.life <= 0) return false;
+
+      particle.vy += particle.gravity * seconds;
+      particle.x += particle.vx * seconds;
+      particle.y += particle.vy * seconds;
+      particle.rotation += particle.spin * seconds;
+
+      return true;
+    });
+
+    scorePopups = scorePopups.filter((popup) => {
+      popup.life -= dt;
+
+      if (popup.life <= 0) return false;
+
+      popup.y += popup.vy * seconds;
+      popup.scale = 1 + Math.sin((1 - popup.life / popup.maxLife) * Math.PI) * 0.18;
+
+      return true;
+    });
+
+    for (const body of fruitBodies) {
+      if (body.popTimer > 0) {
+        body.popTimer -= dt;
+        const progress = clamp(body.popTimer / 180, 0, 1);
+        body.popScale = 1 + Math.sin(progress * Math.PI) * 0.2;
+      } else {
+        body.popScale = 1;
+      }
+    }
+  }
 
   function updatePhysics(dt) {
     const seconds = dt / 1000;
@@ -734,12 +823,6 @@
         const dx = b.x - a.x;
         const dy = b.y - a.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-
-        /*
-          关键修正：
-          物理碰撞会把两个水果推开到接近 a.r + b.r。
-          所以合成距离不能小于 a.r + b.r。
-        */
         const mergeDistance = (a.r + b.r) * 1.08;
 
         if (distance <= mergeDistance && distance < bestDistance) {
@@ -777,10 +860,6 @@
       endGame();
     }
   }
-
-  /* =========================
-     Drawing
-     ========================= */
 
   function clearCanvas() {
     ctx.clearRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
@@ -828,12 +907,15 @@
     const index = getCurrentFruitIndex();
     const fruit = fruits[index];
 
-    const x = clamp(aimX, WALL_LEFT + fruit.radius, WALL_RIGHT - fruit.radius);
+    const physicsRadius = getPhysicsRadius(index);
+    const visualRadius = getVisualRadius(index);
+
+    const x = clamp(aimX, WALL_LEFT + physicsRadius, WALL_RIGHT - physicsRadius);
     const y = DROP_Y;
 
     ctx.save();
 
-    ctx.globalAlpha = 0.28;
+    ctx.globalAlpha = 0.22;
     ctx.strokeStyle = fruit.color;
     ctx.lineWidth = 2;
     ctx.setLineDash([5, 6]);
@@ -844,7 +926,7 @@
     ctx.stroke();
 
     ctx.globalAlpha = 0.72;
-    drawFruitGraphic(ctx, index, x, y, fruit.radius, 0, false);
+    drawFruitGraphic(ctx, index, x, y, visualRadius, 0, false);
 
     ctx.restore();
   }
@@ -853,7 +935,70 @@
     const sorted = [...fruitBodies].sort((a, b) => a.y - b.y);
 
     for (const body of sorted) {
-      drawFruitGraphic(ctx, body.index, body.x, body.y, body.r, body.rotation, false);
+      const visualRadius = (body.visualR || getVisualRadius(body.index)) * (body.popScale || 1);
+
+      drawFruitGraphic(
+        ctx,
+        body.index,
+        body.x,
+        body.y,
+        visualRadius,
+        body.rotation,
+        false
+      );
+    }
+  }
+
+  function drawParticles() {
+    for (const particle of particles) {
+      const alpha = clamp(particle.life / particle.maxLife, 0, 1);
+
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(particle.x, particle.y);
+      ctx.rotate(particle.rotation);
+
+      if (particle.shape === "spark") {
+        ctx.fillStyle = particle.color;
+        ctx.beginPath();
+        ctx.moveTo(0, -particle.size * 1.8);
+        ctx.lineTo(particle.size * 0.65, 0);
+        ctx.lineTo(0, particle.size * 1.8);
+        ctx.lineTo(-particle.size * 0.65, 0);
+        ctx.closePath();
+        ctx.fill();
+      } else {
+        ctx.fillStyle = particle.color;
+        ctx.beginPath();
+        ctx.arc(0, 0, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.restore();
+    }
+  }
+
+  function drawScorePopups() {
+    for (const popup of scorePopups) {
+      const alpha = clamp(popup.life / popup.maxLife, 0, 1);
+
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(popup.x, popup.y);
+      ctx.scale(popup.scale, popup.scale);
+
+      ctx.font = "900 20px system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = "rgba(103, 55, 8, 0.72)";
+      ctx.strokeText(`+${popup.value}`, 0, 0);
+
+      ctx.fillStyle = "#fff7a8";
+      ctx.fillText(`+${popup.value}`, 0, 0);
+
+      ctx.restore();
     }
   }
 
@@ -955,16 +1100,16 @@
     drawBackground();
     drawAimPreview();
     drawFruitBodies();
+    drawParticles();
+    drawScorePopups();
     drawWarningOverlay();
   }
-
-  /* =========================
-     Game lifecycle
-     ========================= */
 
   function resetGame({ keepOverlay = false } = {}) {
     fruitBodies = [];
     nextQueue = [];
+    particles = [];
+    scorePopups = [];
 
     score = 0;
     elapsedMs = 0;
@@ -1050,12 +1195,9 @@
       updateGameOverState(dt);
     }
 
+    updateEffects(dt);
     render();
   }
-
-  /* =========================
-     Input
-     ========================= */
 
   function handlePointerMove(event) {
     if (!isValidGameInput()) return;
@@ -1069,6 +1211,7 @@
     if (!isPrimaryPointer(event)) return;
 
     event.preventDefault();
+    unlockAudio();
 
     setAimByClientX(event.clientX);
 
@@ -1099,6 +1242,7 @@
     if (!isValidGameInput()) return;
 
     event.preventDefault();
+    unlockAudio();
 
     setAimByClientX(event.clientX);
     dropFruit();
@@ -1107,6 +1251,8 @@
   function handleTouchStart(event) {
     if (window.PointerEvent) return;
     if (!isValidGameInput()) return;
+
+    unlockAudio();
 
     const touch = event.changedTouches && event.changedTouches[0];
     if (!touch) return;
@@ -1138,43 +1284,37 @@
   canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
   canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
 
-  /* =========================
-     Buttons
-     ========================= */
-
   startButton?.addEventListener("click", (event) => {
     event.preventDefault();
+    unlockAudio();
     startGame();
   });
 
   restartButton?.addEventListener("click", (event) => {
     event.preventDefault();
+    unlockAudio();
     restartGame();
   });
 
   playAgainButton?.addEventListener("click", (event) => {
     event.preventDefault();
+    unlockAudio();
     restartGame();
   });
 
   musicToggleButton?.addEventListener("click", (event) => {
     event.preventDefault();
+    unlockAudio();
     toggleMusic();
   });
-
-  /* =========================
-     Audio
-     ========================= */
 
   let audioContext = null;
   let masterGain = null;
   let musicTimer = null;
 
-  /*
-    默认开启音乐。
-    用户手动关闭后，localStorage 会保存 off。
-  */
-  let musicEnabled = localStorage.getItem("fruitMergeMusic") !== "off";
+  let musicEnabled = MUSIC_DEFAULT_ON
+    ? localStorage.getItem("fruitMergeMusic") !== "off"
+    : localStorage.getItem("fruitMergeMusic") === "on";
 
   function ensureAudio() {
     if (audioContext) return;
@@ -1185,8 +1325,16 @@
     audioContext = new AudioContextClass();
 
     masterGain = audioContext.createGain();
-    masterGain.gain.value = 0.28;
+    masterGain.gain.value = 0.42;
     masterGain.connect(audioContext.destination);
+  }
+
+  function unlockAudio() {
+    ensureAudio();
+
+    if (audioContext && audioContext.state === "suspended") {
+      audioContext.resume().catch(() => {});
+    }
   }
 
   function playTone({ frequency = 440, duration = 0.08, type = "sine", gain = 0.05 }) {
@@ -1194,70 +1342,75 @@
 
     if (!audioContext || !masterGain) return;
 
+    const play = () => {
+      const oscillator = audioContext.createOscillator();
+      const toneGain = audioContext.createGain();
+
+      oscillator.type = type;
+      oscillator.frequency.value = frequency;
+
+      toneGain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+      toneGain.gain.exponentialRampToValueAtTime(gain, audioContext.currentTime + 0.01);
+      toneGain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
+
+      oscillator.connect(toneGain);
+      toneGain.connect(masterGain);
+
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + duration + 0.02);
+    };
+
     if (audioContext.state === "suspended") {
-      audioContext.resume().catch(() => {});
+      audioContext.resume().then(play).catch(() => {});
+      return;
     }
 
-    const oscillator = audioContext.createOscillator();
-    const toneGain = audioContext.createGain();
-
-    oscillator.type = type;
-    oscillator.frequency.value = frequency;
-
-    toneGain.gain.setValueAtTime(0.0001, audioContext.currentTime);
-    toneGain.gain.exponentialRampToValueAtTime(gain, audioContext.currentTime + 0.01);
-    toneGain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
-
-    oscillator.connect(toneGain);
-    toneGain.connect(masterGain);
-
-    oscillator.start();
-    oscillator.stop(audioContext.currentTime + duration + 0.02);
+    play();
   }
 
   function playDropSound() {
     playTone({
-      frequency: 280,
-      duration: 0.055,
+      frequency: 360,
+      duration: 0.075,
       type: "triangle",
-      gain: 0.03
+      gain: 0.14
     });
   }
 
   function playMergeSound(index) {
     playTone({
-      frequency: 420 + index * 42,
-      duration: 0.085,
+      frequency: 520 + index * 38,
+      duration: 0.09,
       type: "sine",
-      gain: 0.05
+      gain: 0.12
     });
 
     setTimeout(() => {
       playTone({
-        frequency: 520 + index * 46,
-        duration: 0.07,
+        frequency: 680 + index * 42,
+        duration: 0.075,
         type: "triangle",
-        gain: 0.04
+        gain: 0.09
       });
-    }, 45);
+    }, 48);
   }
 
   function playGameOverSound() {
     playTone({
-      frequency: 260,
-      duration: 0.12,
-      type: "sawtooth",
-      gain: 0.04
+      frequency: 240,
+      duration: 0.14,
+      type: "triangle",
+      gain: 0.1
     });
 
     setTimeout(() => {
       playTone({
-        frequency: 190,
-        duration: 0.16,
-        type: "triangle",
-        gain: 0.035
+        frequency: 160,
+        duration: 0.2,
+        type: "sine",
+        gain: 0.08
       });
-    }, 100);
+    }, 110);
   }
 
   function startMusicIfEnabled() {
@@ -1274,7 +1427,7 @@
       audioContext.resume().catch(() => {});
     }
 
-    const notes = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 880, 698.46];
+    const notes = [392, 523.25, 587.33, 523.25, 440, 523.25, 659.25, 523.25];
     let index = 0;
 
     const playMusicNote = () => {
@@ -1282,9 +1435,9 @@
 
       playTone({
         frequency: notes[index % notes.length],
-        duration: 0.13,
-        type: "sine",
-        gain: 0.045
+        duration: 0.12,
+        type: "triangle",
+        gain: 0.026
       });
 
       index += 1;
@@ -1292,7 +1445,7 @@
 
     playMusicNote();
 
-    musicTimer = window.setInterval(playMusicNote, 420);
+    musicTimer = window.setInterval(playMusicNote, 560);
 
     updateMusicButton();
   }
@@ -1327,19 +1480,11 @@
     musicToggleButton.classList.toggle("is-on", musicEnabled);
   }
 
-  /* =========================
-     Resize
-     ========================= */
-
   window.addEventListener("resize", () => {
     const radius = getDropRadius();
     aimX = clamp(aimX, WALL_LEFT + radius, WALL_RIGHT - radius);
     render();
   });
-
-  /* =========================
-     Init
-     ========================= */
 
   function init() {
     bestScore = loadBestScore();
