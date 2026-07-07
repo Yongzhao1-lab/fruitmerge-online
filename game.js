@@ -2,11 +2,12 @@
 
 /* =========================================================
    Fruit Merge Online - Stable Final game.js
-   - Canvas internal size: 420 x 560
+   - Canvas logic size: 420 x 560
+   - DPR rendering for sharper mobile display
    - Desktop: move mouse to aim, click to drop
    - Mobile: tap where you want the fruit to drop
    - Merge effects: particles + floating score
-   - No JS resizing of canvas style
+   - No JS resizing of canvas CSS style
    ========================================================= */
 
 (() => {
@@ -42,11 +43,84 @@
   const leaderboardList = document.getElementById("leaderboardList");
   const musicToggleButton = document.getElementById("musicToggleButton");
 
+  /* =========================
+     Canvas constants + DPR
+     ========================= */
+
   const WORLD_WIDTH = 420;
   const WORLD_HEIGHT = 560;
 
-  canvas.width = WORLD_WIDTH;
-  canvas.height = WORLD_HEIGHT;
+  /*
+    高清屏修正：
+    游戏逻辑仍然按 420 × 560 计算；
+    但真实 canvas 像素按 DPR 放大，避免手机端发糊。
+  */
+  const MAX_RENDER_DPR = 2.5;
+  let currentRenderDpr = 1;
+
+  function getRenderDpr() {
+    const rawDpr = window.devicePixelRatio || 1;
+    return Math.max(1, Math.min(MAX_RENDER_DPR, rawDpr));
+  }
+
+  function setupMainCanvasDpr() {
+    const dpr = getRenderDpr();
+
+    const pixelWidth = Math.round(WORLD_WIDTH * dpr);
+    const pixelHeight = Math.round(WORLD_HEIGHT * dpr);
+
+    if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+      canvas.width = pixelWidth;
+      canvas.height = pixelHeight;
+    }
+
+    currentRenderDpr = dpr;
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.imageSmoothingEnabled = true;
+
+    if ("imageSmoothingQuality" in ctx) {
+      ctx.imageSmoothingQuality = "high";
+    }
+  }
+
+  function setupPreviewCanvasDpr(canvasEl) {
+    if (!canvasEl) return null;
+
+    if (!canvasEl.dataset.logicalWidth) {
+      canvasEl.dataset.logicalWidth = String(canvasEl.width || 44);
+      canvasEl.dataset.logicalHeight = String(canvasEl.height || 44);
+    }
+
+    const logicalWidth = Number(canvasEl.dataset.logicalWidth || 44);
+    const logicalHeight = Number(canvasEl.dataset.logicalHeight || 44);
+    const dpr = getRenderDpr();
+
+    const pixelWidth = Math.round(logicalWidth * dpr);
+    const pixelHeight = Math.round(logicalHeight * dpr);
+
+    if (canvasEl.width !== pixelWidth || canvasEl.height !== pixelHeight) {
+      canvasEl.width = pixelWidth;
+      canvasEl.height = pixelHeight;
+    }
+
+    const previewCtx = canvasEl.getContext("2d");
+
+    previewCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    previewCtx.imageSmoothingEnabled = true;
+
+    if ("imageSmoothingQuality" in previewCtx) {
+      previewCtx.imageSmoothingQuality = "high";
+    }
+
+    return {
+      ctx: previewCtx,
+      width: logicalWidth,
+      height: logicalHeight
+    };
+  }
+
+  setupMainCanvasDpr();
 
   const WALL_LEFT = 12;
   const WALL_RIGHT = WORLD_WIDTH - 12;
@@ -70,6 +144,10 @@
 
   const LOCAL_BEST_KEY = "fruitMergeBestScore_v2";
   const LOCAL_RUNS_KEY = "fruitMergeTopRuns_v2";
+
+  /* =========================
+     Fruit data
+     ========================= */
 
   const fruits = [
     {
@@ -184,6 +262,10 @@
     }
   ];
 
+  /* =========================
+     Assets
+     ========================= */
+
   const fruitImages = new Map();
 
   function loadFruitImage(fruit) {
@@ -231,6 +313,10 @@
 
   fruits.forEach(loadFruitImage);
 
+  /* =========================
+     State
+     ========================= */
+
   let fruitId = 1;
 
   let fruitBodies = [];
@@ -257,6 +343,10 @@
   let lastPointerDropAt = 0;
 
   let animationFrameId = null;
+
+  /* =========================
+     Utility
+     ========================= */
 
   function clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
@@ -358,6 +448,10 @@
     return running && !gameOver;
   }
 
+  /* =========================
+     UI
+     ========================= */
+
   function updateScoreUI() {
     if (scoreEl) scoreEl.textContent = String(score);
     if (panelScoreEl) panelScoreEl.textContent = String(score);
@@ -408,11 +502,12 @@
   }
 
   function drawFruitPreview(canvasEl, fruitIndex) {
-    if (!canvasEl) return;
+    const preview = setupPreviewCanvasDpr(canvasEl);
+    if (!preview) return;
 
-    const previewCtx = canvasEl.getContext("2d");
-    const width = canvasEl.width;
-    const height = canvasEl.height;
+    const previewCtx = preview.ctx;
+    const width = preview.width;
+    const height = preview.height;
 
     previewCtx.clearRect(0, 0, width, height);
 
@@ -480,6 +575,10 @@
     gameOverOverlay?.classList.remove("hidden");
   }
 
+  /* =========================
+     Queue
+     ========================= */
+
   function getRandomSpawnIndex() {
     return randomInt(5);
   }
@@ -496,6 +595,10 @@
     updateNextUI();
     return index;
   }
+
+  /* =========================
+     Fruit body
+     ========================= */
 
   function createFruitBody(index, x, y) {
     const physicsRadius = getPhysicsRadius(index);
@@ -596,6 +699,10 @@
     playMergeSound(nextIndex);
   }
 
+  /* =========================
+     Merge effects
+     ========================= */
+
   function createMergeExplosion(x, y, color, fruitIndex) {
     const count = clamp(12 + fruitIndex * 2, 12, 30);
 
@@ -691,6 +798,10 @@
       }
     }
   }
+
+  /* =========================
+     Physics
+     ========================= */
 
   function updatePhysics(dt) {
     const seconds = dt / 1000;
@@ -860,6 +971,10 @@
       endGame();
     }
   }
+
+  /* =========================
+     Drawing
+     ========================= */
 
   function clearCanvas() {
     ctx.clearRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
@@ -1096,6 +1211,8 @@
   }
 
   function render() {
+    setupMainCanvasDpr();
+
     clearCanvas();
     drawBackground();
     drawAimPreview();
@@ -1104,6 +1221,10 @@
     drawScorePopups();
     drawWarningOverlay();
   }
+
+  /* =========================
+     Game lifecycle
+     ========================= */
 
   function resetGame({ keepOverlay = false } = {}) {
     fruitBodies = [];
@@ -1199,6 +1320,10 @@
     render();
   }
 
+  /* =========================
+     Input
+     ========================= */
+
   function handlePointerMove(event) {
     if (!isValidGameInput()) return;
     if (!isPrimaryPointer(event)) return;
@@ -1284,6 +1409,10 @@
   canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
   canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
 
+  /* =========================
+     Buttons
+     ========================= */
+
   startButton?.addEventListener("click", (event) => {
     event.preventDefault();
     unlockAudio();
@@ -1307,6 +1436,10 @@
     unlockAudio();
     toggleMusic();
   });
+
+  /* =========================
+     Audio
+     ========================= */
 
   let audioContext = null;
   let masterGain = null;
@@ -1480,11 +1613,23 @@
     musicToggleButton.classList.toggle("is-on", musicEnabled);
   }
 
+  /* =========================
+     Resize
+     ========================= */
+
   window.addEventListener("resize", () => {
+    setupMainCanvasDpr();
+    updateNextUI();
+
     const radius = getDropRadius();
     aimX = clamp(aimX, WALL_LEFT + radius, WALL_RIGHT - radius);
+
     render();
   });
+
+  /* =========================
+     Init
+     ========================= */
 
   function init() {
     bestScore = loadBestScore();
