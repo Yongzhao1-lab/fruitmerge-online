@@ -1,13 +1,11 @@
 "use strict";
 
 /* =========================================================
-   Fruit Merge Online - Final Stable game.js
-   Core rules:
-   - Canvas internal size stays 420 x 560.
-   - CSS can scale canvas visually.
-   - All input coordinates are converted through getBoundingClientRect().
-   - Desktop: move mouse to aim, click to drop.
-   - Mobile: tap where you want the fruit to drop.
+   Fruit Merge Online - Stable Final game.js
+   - Canvas internal size: 420 x 560
+   - Desktop: move mouse to aim, click to drop
+   - Mobile: tap where you want the fruit to drop
+   - No JS resizing of canvas style
    ========================================================= */
 
 (() => {
@@ -61,6 +59,7 @@
   const WALL_RIGHT = WORLD_WIDTH - 12;
   const FLOOR_Y = WORLD_HEIGHT - 12;
   const CEILING_Y = 0;
+
   const DANGER_LINE_Y = 92;
 
   const GRAVITY = 1500;
@@ -204,7 +203,13 @@
     const files = [...fruit.files];
     let index = 0;
 
-    const setNextSource = () => {
+    fruitImages.set(fruit.type, {
+      image,
+      loaded: false,
+      failed: false
+    });
+
+    function setNextSource() {
       if (index >= files.length) {
         fruitImages.set(fruit.type, {
           image: null,
@@ -215,13 +220,7 @@
       }
 
       image.src = `/assets/fruits/${files[index]}`;
-    };
-
-    fruitImages.set(fruit.type, {
-      image,
-      loaded: false,
-      failed: false
-    });
+    }
 
     image.onload = () => {
       fruitImages.set(fruit.type, {
@@ -229,6 +228,9 @@
         loaded: true,
         failed: false
       });
+
+      updateNextUI();
+      render();
     };
 
     image.onerror = () => {
@@ -242,7 +244,7 @@
   fruits.forEach(loadFruitImage);
 
   /* =========================
-     State
+     Game state
      ========================= */
 
   let fruitId = 1;
@@ -258,6 +260,7 @@
   let canDrop = false;
 
   let aimX = WORLD_WIDTH / 2;
+
   let lastFrameTime = performance.now();
   let gameStartTime = 0;
   let elapsedMs = 0;
@@ -347,12 +350,12 @@
     aimX = clamp(point.x, WALL_LEFT + radius, WALL_RIGHT - radius);
   }
 
-  function isMobilePointer(event) {
-    return event.pointerType === "touch" || event.pointerType === "pen";
-  }
-
   function isPrimaryPointer(event) {
     return event.isPrimary !== false;
+  }
+
+  function isTouchPointer(event) {
+    return event.pointerType === "touch" || event.pointerType === "pen";
   }
 
   function isValidGameInput() {
@@ -392,21 +395,24 @@
       return;
     }
 
-    leaderboardList.innerHTML = runs.slice(0, 5).map((run, index) => {
-      const safeScore = Number(run.score || 0);
-      const safeTime = run.time || "00:00";
+    leaderboardList.innerHTML = runs
+      .slice(0, 5)
+      .map((run, index) => {
+        const safeScore = Number(run.score || 0);
+        const safeTime = run.time || "00:00";
 
-      return `
-        <div class="leaderboard-item">
-          <div class="leaderboard-rank">${index + 1}</div>
-          <div class="leaderboard-main">
-            <strong>${safeScore}</strong>
-            <span>${safeTime}</span>
+        return `
+          <div class="leaderboard-item">
+            <div class="leaderboard-rank">${index + 1}</div>
+            <div class="leaderboard-main">
+              <strong>${safeScore}</strong>
+              <span>${safeTime}</span>
+            </div>
+            <div class="leaderboard-score">${safeScore}</div>
           </div>
-          <div class="leaderboard-score">${safeScore}</div>
-        </div>
-      `;
-    }).join("");
+        `;
+      })
+      .join("");
   }
 
   function drawFruitPreview(canvasEl, fruitIndex) {
@@ -421,7 +427,15 @@
     const fruit = fruits[fruitIndex];
     if (!fruit) return;
 
-    drawFruitGraphic(previewCtx, fruitIndex, width / 2, height / 2, Math.min(width, height) * 0.36, 0, true);
+    drawFruitGraphic(
+      previewCtx,
+      fruitIndex,
+      width / 2,
+      height / 2,
+      Math.min(width, height) * 0.36,
+      0,
+      true
+    );
   }
 
   function updateNextUI() {
@@ -452,7 +466,10 @@
   }
 
   function showGameOver() {
-    if (gameOverBadge) gameOverBadge.textContent = score >= bestScore ? "New Best" : "Game Over";
+    if (gameOverBadge) {
+      gameOverBadge.textContent = score >= bestScore ? "New Best" : "Game Over";
+    }
+
     if (gameOverScore) gameOverScore.textContent = String(score);
     if (gameOverTime) gameOverTime.textContent = formatTime(elapsedMs);
     if (gameOverBest) gameOverBest.textContent = String(bestScore);
@@ -510,8 +527,7 @@
       rotation: Math.random() * Math.PI * 2,
       angularVelocity: (Math.random() - 0.5) * 1.6,
       bornAt: performance.now(),
-      merging: false,
-      settledAt: 0
+      merging: false
     };
   }
 
@@ -520,7 +536,6 @@
     if (!canDrop) return;
 
     const now = performance.now();
-
     if (now - lastDropAt < DROP_COOLDOWN) return;
 
     const fruitIndex = consumeNextFruit();
@@ -554,8 +569,17 @@
     const nextIndex = a.index + 1;
     const nextFruit = fruits[nextIndex];
 
-    const mergedX = clamp((a.x + b.x) / 2, WALL_LEFT + nextFruit.radius, WALL_RIGHT - nextFruit.radius);
-    const mergedY = clamp((a.y + b.y) / 2, CEILING_Y + nextFruit.radius, FLOOR_Y - nextFruit.radius);
+    const mergedX = clamp(
+      (a.x + b.x) / 2,
+      WALL_LEFT + nextFruit.radius,
+      WALL_RIGHT - nextFruit.radius
+    );
+
+    const mergedY = clamp(
+      (a.y + b.y) / 2,
+      CEILING_Y + nextFruit.radius,
+      FLOOR_Y - nextFruit.radius
+    );
 
     const merged = createFruitBody(nextIndex, mergedX, mergedY);
 
@@ -627,7 +651,6 @@
 
         if (Math.abs(body.vy) < 80) {
           body.vy = 0;
-          body.settledAt = performance.now();
         } else {
           body.vy = -Math.abs(body.vy) * FLOOR_BOUNCE;
         }
@@ -646,6 +669,7 @@
 
         const dx = b.x - a.x;
         const dy = b.y - a.y;
+
         const distanceSq = dx * dx + dy * dy;
         const minDistance = a.r + b.r;
 
@@ -710,7 +734,13 @@
         const dx = b.x - a.x;
         const dy = b.y - a.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        const mergeDistance = (a.r + b.r) * 0.82;
+
+        /*
+          关键修正：
+          物理碰撞会把两个水果推开到接近 a.r + b.r。
+          所以合成距离不能小于 a.r + b.r。
+        */
+        const mergeDistance = (a.r + b.r) * 1.08;
 
         if (distance <= mergeDistance && distance < bestDistance) {
           bestDistance = distance;
@@ -758,6 +788,7 @@
 
   function drawBackground() {
     const gradient = ctx.createLinearGradient(0, 0, 0, WORLD_HEIGHT);
+
     gradient.addColorStop(0, "#e9fff8");
     gradient.addColorStop(0.42, "#f3fffb");
     gradient.addColorStop(1, "#e0f6ef");
@@ -771,10 +802,12 @@
     ctx.strokeStyle = "rgba(255, 112, 91, 0.72)";
     ctx.lineWidth = 2;
     ctx.setLineDash([8, 8]);
+
     ctx.beginPath();
     ctx.moveTo(WALL_LEFT + 8, DANGER_LINE_Y);
     ctx.lineTo(WALL_RIGHT - 8, DANGER_LINE_Y);
     ctx.stroke();
+
     ctx.setLineDash([]);
 
     ctx.fillStyle = "rgba(255, 94, 86, 0.88)";
@@ -804,6 +837,7 @@
     ctx.strokeStyle = fruit.color;
     ctx.lineWidth = 2;
     ctx.setLineDash([5, 6]);
+
     ctx.beginPath();
     ctx.moveTo(x, 10);
     ctx.lineTo(x, FLOOR_Y - 5);
@@ -931,16 +965,21 @@
   function resetGame({ keepOverlay = false } = {}) {
     fruitBodies = [];
     nextQueue = [];
+
     score = 0;
     elapsedMs = 0;
     warningTimer = 0;
     lastDropAt = 0;
+    lastPointerDropAt = 0;
+
     canDrop = false;
     gameOver = false;
     running = false;
+
     aimX = WORLD_WIDTH / 2;
 
     refillQueue();
+
     updateScoreUI();
     updateTimeUI();
     updateNextUI();
@@ -1035,8 +1074,9 @@
 
     const now = performance.now();
 
-    if (isMobilePointer(event)) {
+    if (isTouchPointer(event)) {
       if (now - lastPointerDropAt < 180) return;
+
       lastPointerDropAt = now;
       dropFruit();
       return;
@@ -1048,19 +1088,20 @@
   }
 
   function handleMouseMove(event) {
-    if (!window.PointerEvent) {
-      if (!isValidGameInput()) return;
-      setAimByClientX(event.clientX);
-    }
+    if (window.PointerEvent) return;
+    if (!isValidGameInput()) return;
+
+    setAimByClientX(event.clientX);
   }
 
   function handleMouseDown(event) {
-    if (!window.PointerEvent) {
-      if (!isValidGameInput()) return;
-      event.preventDefault();
-      setAimByClientX(event.clientX);
-      dropFruit();
-    }
+    if (window.PointerEvent) return;
+    if (!isValidGameInput()) return;
+
+    event.preventDefault();
+
+    setAimByClientX(event.clientX);
+    dropFruit();
   }
 
   function handleTouchStart(event) {
@@ -1128,7 +1169,12 @@
   let audioContext = null;
   let masterGain = null;
   let musicTimer = null;
-  let musicEnabled = localStorage.getItem("fruitMergeMusic") === "on";
+
+  /*
+    默认开启音乐。
+    用户手动关闭后，localStorage 会保存 off。
+  */
+  let musicEnabled = localStorage.getItem("fruitMergeMusic") !== "off";
 
   function ensureAudio() {
     if (audioContext) return;
@@ -1137,8 +1183,9 @@
     if (!AudioContextClass) return;
 
     audioContext = new AudioContextClass();
+
     masterGain = audioContext.createGain();
-    masterGain.gain.value = 0.045;
+    masterGain.gain.value = 0.28;
     masterGain.connect(audioContext.destination);
   }
 
@@ -1173,7 +1220,7 @@
       frequency: 280,
       duration: 0.055,
       type: "triangle",
-      gain: 0.022
+      gain: 0.03
     });
   }
 
@@ -1182,7 +1229,7 @@
       frequency: 420 + index * 42,
       duration: 0.085,
       type: "sine",
-      gain: 0.035
+      gain: 0.05
     });
 
     setTimeout(() => {
@@ -1190,7 +1237,7 @@
         frequency: 520 + index * 46,
         duration: 0.07,
         type: "triangle",
-        gain: 0.022
+        gain: 0.04
       });
     }, 45);
   }
@@ -1200,7 +1247,7 @@
       frequency: 260,
       duration: 0.12,
       type: "sawtooth",
-      gain: 0.025
+      gain: 0.04
     });
 
     setTimeout(() => {
@@ -1208,7 +1255,7 @@
         frequency: 190,
         duration: 0.16,
         type: "triangle",
-        gain: 0.022
+        gain: 0.035
       });
     }, 100);
   }
@@ -1230,18 +1277,22 @@
     const notes = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 880, 698.46];
     let index = 0;
 
-    musicTimer = window.setInterval(() => {
+    const playMusicNote = () => {
       if (!musicEnabled || !running || gameOver) return;
 
       playTone({
         frequency: notes[index % notes.length],
-        duration: 0.11,
+        duration: 0.13,
         type: "sine",
-        gain: 0.012
+        gain: 0.045
       });
 
       index += 1;
-    }, 420);
+    };
+
+    playMusicNote();
+
+    musicTimer = window.setInterval(playMusicNote, 420);
 
     updateMusicButton();
   }
@@ -1292,6 +1343,7 @@
 
   function init() {
     bestScore = loadBestScore();
+
     resetGame({ keepOverlay: true });
     showStartOverlay();
     updateMusicButton();
