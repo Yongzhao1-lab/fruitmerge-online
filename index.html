@@ -4,30 +4,30 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-  <title>Fruit Merge Online - Play Free Fruit Merge Game</title>
+  <title>Fruit Merge Online - Play Free Fruit Merging Game</title>
 
   <meta
     name="description"
-    content="Play Fruit Merge Online for free. Drop cute fruits, merge matching fruits, unlock bigger fruits, and challenge your best score directly in your browser. No download required."
+    content="Play Fruit Merge Online for free. Drop fruits, merge matching fruits, unlock bigger fruits, and challenge your best score in your browser. No download needed."
   />
 
   <meta
     name="keywords"
-    content="fruit merge, fruit merge online, fruit merge game, merge fruit game, watermelon game, browser puzzle game, merge fruits online, fruit drop merge game"
+    content="fruit merge, fruit merge online, fruit merge game, merge fruit game, watermelon game, fruit merging game, browser puzzle game, fruit drop merge game"
   />
 
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <link rel="canonical" href="https://fruitmerge.online/" />
 
-  <meta property="og:title" content="Fruit Merge Online - Play Free Fruit Merge Game" />
-  <meta property="og:description" content="Drop cute fruits, merge matching fruits, unlock bigger fruits, and challenge your best score. Play free in your browser." />
+  <meta property="og:title" content="Fruit Merge Online - Play Free Fruit Merging Game" />
+  <meta property="og:description" content="Drop fruits, merge matching fruits, unlock bigger fruits, and challenge your best score. Play free in your browser." />
   <meta property="og:url" content="https://fruitmerge.online/" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://fruitmerge.online/og-image.svg" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Fruit Merge Online - Play Free Fruit Merge Game" />
-  <meta name="twitter:description" content="Drop cute fruits, merge matching fruits, and challenge your best score." />
+  <meta name="twitter:title" content="Fruit Merge Online - Play Free Fruit Merging Game" />
+  <meta name="twitter:description" content="Drop fruits, merge matching fruits, and challenge your best score." />
   <meta name="twitter:image" content="https://fruitmerge.online/og-image.svg" />
 
   <meta name="theme-color" content="#071221" />
@@ -52,6 +52,39 @@
       "price": "0",
       "priceCurrency": "USD"
     }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is Fruit Merge Online free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Fruit Merge Online is free to play directly in your browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to download Fruit Merge Online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Fruit Merge Online works directly online without downloads or installation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Fruit Merge Online save my score?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Your best score and local top runs are saved in your browser."
+        }
+      }
+    ]
   }
   </script>
 </head>
@@ -111,6 +144,8 @@
       <section class="game-player game-shell" id="game" aria-label="Fruit Merge Online game">
         <div class="game-viewport">
           <div class="game-scene">
+            <div class="scene-bg"></div>
+
             <div class="scene-decoration scene-leaf-one">🍃</div>
             <div class="scene-decoration scene-leaf-two">🍃</div>
             <div class="scene-decoration scene-star-one">✦</div>
@@ -171,8 +206,6 @@
                     <div class="leaderboard-score">0</div>
                   </div>
                 </div>
-
-                <button class="view-more-button" type="button">View More <span>›</span></button>
               </div>
 
               <div class="quick-buttons">
@@ -395,7 +428,7 @@
 
           <article>
             <h3>Cute Fruit Evolution</h3>
-            <p>Merge small fruits into bigger fruits and unlock the full evolution chain.</p>
+            <p>Merge small fruits into bigger fruits and unlock the full fruit evolution chain.</p>
           </article>
 
           <article>
@@ -429,7 +462,7 @@
 
       <section class="content-section" id="tips">
         <p class="section-kicker">STRATEGY</p>
-        <h2>Best Strategy to Reach Dragon Fruit</h2>
+        <h2>Fruit Merge Strategy Guide</h2>
 
         <div class="info-grid">
           <article>
@@ -451,7 +484,7 @@
 
       <section class="content-section" id="levels">
         <p class="section-kicker">FRUIT LEVELS</p>
-        <h2>Fruit Evolution Table</h2>
+        <h2>Fruit Evolution List</h2>
 
         <div class="evolution-table-wrap">
           <table class="evolution-table">
@@ -593,10 +626,7 @@
 
       function openShareUrl(url) {
         const win = window.open(url, "_blank", "noopener,noreferrer");
-
-        if (!win) {
-          copyShareText();
-        }
+        if (!win) copyShareText();
       }
 
       async function shareToPlatform(platform) {
@@ -645,7 +675,6 @@
 
       function openMobileMenu() {
         if (!mobileGameMenu) return;
-
         closeSharePopover();
         mobileGameMenu.classList.remove("hidden");
         document.body.classList.add("mobile-menu-open");
@@ -653,14 +682,12 @@
 
       function closeMobileMenu() {
         if (!mobileGameMenu) return;
-
         mobileGameMenu.classList.add("hidden");
         document.body.classList.remove("mobile-menu-open");
       }
 
       function openSharePopover() {
         if (!mobileSharePopover) return;
-
         closeMobileMenu();
         mobileSharePopover.classList.remove("hidden");
         document.body.classList.add("mobile-share-open");
@@ -668,7 +695,6 @@
 
       function closeSharePopover() {
         if (!mobileSharePopover) return;
-
         mobileSharePopover.classList.add("hidden");
         document.body.classList.remove("mobile-share-open");
       }
@@ -759,12 +785,11 @@
       if (toolbarLikeButton) {
         const liked = localStorage.getItem("fruitMergeLiked") === "yes";
         toolbarLikeButton.classList.toggle("liked", liked);
-        toolbarLikeButton.textContent = liked ? "💗" : "💗";
+        toolbarLikeButton.textContent = "💗";
 
         toolbarLikeButton.addEventListener("click", () => {
           const current = localStorage.getItem("fruitMergeLiked") === "yes";
           const next = !current;
-
           localStorage.setItem("fruitMergeLiked", next ? "yes" : "no");
           toolbarLikeButton.classList.toggle("liked", next);
         });
@@ -773,34 +798,22 @@
       toolbarShareButton?.addEventListener("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
-
-        if (isMobileScreen()) {
-          openSharePopover();
-        } else {
-          await nativeShareOrCopy();
-        }
+        if (isMobileScreen()) openSharePopover();
+        else await nativeShareOrCopy();
       });
 
       shareCurrentButton?.addEventListener("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
-
-        if (isMobileScreen()) {
-          openSharePopover();
-        } else {
-          await nativeShareOrCopy();
-        }
+        if (isMobileScreen()) openSharePopover();
+        else await nativeShareOrCopy();
       });
 
       shareScoreButton?.addEventListener("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
-
-        if (isMobileScreen()) {
-          openSharePopover();
-        } else {
-          await nativeShareOrCopy();
-        }
+        if (isMobileScreen()) openSharePopover();
+        else await nativeShareOrCopy();
       });
 
       toolbarFullscreenButton?.addEventListener("click", toggleFullscreenOrMobileMode);
@@ -825,7 +838,6 @@
       mobileMusicButton?.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
-
         musicToggleButton?.click();
         closeMobileMenu();
       });
@@ -833,7 +845,6 @@
       mobileRestartButton?.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
-
         restartButton?.click();
         closeMobileMenu();
       });
@@ -841,21 +852,18 @@
       mobileShareButton?.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
-
         openSharePopover();
       });
 
       mobileExitButton?.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
-
         exitMobilePlayMode();
       });
 
       mobileShareCloseButton?.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
-
         closeSharePopover();
       });
 
@@ -974,11 +982,16 @@
         return img;
       }
 
+      function getCircleRadius() {
+        const size = evolutionBar.getBoundingClientRect().width || 150;
+        return Math.max(38, size / 2 - 18);
+      }
+
       function buildCircle() {
         evolutionBar.innerHTML = "";
 
         const count = fruits.length;
-        const radius = 64;
+        const radius = getCircleRadius();
 
         fruits.forEach((fruit, index) => {
           const item = document.createElement("div");
@@ -1040,6 +1053,10 @@
         subtree: true
       });
 
+      window.addEventListener("resize", () => {
+        buildCircle();
+      });
+
       setInterval(updateActive, 300);
       setTimeout(buildCircle, 500);
       setTimeout(updateActive, 1000);
@@ -1090,30 +1107,6 @@
 
         canvas.dispatchEvent(mouseMove);
       }
-
-      canvas.addEventListener(
-        "pointerdown",
-        (event) => {
-          if (!isMobilePlaying()) return;
-          if (event.isTrusted === false) return;
-          if (event.pointerType && event.pointerType !== "touch") return;
-
-          emitAimMove(event.clientX, event.clientY);
-        },
-        true
-      );
-
-      canvas.addEventListener(
-        "pointermove",
-        (event) => {
-          if (!isMobilePlaying()) return;
-          if (event.isTrusted === false) return;
-          if (event.pointerType && event.pointerType !== "touch") return;
-
-          emitAimMove(event.clientX, event.clientY);
-        },
-        true
-      );
 
       canvas.addEventListener(
         "touchstart",
