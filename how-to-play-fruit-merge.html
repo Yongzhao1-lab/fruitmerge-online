@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>How to Play Fruit Merge: Rules, Controls and Beginner Guide</title>
+
+  <meta
+    name="description"
+    content="Learn how to play Fruit Merge on desktop and mobile. Understand the controls, matching rules, scoring, next-fruit preview, danger line, and beginner strategies."
+  />
+
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+
+  <link
+    rel="canonical"
+    href="https://fruitmerge.online/how-to-play-fruit-merge.html"
+  />
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Fruit Merge Online" />
+  <meta
+    property="og:title"
+    content="How to Play Fruit Merge: Rules, Controls and Beginner Guide"
+  />
+  <meta
+    property="og:description"
+    content="A complete beginner guide to Fruit Merge controls, matching rules, scoring, the danger line, and mobile play."
+  />
+  <meta
+    property="og:url"
+    content="https://fruitmerge.online/how-to-play-fruit-merge.html"
+  />
+  <meta
+    property="og:image"
+    content="https://fruitmerge.online/assets/guides/desktop-controls.webp"
+  />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta
+    name="twitter:title"
+    content="How to Play Fruit Merge: Beginner Guide"
+  />
+  <meta
+    name="twitter:description"
+    content="Learn Fruit Merge controls, merging rules, scoring, the next-fruit queue, and danger-line strategy."
+  />
+  <meta
+    name="twitter:image"
+    content="https://fruitmerge.online/assets/guides/desktop-controls.webp"
+  />
+
+  <meta name="theme-color" content="#071221" />
+
+  <style>
+    :root {
+      --navy-950: #071221;
+      --navy-900: #0d1c31;
+      --navy-800: #152a47;
+      --navy-700: #24466f;
+      --text: #1b2d46;
+      --muted: #607087;
+      --cream: #fff9e8;
+      --yellow: #ffd65c;
+      --orange: #ff7a52;
+      --green: #7bdf4d;
+      --mint: #eafbf4;
+      --line: #dbe5ee;
+      --white: #ffffff;
+      --shadow: 0 18px 55px rgba(18, 43, 71, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255, 214, 92, 0.18), transparent 28%),
+        linear-gradient(180deg, #f7fbff 0%, #fffdf5 100%);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.68;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(7, 18, 33, 0.96);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+    }
+
+    .header-inner {
+      width: min(1160px, calc(100% - 32px));
+      min-height: 72px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: linear-gradient(145deg, #a8ff6a, #49df55);
+      box-shadow: 0 8px 24px rgba(88, 237, 90, 0.28);
+    }
+
+    .brand strong {
+      color: #8cf05c;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .header-nav a {
+      color: #e9f0fa;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .header-nav a:hover,
+    .header-nav a:focus-visible {
+      color: #a4f66f;
+    }
+
+    .header-play {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff8d5d, #ff654b);
+      color: var(--white) !important;
+      box-shadow: 0 10px 28px rgba(255, 104, 73, 0.3);
+    }
+
+    .page-shell {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .breadcrumbs {
+      padding: 24px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .breadcrumbs a {
+      text-decoration: none;
+      color: var(--navy-700);
+      font-weight: 700;
+    }
+
+    .hero {
+      padding: 40px 0 56px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(460px, 1.08fr);
+      align-items: center;
+      gap: 52px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: #d95f3f;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.15;
+      color: var(--navy-900);
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(40px, 6vw, 68px);
+      letter-spacing: -0.055em;
+    }
+
+    .hero-lead {
+      max-width: 650px;
+      margin: 22px 0 0;
+      color: #4d6078;
+      font-size: 18px;
+    }
+
+    .hero-actions {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .button {
+      min-height: 50px;
+      padding: 0 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 850;
+    }
+
+    .button-primary {
+      background: linear-gradient(135deg, #ff8a57, #ff654b);
+      color: var(--white);
+      box-shadow: 0 12px 30px rgba(255, 101, 75, 0.28);
+    }
+
+    .button-secondary {
+      background: var(--white);
+      color: var(--navy-800);
+      border: 1px solid var(--line);
+    }
+
+    .hero-visual {
+      position: relative;
+      padding: 16px;
+      border: 1px solid rgba(255, 198, 64, 0.55);
+      border-radius: 28px;
+      background: linear-gradient(145deg, #fff6c6, #ffe49c);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-visual img {
+      width: 100%;
+      border-radius: 18px;
+    }
+
+    .hero-badge {
+      position: absolute;
+      right: 28px;
+      bottom: 28px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(7, 18, 33, 0.92);
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: 0 10px 25px rgba(7, 18, 33, 0.25);
+    }
+
+    .quick-steps {
+      margin: 0 0 72px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .quick-step {
+      min-height: 156px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 10px 30px rgba(28, 57, 91, 0.06);
+    }
+
+    .quick-step b {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 16px;
+      border-radius: 12px;
+      color: var(--navy-900);
+      background: linear-gradient(145deg, #fff2a9, #ffd45d);
+    }
+
+    .quick-step h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .quick-step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .content-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      align-items: start;
+      gap: 34px;
+    }
+
+    .article {
+      min-width: 0;
+    }
+
+    .article-section {
+      margin-bottom: 28px;
+      padding: 36px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 12px 38px rgba(24, 52, 83, 0.07);
+    }
+
+    .section-label {
+      margin: 0 0 9px;
+      color: #df633f;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .article-section h2 {
+      margin: 0 0 16px;
+      font-size: clamp(28px, 4vw, 38px);
+      letter-spacing: -0.035em;
+    }
+
+    .article-section h3 {
+      margin: 28px 0 9px;
+      font-size: 21px;
+    }
+
+    .article-section p {
+      color: #4e6178;
+    }
+
+    .article-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .feature-image {
+      margin: 26px 0 8px;
+      padding: 12px;
+      overflow: hidden;
+      border-radius: 20px;
+      background: #fff3bc;
+      border: 1px solid rgba(244, 189, 45, 0.4);
+    }
+
+    .feature-image img {
+      width: 100%;
+      border-radius: 13px;
+    }
+
+    figcaption {
+      padding: 11px 4px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .mobile-image-wrap {
+      max-width: 430px;
+      margin: 28px auto 8px;
+      padding: 12px;
+      border-radius: 28px;
+      background: linear-gradient(145deg, #fff0a7, #ffd66a);
+      box-shadow: 0 18px 45px rgba(205, 143, 32, 0.18);
+    }
+
+    .mobile-image-wrap img {
+      border-radius: 19px;
+    }
+
+    .control-table-wrap {
+      overflow-x: auto;
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 520px;
+      background: var(--white);
+    }
+
+    th,
+    td {
+      padding: 15px 18px;
+      text-align: left;
+      border-bottom: 1px solid #e7edf3;
+    }
+
+    th {
+      color: var(--navy-800);
+      background: #f4f8fb;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .merge-chain {
+      margin: 24px 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .merge-chip {
+      padding: 11px 15px;
+      border-radius: 999px;
+      color: var(--navy-900);
+      background: #fff4b7;
+      border: 1px solid #f4d766;
+      font-weight: 850;
+    }
+
+    .merge-arrow {
+      color: #d26341;
+      font-weight: 900;
+    }
+
+    .tip-grid,
+    .mistake-grid {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .tip-card,
+    .mistake-card {
+      padding: 22px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: #fbfdff;
+    }
+
+    .tip-card h3,
+    .mistake-card h3 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    .tip-card p,
+    .mistake-card p {
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+
+    .tip-card {
+      border-top: 4px solid #79da54;
+    }
+
+    .mistake-card {
+      border-top: 4px solid #ff8a5d;
+    }
+
+    .callout {
+      margin: 24px 0;
+      padding: 20px 22px;
+      border-left: 5px solid #ff7751;
+      border-radius: 0 16px 16px 0;
+      background: #fff7ef;
+    }
+
+    .callout strong {
+      color: var(--navy-900);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 96px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 12px 36px rgba(24, 52, 83, 0.08);
+    }
+
+    .sidebar h2 {
+      margin: 0 0 15px;
+      font-size: 18px;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 10px 0;
+      color: #52667d;
+      text-decoration: none;
+      border-bottom: 1px solid #edf1f5;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .sidebar a:last-child {
+      border-bottom: 0;
+    }
+
+    .sidebar a:hover,
+    .sidebar a:focus-visible {
+      color: #e36242;
+    }
+
+    .faq-list {
+      margin-top: 20px;
+    }
+
+    details {
+      border-top: 1px solid var(--line);
+    }
+
+    details:last-child {
+      border-bottom: 1px solid var(--line);
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 18px 4px;
+      color: var(--navy-900);
+      font-weight: 850;
+    }
+
+    details p {
+      margin-top: 0;
+      padding: 0 4px 18px;
+    }
+
+    .final-cta {
+      margin: 56px 0 72px;
+      padding: 42px;
+      text-align: center;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255,255,255,0.28), transparent 32%),
+        linear-gradient(135deg, #ffd967, #ff9d62);
+      box-shadow: 0 20px 55px rgba(227, 148, 46, 0.22);
+    }
+
+    .final-cta h2 {
+      margin: 0;
+      font-size: clamp(30px, 5vw, 44px);
+    }
+
+    .final-cta p {
+      max-width: 650px;
+      margin: 14px auto 24px;
+      color: #5b3c2b;
+    }
+
+    .site-footer {
+      padding: 34px 0;
+      color: #b8c6d6;
+      background: var(--navy-950);
+    }
+
+    .footer-inner {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .footer-links a {
+      color: #e6edf6;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .sr-only {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    :focus-visible {
+      outline: 3px solid #8aec59;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-steps {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .content-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .header-inner {
+        min-height: 64px;
+      }
+
+      .header-nav a:not(.header-play) {
+        display: none;
+      }
+
+      .brand {
+        font-size: 19px;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+      }
+
+      .hero {
+        padding-top: 28px;
+        gap: 30px;
+      }
+
+      .hero-visual {
+        padding: 9px;
+        border-radius: 20px;
+      }
+
+      .hero-visual img {
+        border-radius: 13px;
+      }
+
+      .hero-badge {
+        right: 18px;
+        bottom: 18px;
+      }
+
+      .article-section {
+        padding: 25px 20px;
+        border-radius: 20px;
+      }
+
+      .tip-grid,
+      .mistake-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .final-cta {
+        padding: 34px 22px;
+      }
+
+      .footer-inner {
+        display: block;
+      }
+
+      .footer-links {
+        margin-bottom: 18px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page-shell,
+      .header-inner,
+      .footer-inner {
+        width: min(100% - 22px, 1160px);
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .hero-lead {
+        font-size: 16px;
+      }
+
+      .hero-actions {
+        display: grid;
+      }
+
+      .quick-steps {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-step {
+        min-height: 0;
+      }
+
+      .breadcrumbs {
+        font-size: 13px;
+      }
+
+      .article-section h2 {
+        font-size: 29px;
+      }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Play Fruit Merge",
+    "description": "Learn how to choose a drop position, release fruits, merge matching fruits, use the next-fruit preview, and avoid the danger line.",
+    "image": "https://fruitmerge.online/assets/guides/desktop-controls.webp",
+    "totalTime": "PT3M",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "name": "Choose a drop position",
+        "text": "Move the mouse on desktop or tap the desired horizontal position on mobile."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Drop the fruit",
+        "text": "Click inside the game area on desktop or tap once on mobile to release the fruit."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Merge matching fruits",
+        "text": "Place two identical fruits together so they combine into the next fruit."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Use the next-fruit preview",
+        "text": "Check the current, second, and third upcoming fruits before choosing each position."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Stay below the danger line",
+        "text": "Prevent settled fruits from remaining above the red dashed danger line."
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Can different fruits merge?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Only two fruits of the same type can merge into the next fruit."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I drop a fruit on mobile?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tap the horizontal position where you want the fruit to fall. You do not need to drag it."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why did my Fruit Merge game end?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The game ends when settled fruits remain above the danger line for too long."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Fruit Merge Online save my best score?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Your best score and recent runs are stored locally in your browser."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Fruit Merge Online",
+        "item": "https://fruitmerge.online/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "How to Play Fruit Merge",
+        "item": "https://fruitmerge.online/how-to-play-fruit-merge.html"
+      }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="Fruit Merge Online home">
+        <span class="brand-mark" aria-hidden="true">🍓</span>
+        <span>Fruit<strong>Merge</strong></span>
+      </a>
+
+      <nav class="header-nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/contact.html">Contact</a>
+        <a class="header-play" href="/#game">Play Now</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Fruit Merge Online</a>
+      <span aria-hidden="true"> / </span>
+      <span>How to Play</span>
+    </nav>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Complete beginner guide</p>
+
+        <h1>How to Play Fruit Merge</h1>
+
+        <p class="hero-lead">
+          Learn the desktop and mobile controls, understand how identical
+          fruits combine, use the next-fruit queue, and keep your stack below
+          the danger line.
+        </p>
+
+        <div class="hero-actions">
+          <a class="button button-primary" href="/#game">
+            <span aria-hidden="true">▶</span>
+            Play Fruit Merge Online
+          </a>
+
+          <a class="button button-secondary" href="#desktop-controls">
+            View the controls
+          </a>
+        </div>
+      </div>
+
+      <figure class="hero-visual">
+        <img
+          src="/assets/guides/desktop-controls.webp"
+          width="1886"
+          height="1080"
+          alt="Fruit Merge Online desktop game showing the score, drop guide, danger line, next fruit panel, and fruit evolution circle"
+          fetchpriority="high"
+        />
+        <figcaption class="sr-only">
+          Desktop Fruit Merge gameplay interface.
+        </figcaption>
+        <span class="hero-badge">Desktop gameplay</span>
+      </figure>
+    </section>
+
+    <section class="quick-steps" aria-label="Fruit Merge quick start steps">
+      <article class="quick-step">
+        <b>1</b>
+        <h2>Choose a position</h2>
+        <p>Move the mouse or tap the horizontal location where the fruit should fall.</p>
+      </article>
+
+      <article class="quick-step">
+        <b>2</b>
+        <h2>Drop the fruit</h2>
+        <p>Click on desktop or tap once on mobile to release the current fruit.</p>
+      </article>
+
+      <article class="quick-step">
+        <b>3</b>
+        <h2>Match identical fruits</h2>
+        <p>Two fruits of the same type combine into the next, larger fruit.</p>
+      </article>
+
+      <article class="quick-step">
+        <b>4</b>
+        <h2>Avoid overflow</h2>
+        <p>Keep settled fruits below the red dashed danger line.</p>
+      </article>
+    </section>
+
+    <div class="content-layout">
+      <article class="article">
+        <section class="article-section" id="goal">
+          <p class="section-label">Game objective</p>
+          <h2>What Is the Goal of Fruit Merge?</h2>
+
+          <p>
+            Fruit Merge is a casual physics puzzle game. You drop fruits into
+            the container and place two matching fruits together. When
+            identical fruits touch, they disappear and create the next fruit
+            in the evolution chain.
+          </p>
+
+          <p>
+            Your goal is to unlock larger fruits, earn as many points as
+            possible, and stop the stack from remaining above the danger line.
+            The game continues as long as the container has enough safe space.
+          </p>
+
+          <div class="callout">
+            <strong>Core rule:</strong>
+            different fruits do not merge. Only two fruits of the same type
+            can create the next fruit.
+          </div>
+        </section>
+
+        <section class="article-section" id="desktop-controls">
+          <p class="section-label">Desktop controls</p>
+          <h2>How to Play Fruit Merge on Desktop</h2>
+
+          <p>
+            Move the mouse across the game container to choose the horizontal
+            drop position. The fruit at the top and the dotted vertical guide
+            show where it will fall.
+          </p>
+
+          <p>
+            Click inside the game area to release the fruit. After a short
+            delay, the next fruit becomes available. You can continue moving
+            the pointer while earlier fruits settle and roll.
+          </p>
+
+          <figure class="feature-image">
+            <img
+              src="/assets/guides/desktop-controls.webp"
+              width="1886"
+              height="1080"
+              alt="Desktop Fruit Merge controls with a dotted drop guide, danger line, score panel, and next fruit preview"
+              loading="lazy"
+            />
+            <figcaption>
+              Move the mouse to position the dotted guide, then click to drop.
+              The Next panel shows the current and following fruits.
+            </figcaption>
+          </figure>
+
+          <div class="control-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Action</th>
+                  <th>Desktop control</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Choose a drop position</td>
+                  <td>Move the mouse across the game area</td>
+                </tr>
+                <tr>
+                  <td>Drop the current fruit</td>
+                  <td>Click inside the game area</td>
+                </tr>
+                <tr>
+                  <td>Restart the game</td>
+                  <td>Select the circular restart button</td>
+                </tr>
+                <tr>
+                  <td>Enable or disable music</td>
+                  <td>Select the music button</td>
+                </tr>
+                <tr>
+                  <td>Enter fullscreen</td>
+                  <td>Select the fullscreen button</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="article-section" id="mobile-controls">
+          <p class="section-label">Mobile controls</p>
+          <h2>How to Play Fruit Merge on Mobile</h2>
+
+          <p>
+            On mobile, tap the horizontal position where you want the fruit to
+            fall. A single tap both selects the position and releases the fruit.
+            You do not need to drag the fruit.
+          </p>
+
+          <p>
+            The top mobile HUD shows your score, best score, survival time,
+            the next fruit, and the settings button. Open the settings menu to
+            restart, change music, share your score, or exit immersive mode.
+          </p>
+
+          <figure class="mobile-image-wrap">
+            <img
+              src="/assets/guides/mobile-controls.webp"
+              width="925"
+              height="1370"
+              alt="Mobile Fruit Merge gameplay showing score, best score, time, next fruit, settings button, danger line, and tap drop guide"
+              loading="lazy"
+            />
+            <figcaption>
+              Tap the desired horizontal position. The dotted guide confirms
+              the selected drop location.
+            </figcaption>
+          </figure>
+
+          <div class="control-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Action</th>
+                  <th>Mobile control</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Choose and drop a fruit</td>
+                  <td>Tap the desired position once</td>
+                </tr>
+                <tr>
+                  <td>Open game controls</td>
+                  <td>Tap the settings button</td>
+                </tr>
+                <tr>
+                  <td>Restart the game</td>
+                  <td>Open the menu and select Restart</td>
+                </tr>
+                <tr>
+                  <td>Share your score</td>
+                  <td>Open the menu and select Share</td>
+                </tr>
+                <tr>
+                  <td>Exit immersive play</td>
+                  <td>Open the menu and select Exit</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="article-section" id="merging">
+          <p class="section-label">Matching rules</p>
+          <h2>How Fruit Merging Works</h2>
+
+          <p>
+            Two identical fruits merge when their physical bodies touch. The
+            matching pair is replaced by one fruit from the next level, your
+            score increases, and the game displays a merge animation and score
+            popup.
+          </p>
+
+          <div class="merge-chain" aria-label="Example Fruit Merge evolution">
+            <span class="merge-chip">2 Cherries</span>
+            <span class="merge-arrow" aria-hidden="true">→</span>
+            <span class="merge-chip">1 Strawberry</span>
+            <span class="merge-arrow" aria-hidden="true">→</span>
+            <span class="merge-chip">Grape</span>
+            <span class="merge-arrow" aria-hidden="true">→</span>
+            <span class="merge-chip">Orange</span>
+          </div>
+
+          <p>
+            Larger merges award more points, but they also create fruits that
+            occupy more space. A good run therefore needs both frequent merges
+            and careful space management.
+          </p>
+
+          <figure class="feature-image">
+            <img
+              src="/assets/guides/desktop-merge-effect.webp"
+              width="1886"
+              height="1080"
+              alt="Fruit Merge desktop gameplay showing a plus twenty score popup after a successful merge"
+              loading="lazy"
+            />
+            <figcaption>
+              A successful merge creates a larger fruit and displays the points
+              earned at the merge position.
+            </figcaption>
+          </figure>
+        </section>
+
+        <section class="article-section" id="next-preview">
+          <p class="section-label">Planning ahead</p>
+          <h2>Use the Next Fruit Preview</h2>
+
+          <p>
+            The Next panel shows the fruit you are currently placing and the
+            second and third upcoming fruits. Check all three before every
+            drop instead of reacting only to the fruit at the top of the
+            container.
+          </p>
+
+          <p>
+            For example, when two upcoming fruits are the same, leave enough
+            room to place them near each other. Planning several drops ahead
+            helps you create faster merges and prevents isolated small fruits
+            from becoming trapped.
+          </p>
+
+          <div class="callout">
+            <strong>Practical habit:</strong>
+            look at the queue first, choose the destination second, and only
+            then release the current fruit.
+          </div>
+        </section>
+
+        <section class="article-section" id="danger-line">
+          <p class="section-label">Game over rule</p>
+          <h2>What Does the Danger Line Mean?</h2>
+
+          <p>
+            The red dashed line near the top of the container is the danger
+            line. A falling fruit may briefly pass through this line without
+            ending the game.
+          </p>
+
+          <p>
+            The game ends when settled fruits remain too high for too long.
+            When the stack approaches the line, stop building vertical towers
+            and look for merges that reduce the height of the pile.
+          </p>
+        </section>
+
+        <section class="article-section" id="beginner-tips">
+          <p class="section-label">Beginner strategy</p>
+          <h2>Beginner Tips for a Higher Score</h2>
+
+          <div class="tip-grid">
+            <article class="tip-card">
+              <h3>Keep the center open</h3>
+              <p>
+                Avoid blocking the middle with your largest fruits. An open
+                center gives later drops more routes to reach matching fruits.
+              </p>
+            </article>
+
+            <article class="tip-card">
+              <h3>Group related fruit levels</h3>
+              <p>
+                Keep identical fruits and nearby evolution levels close enough
+                to create follow-up merges.
+              </p>
+            </article>
+
+            <article class="tip-card">
+              <h3>Watch all three upcoming fruits</h3>
+              <p>
+                The queue lets you plan several moves ahead instead of making
+                every drop as an isolated decision.
+              </p>
+            </article>
+
+            <article class="tip-card">
+              <h3>Avoid narrow vertical towers</h3>
+              <p>
+                A tall stack can cross the danger line even when the other side
+                of the container still has empty space.
+              </p>
+            </article>
+
+            <article class="tip-card">
+              <h3>Let moving fruits settle</h3>
+              <p>
+                A fruit may roll into a better position or trigger a delayed
+                merge. Do not rush the next drop when the pile is still moving.
+              </p>
+            </article>
+
+            <article class="tip-card">
+              <h3>Use the sides carefully</h3>
+              <p>
+                Larger fruits can form a stable base near the edges, but do not
+                trap small fruits permanently behind them.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="article-section" id="mistakes">
+          <p class="section-label">Avoid these layouts</p>
+          <h2>Common Beginner Mistakes</h2>
+
+          <div class="mistake-grid">
+            <article class="mistake-card">
+              <h3>Dropping everything in the center</h3>
+              <p>
+                This creates a tall central pile. Spread early fruits across
+                useful merge zones while preserving a central path.
+              </p>
+            </article>
+
+            <article class="mistake-card">
+              <h3>Ignoring the next-fruit queue</h3>
+              <p>
+                A good position for the current fruit may be poor for the next
+                two. Check the queue before committing.
+              </p>
+            </article>
+
+            <article class="mistake-card">
+              <h3>Building on one side only</h3>
+              <p>
+                A one-sided tower reaches the danger line quickly. Use the full
+                width of the container without separating matching fruits.
+              </p>
+            </article>
+
+            <article class="mistake-card">
+              <h3>Trapping small fruits</h3>
+              <p>
+                Small fruits hidden beneath large ones may never reach their
+                match. Keep likely pairs accessible.
+              </p>
+            </article>
+
+            <article class="mistake-card">
+              <h3>Dropping too quickly</h3>
+              <p>
+                Fast repeated drops reduce planning time and may interrupt a
+                natural roll or chain merge.
+              </p>
+            </article>
+
+            <article class="mistake-card">
+              <h3>Chasing one merge at any cost</h3>
+              <p>
+                Forcing a single merge can create a dangerous tower. Sometimes
+                a safer temporary placement is the better move.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="article-section" id="faq">
+          <p class="section-label">Questions and answers</p>
+          <h2>Fruit Merge Beginner FAQ</h2>
+
+          <div class="faq-list">
+            <details>
+              <summary>Can different fruits merge?</summary>
+              <p>
+                No. Only two fruits of the same type can merge into the next
+                fruit in the evolution chain.
+              </p>
+            </details>
+
+            <details>
+              <summary>How do I move the fruit on mobile?</summary>
+              <p>
+                Tap the horizontal position where you want the fruit to fall.
+                A single tap chooses the position and drops the fruit.
+              </p>
+            </details>
+
+            <details>
+              <summary>Why did the game end?</summary>
+              <p>
+                The game ends when settled fruits remain above the danger line
+                for too long.
+              </p>
+            </details>
+
+            <details>
+              <summary>Does Fruit Merge Online save my best score?</summary>
+              <p>
+                Yes. Your best score, recent runs, and selected music preference
+                are stored locally in your browser.
+              </p>
+            </details>
+
+            <details>
+              <summary>Do I need to download the game?</summary>
+              <p>
+                No. Fruit Merge Online runs directly in a modern web browser on
+                desktop and mobile devices.
+              </p>
+            </details>
+          </div>
+        </section>
+      </article>
+
+      <aside class="sidebar" aria-label="Guide navigation">
+        <h2>On this page</h2>
+        <a href="#goal">Game objective</a>
+        <a href="#desktop-controls">Desktop controls</a>
+        <a href="#mobile-controls">Mobile controls</a>
+        <a href="#merging">Merging rules</a>
+        <a href="#next-preview">Next fruit preview</a>
+        <a href="#danger-line">Danger line</a>
+        <a href="#beginner-tips">Beginner tips</a>
+        <a href="#mistakes">Common mistakes</a>
+        <a href="#faq">Beginner FAQ</a>
+      </aside>
+    </div>
+
+    <section class="final-cta">
+      <h2>Ready to Try These Fruit Merge Tips?</h2>
+      <p>
+        Return to the game, check the next-fruit queue, choose a safe drop
+        position, and start building your next high-score run.
+      </p>
+      <a class="button button-primary" href="/#game">
+        Play Fruit Merge Online
+      </a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/">Play Game</a>
+        <a href="/about.html">About</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+
+      <p>© 2026 Fruit Merge Online.</p>
+    </div>
+  </footer>
+</body>
+</html>
