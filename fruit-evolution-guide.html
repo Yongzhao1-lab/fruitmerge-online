@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fruit Merge Evolution Guide: Fruit Order, Scores and Merge Chain</title>
+<meta name="description" content="Explore the complete Fruit Merge evolution order, score values, merge requirements, fruit sizes, base-fruit requirements, and gameplay notes for every level." />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+<link rel="canonical" href="https://fruitmerge.online/fruit-evolution-guide.html" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="Fruit Merge Online" />
+<meta property="og:title" content="Fruit Merge Evolution Guide: Fruit Order, Scores and Merge Chain" />
+<meta property="og:description" content="See every Fruit Merge level from Cherry to Dragon Fruit, including scores, merge requirements, and board-management notes." />
+<meta property="og:url" content="https://fruitmerge.online/fruit-evolution-guide.html" />
+<meta property="og:image" content="https://fruitmerge.online/og-image.svg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Fruit Merge Evolution and Score Guide" />
+<meta name="twitter:description" content="The complete Fruit Merge fruit order, score list, merge requirements, and level-by-level gameplay notes." />
+<meta name="twitter:image" content="https://fruitmerge.online/og-image.svg" />
+<meta name="theme-color" content="#071221" />
+<style>
+:root{--navy-950:#071221;--navy-900:#0d1c31;--navy-800:#152a47;--navy-700:#24466f;--text:#1b2d46;--muted:#607087;--line:#dbe5ee;--white:#fff;--shadow:0 18px 55px rgba(18,43,71,.12)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;overflow-x:hidden;color:var(--text);background:radial-gradient(circle at 12% 0%,rgba(255,214,92,.18),transparent 27%),radial-gradient(circle at 90% 14%,rgba(123,223,77,.11),transparent 24%),linear-gradient(180deg,#f7fbff 0%,#fffdf5 100%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.68}
+img{display:block;width:100%;max-width:100%;height:auto;object-fit:contain}a{color:inherit}h1,h2,h3{color:var(--navy-900);line-height:1.15}
+.site-header{position:sticky;top:0;z-index:50;background:rgba(7,18,33,.96);border-bottom:1px solid rgba(255,255,255,.08);backdrop-filter:blur(14px)}
+.header-inner,.page-shell,.footer-inner{width:min(1160px,calc(100% - 32px));margin:0 auto}.header-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:inline-flex;align-items:center;gap:11px;color:#fff;text-decoration:none;font-size:22px;font-weight:900;letter-spacing:-.03em}.brand-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(145deg,#a8ff6a,#49df55);box-shadow:0 8px 24px rgba(88,237,90,.28)}.brand strong{color:#8cf05c}
+.header-nav{display:flex;align-items:center;gap:26px}.header-nav a{color:#e9f0fa;text-decoration:none;font-size:14px;font-weight:750}.header-nav a:hover,.header-nav a:focus-visible{color:#a4f66f}.header-play{min-height:42px;padding:0 18px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:linear-gradient(135deg,#ff8d5d,#ff654b);color:#fff!important;box-shadow:0 10px 28px rgba(255,104,73,.3)}
+.breadcrumbs{padding:24px 0 0;color:var(--muted);font-size:14px}.breadcrumbs a{text-decoration:none;color:var(--navy-700);font-weight:700}
+.hero{padding:42px 0 52px;text-align:center}.eyebrow{margin:0 0 12px;color:#d95f3f;font-size:13px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}h1{max-width:900px;margin:0 auto;font-size:clamp(40px,6vw,68px);letter-spacing:-.055em;overflow-wrap:anywhere}.hero-lead{max-width:760px;margin:22px auto 0;color:#4d6078;font-size:18px}
+.hero-actions{margin-top:30px;display:flex;flex-wrap:wrap;justify-content:center;gap:14px}.button{min-height:50px;padding:0 22px;display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:14px;text-decoration:none;font-weight:850}.button-primary{color:#fff;background:linear-gradient(135deg,#ff8a57,#ff654b);box-shadow:0 12px 30px rgba(255,101,75,.28)}.button-secondary{color:var(--navy-800);background:#fff;border:1px solid var(--line)}
+.hero-chain{margin:38px auto 0;padding:24px 18px;overflow-x:auto;border:1px solid rgba(255,198,64,.55);border-radius:26px;background:linear-gradient(145deg,#fff7cf,#ffe8a9);box-shadow:var(--shadow)}.hero-chain-inner{width:max-content;min-width:100%;display:flex;align-items:center;justify-content:center;gap:10px}.hero-fruit{width:78px;min-width:78px;text-align:center}.hero-fruit img{width:58px;height:58px;margin:0 auto 7px}.hero-fruit span{display:block;color:#60421f;font-size:12px;font-weight:850}.chain-arrow{color:#d5633f;font-size:22px;font-weight:900}
+.stats-grid{margin:0 0 68px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.stat-card{min-height:148px;padding:24px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.94);box-shadow:0 10px 30px rgba(28,57,91,.06)}.stat-value{display:block;margin-bottom:8px;color:#d95f3f;font-size:34px;font-weight:950;line-height:1}.stat-card h2{margin:0 0 7px;font-size:18px}.stat-card p{margin:0;color:var(--muted);font-size:14px}
+.content-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;align-items:start;gap:34px}.article{min-width:0}.article-section{margin-bottom:28px;padding:36px;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.95);box-shadow:0 12px 38px rgba(24,52,83,.07)}.section-label{margin:0 0 9px;color:#df633f;font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.article-section h2{margin:0 0 16px;font-size:clamp(28px,4vw,38px);letter-spacing:-.035em}.article-section p{color:#4e6178}
+.callout{margin:24px 0;padding:20px 22px;border-left:5px solid #ff7751;border-radius:0 16px 16px 0;background:#fff7ef}.callout strong{color:var(--navy-900)}
+.table-wrap{margin-top:24px;overflow-x:auto;border:1px solid var(--line);border-radius:18px}table{width:100%;min-width:860px;border-collapse:collapse;background:#fff}th,td{padding:14px 16px;text-align:left;vertical-align:middle;border-bottom:1px solid #e7edf3}th{color:var(--navy-800);background:#f4f8fb;font-size:12px;letter-spacing:.05em;text-transform:uppercase}tr:last-child td{border-bottom:0}.table-fruit{display:flex;align-items:center;gap:10px;min-width:150px;font-weight:850}.table-fruit img{width:40px;height:40px;flex:0 0 40px}
+.fruit-cards{margin-top:26px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.fruit-card{position:relative;min-width:0;padding:24px;overflow:hidden;border:1px solid var(--line);border-radius:22px;background:radial-gradient(circle at 92% 8%,rgba(255,214,92,.2),transparent 30%),#fff}.fruit-level{position:absolute;top:16px;right:16px;min-width:36px;height:36px;padding:0 10px;display:grid;place-items:center;border-radius:999px;color:#17324f;background:#fff0a8;font-size:13px;font-weight:950}.fruit-card-top{display:grid;grid-template-columns:98px minmax(0,1fr);align-items:center;gap:18px}.fruit-image-box{width:98px;height:98px;display:grid;place-items:center;border-radius:24px;background:#fff8d7}.fruit-image-box img{width:82px;height:82px}.fruit-card h3{margin:0 0 5px;padding-right:48px;font-size:24px}.fruit-subtitle{margin:0;color:#d26040!important;font-size:13px;font-weight:850;text-transform:uppercase;letter-spacing:.05em}.fruit-metrics{margin:20px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.metric{padding:12px 10px;border-radius:14px;background:#f5f8fb;text-align:center}.metric strong{display:block;color:var(--navy-900);font-size:16px}.metric span{display:block;margin-top:3px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em}.fruit-note{margin:18px 0 0;font-size:14px}
+.growth-grid{margin-top:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.growth-card{padding:22px;border:1px solid var(--line);border-radius:18px;background:#fbfdff}.growth-card b{display:block;margin-bottom:9px;color:#d95f3f;font-size:28px}.growth-card h3{margin:0 0 8px;font-size:18px}.growth-card p{margin-bottom:0;font-size:14px}
+.sidebar{position:sticky;top:96px;padding:22px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.96);box-shadow:0 12px 36px rgba(24,52,83,.08)}.sidebar h2{margin:0 0 15px;font-size:18px}.sidebar a{display:block;padding:10px 0;color:#52667d;text-decoration:none;border-bottom:1px solid #edf1f5;font-size:14px;font-weight:700}.sidebar a:last-child{border-bottom:0}.sidebar a:hover,.sidebar a:focus-visible{color:#e36242}
+.faq-list{margin-top:20px}details{border-top:1px solid var(--line)}details:last-child{border-bottom:1px solid var(--line)}summary{cursor:pointer;padding:18px 4px;color:var(--navy-900);font-weight:850}details p{margin-top:0;padding:0 4px 18px}.related-guides{margin-top:26px;display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.related-guides a{padding:20px;border:1px solid var(--line);border-radius:18px;background:#fff;text-decoration:none;font-weight:850}.related-guides a span{display:block;margin-top:7px;color:var(--muted);font-size:14px;font-weight:500}
+.final-cta{margin:56px 0 72px;padding:42px;text-align:center;border-radius:28px;background:radial-gradient(circle at 10% 10%,rgba(255,255,255,.28),transparent 32%),linear-gradient(135deg,#ffd967,#ff9d62);box-shadow:0 20px 55px rgba(227,148,46,.22)}.final-cta h2{margin:0;font-size:clamp(30px,5vw,44px)}.final-cta p{max-width:650px;margin:14px auto 24px;color:#5b3c2b}
+.site-footer{padding:34px 0;color:#b8c6d6;background:var(--navy-950)}.footer-inner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px}.footer-links{display:flex;flex-wrap:wrap;gap:18px}.footer-links a{color:#e6edf6;text-decoration:none;font-size:14px;font-weight:700}.img-fallback{width:100%;height:100%;display:grid;place-items:center;font-size:48px}:focus-visible{outline:3px solid #8aec59;outline-offset:3px}
+@media(max-width:1020px){.stats-grid{grid-template-columns:repeat(2,1fr)}.content-layout{grid-template-columns:1fr}.sidebar{display:none}}@media(max-width:780px){.header-inner{min-height:64px}.header-nav a:not(.header-play){display:none}.brand{font-size:19px}.brand-mark{width:38px;height:38px}.article-section{padding:25px 20px;border-radius:20px}.fruit-cards,.growth-grid,.related-guides{grid-template-columns:1fr}.final-cta{padding:34px 22px}.footer-inner{display:block}.footer-links{margin-bottom:18px}}@media(max-width:560px){.header-inner,.page-shell,.footer-inner{width:min(100% - 22px,1160px)}h1{font-size:42px}.hero-lead{font-size:16px}.hero-actions{display:grid}.stats-grid{grid-template-columns:1fr}.stat-card{min-height:0}.article-section h2{font-size:29px}.fruit-card-top{grid-template-columns:82px minmax(0,1fr)}.fruit-image-box{width:82px;height:82px}.fruit-image-box img{width:70px;height:70px}.fruit-metrics{grid-template-columns:1fr}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Fruit Merge Evolution Guide: Fruit Order, Scores and Merge Chain","description":"The complete Fruit Merge evolution order from Cherry to Dragon Fruit, including merge requirements, score values, sizes, and gameplay notes.","image":"https://fruitmerge.online/og-image.svg","author":{"@type":"Organization","name":"Fruit Merge Online"},"publisher":{"@type":"Organization","name":"Fruit Merge Online"},"mainEntityOfPage":"https://fruitmerge.online/fruit-evolution-guide.html"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"Fruit Merge Evolution Order","numberOfItems":11,"itemListOrder":"https://schema.org/ItemListOrderAscending","itemListElement":[{"@type":"ListItem","position":1,"name":"Cherry"},{"@type":"ListItem","position":2,"name":"Strawberry"},{"@type":"ListItem","position":3,"name":"Grape"},{"@type":"ListItem","position":4,"name":"Orange"},{"@type":"ListItem","position":5,"name":"Apple"},{"@type":"ListItem","position":6,"name":"Peach"},{"@type":"ListItem","position":7,"name":"Pineapple"},{"@type":"ListItem","position":8,"name":"Watermelon"},{"@type":"ListItem","position":9,"name":"Grapefruit"},{"@type":"ListItem","position":10,"name":"Melon"},{"@type":"ListItem","position":11,"name":"Dragon Fruit"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the Fruit Merge evolution order?","acceptedAnswer":{"@type":"Answer","text":"The order is Cherry, Strawberry, Grape, Orange, Apple, Peach, Pineapple, Watermelon, Grapefruit, Melon, and Dragon Fruit."}},{"@type":"Question","name":"How many Cherries are needed to create one Dragon Fruit?","acceptedAnswer":{"@type":"Answer","text":"A theoretical complete chain requires 1,024 Cherries to create one Dragon Fruit."}},{"@type":"Question","name":"Which fruit gives the highest merge score?","acceptedAnswer":{"@type":"Answer","text":"Dragon Fruit is the highest evolution level and its creation awards 5,120 points in the current Fruit Merge Online scoring system."}},{"@type":"Question","name":"Do larger fruits take more space?","acceptedAnswer":{"@type":"Answer","text":"Yes. Each evolution level has a larger collision radius, so late-game fruits require more careful board management."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Fruit Merge Online","item":"https://fruitmerge.online/"},{"@type":"ListItem","position":2,"name":"Fruit Evolution Guide","item":"https://fruitmerge.online/fruit-evolution-guide.html"}]}</script>
+</head>
+<body>
+<header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="Fruit Merge Online home"><span class="brand-mark" aria-hidden="true">🍓</span><span>Fruit<strong>Merge</strong></span></a><nav class="header-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/how-to-play-fruit-merge.html">How to Play</a><a href="/fruit-merge-strategy.html">Strategy</a><a class="header-play" href="/#game">Play Now</a></nav></div></header>
+<main class="page-shell">
+<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Fruit Merge Online</a><span aria-hidden="true"> / </span><span>Evolution Guide</span></nav>
+<section class="hero"><p class="eyebrow">Fruit order and score list</p><h1>Fruit Merge Evolution and Score Guide</h1><p class="hero-lead">Follow the complete evolution chain from Cherry to Dragon Fruit. Compare score values, merge requirements, fruit sizes, and the number of base fruits needed to reach every level.</p><div class="hero-actions"><a class="button button-primary" href="/#game"><span aria-hidden="true">▶</span>Play Fruit Merge Online</a><a class="button button-secondary" href="#evolution-table">View the complete table</a></div><div class="hero-chain" aria-label="Complete Fruit Merge evolution chain"><div class="hero-chain-inner"><div class="hero-fruit"><img src="/assets/fruits/cherry.png" alt="Cherry" /><span>Cherry</span></div>
+<span class="chain-arrow" aria-hidden="true">→</span>
+<div class="hero-fruit"><img src="/assets/fruits/strawberry.png" alt="Strawberry" /><span>Strawberry</span></div>
+<span class="chain-arrow" aria-hidden="true">→</span>
+<div class="hero-fruit"><img src="/assets/fruits/grape.png" alt="Grape" /><span>Grape</span></div>
+<span class="chain-arrow" aria-hidden="true">→</span>
+<div class="hero-fruit"><img src="/assets/fruits/orange.png" alt="Orange" /><span>Orange</span></div>
+<span class="chain-arrow" aria-hidden="true">→</span>
+<div class="hero-fruit"><img src="/assets/fruits/apple.png" alt="Apple" /><span>Apple</span></div>
+<span class="chain-arrow" aria-hidden="true">→</span>
+<div class="hero-fruit"><img src="/assets/fruits/peach.png" alt="Peach" /><span>Peach</span></div>
+<span class="chain-arrow" aria-hidden="true">→</span>
+<div class="hero-fruit"><img src="/assets/fruits/pineapple.png" alt="Pineapple" /><span>Pineapple</span></div>
+<span class="chain-arrow" aria-hidden="true">→</span>
+<div class="hero-fruit"><img src="/assets/fruits/watermelon.png" alt="Watermelon" /><span>Watermelon</span></div>
+<span class="chain-arrow" aria-hidden="true">→</span>
+<div class="hero-fruit"><img src="/assets/fruits/grapefruit.png" alt="Grapefruit" data-fallbacks="/assets/fruits/pomelo.png,/assets/fruits/yuzu.png,/assets/fruits/lemon.png" /><span>Grapefruit</span></div>
+<span class="chain-arrow" aria-hidden="true">→</span>
+<div class="hero-fruit"><img src="/assets/fruits/melon.png" alt="Melon" data-fallbacks="/assets/fruits/hami-melon.png,/assets/fruits/honeydew.png,/assets/fruits/cantaloupe.png" /><span>Melon</span></div>
+<span class="chain-arrow" aria-hidden="true">→</span>
+<div class="hero-fruit"><img src="/assets/fruits/dragonfruit.png" alt="Dragon Fruit" data-fallbacks="/assets/fruits/dragon-fruit.png,/assets/fruits/dragon_fruit.png,/assets/fruits/pitaya.png" /><span>Dragon Fruit</span></div></div></div></section>
+<section class="stats-grid" aria-label="Fruit evolution summary"><article class="stat-card"><span class="stat-value">11</span><h2>Fruit levels</h2><p>The chain includes ten upgrades from the first fruit to the final fruit.</p></article><article class="stat-card"><span class="stat-value">1,024</span><h2>Cherries for the top fruit</h2><p>A complete theoretical chain needs 1,024 starting Cherries.</p></article><article class="stat-card"><span class="stat-value">5,120</span><h2>Highest merge value</h2><p>Creating Dragon Fruit awards the largest single merge score.</p></article><article class="stat-card"><span class="stat-value">106</span><h2>Largest game radius</h2><p>Dragon Fruit has the largest logical radius in the current game data.</p></article></section>
+<div class="content-layout"><article class="article">
+<section class="article-section" id="evolution-table"><p class="section-label">Complete data</p><h2>Fruit Merge Evolution Order and Score Table</h2><p>Two identical fruits create one fruit from the next level. The score shown below is awarded when that new fruit is created. The base-fruit requirement shows how many Cherries are needed for one fruit at that level in a perfect theoretical chain.</p><div class="table-wrap"><table><thead><tr><th>Level</th><th>Fruit</th><th>Created by</th><th>Merge score</th><th>Base Cherries</th><th>Game radius</th></tr></thead><tbody><tr>
+<td>1</td>
+<td><span class="table-fruit"><img src="/assets/fruits/cherry.png" alt="" loading="lazy" />Cherry</span></td>
+<td>Starting fruit</td><td>5</td><td>1</td><td>15</td>
+</tr>
+<tr>
+<td>2</td>
+<td><span class="table-fruit"><img src="/assets/fruits/strawberry.png" alt="" loading="lazy" />Strawberry</span></td>
+<td>2 Cherries</td><td>10</td><td>2</td><td>20</td>
+</tr>
+<tr>
+<td>3</td>
+<td><span class="table-fruit"><img src="/assets/fruits/grape.png" alt="" loading="lazy" />Grape</span></td>
+<td>2 Strawberries</td><td>20</td><td>4</td><td>25</td>
+</tr>
+<tr>
+<td>4</td>
+<td><span class="table-fruit"><img src="/assets/fruits/orange.png" alt="" loading="lazy" />Orange</span></td>
+<td>2 Grapes</td><td>40</td><td>8</td><td>32</td>
+</tr>
+<tr>
+<td>5</td>
+<td><span class="table-fruit"><img src="/assets/fruits/apple.png" alt="" loading="lazy" />Apple</span></td>
+<td>2 Oranges</td><td>80</td><td>16</td><td>39</td>
+</tr>
+<tr>
+<td>6</td>
+<td><span class="table-fruit"><img src="/assets/fruits/peach.png" alt="" loading="lazy" />Peach</span></td>
+<td>2 Apples</td><td>160</td><td>32</td><td>48</td>
+</tr>
+<tr>
+<td>7</td>
+<td><span class="table-fruit"><img src="/assets/fruits/pineapple.png" alt="" loading="lazy" />Pineapple</span></td>
+<td>2 Peaches</td><td>320</td><td>64</td><td>57</td>
+</tr>
+<tr>
+<td>8</td>
+<td><span class="table-fruit"><img src="/assets/fruits/watermelon.png" alt="" loading="lazy" />Watermelon</span></td>
+<td>2 Pineapples</td><td>640</td><td>128</td><td>68</td>
+</tr>
+<tr>
+<td>9</td>
+<td><span class="table-fruit"><img src="/assets/fruits/grapefruit.png" alt="" data-fallbacks="/assets/fruits/pomelo.png,/assets/fruits/yuzu.png,/assets/fruits/lemon.png" loading="lazy" />Grapefruit</span></td>
+<td>2 Watermelons</td><td>1,280</td><td>256</td><td>80</td>
+</tr>
+<tr>
+<td>10</td>
+<td><span class="table-fruit"><img src="/assets/fruits/melon.png" alt="" data-fallbacks="/assets/fruits/hami-melon.png,/assets/fruits/honeydew.png,/assets/fruits/cantaloupe.png" loading="lazy" />Melon</span></td>
+<td>2 Grapefruits</td><td>2,560</td><td>512</td><td>92</td>
+</tr>
+<tr>
+<td>11</td>
+<td><span class="table-fruit"><img src="/assets/fruits/dragonfruit.png" alt="" data-fallbacks="/assets/fruits/dragon-fruit.png,/assets/fruits/dragon_fruit.png,/assets/fruits/pitaya.png" loading="lazy" />Dragon Fruit</span></td>
+<td>2 Melons</td><td>5,120</td><td>1,024</td><td>106</td>
+</tr></tbody></table></div><div class="callout"><strong>Important:</strong> the score column reflects the current Fruit Merge Online game data. It is not copied from another Fruit Merge game.</div></section>
+<section class="article-section" id="fruit-levels"><p class="section-label">Level-by-level guide</p><h2>Every Fruit Level Explained</h2><div class="fruit-cards"><article class="fruit-card">
+<span class="fruit-level">Lv. 1</span>
+<div class="fruit-card-top"><div class="fruit-image-box"><img src="/assets/fruits/cherry.png" alt="Cherry in Fruit Merge" loading="lazy" /></div>
+<div><h3>Cherry</h3><p class="fruit-subtitle">Starting level</p></div></div>
+<div class="fruit-metrics">
+<div class="metric"><strong>5</strong><span>Score value</span></div>
+<div class="metric"><strong>1</strong><span>Base cherries</span></div>
+<div class="metric"><strong>15</strong><span>Radius</span></div>
+</div>
+<p class="fruit-note">Small and easy to place, but isolated Cherries can become trapped beneath larger fruits.</p>
+</article>
+<article class="fruit-card">
+<span class="fruit-level">Lv. 2</span>
+<div class="fruit-card-top"><div class="fruit-image-box"><img src="/assets/fruits/strawberry.png" alt="Strawberry in Fruit Merge" loading="lazy" /></div>
+<div><h3>Strawberry</h3><p class="fruit-subtitle">Created by 2 Cherries</p></div></div>
+<div class="fruit-metrics">
+<div class="metric"><strong>10</strong><span>Merge score</span></div>
+<div class="metric"><strong>2</strong><span>Base cherries</span></div>
+<div class="metric"><strong>20</strong><span>Radius</span></div>
+</div>
+<p class="fruit-note">Useful for early chain merges and still compact enough to fit into small gaps.</p>
+</article>
+<article class="fruit-card">
+<span class="fruit-level">Lv. 3</span>
+<div class="fruit-card-top"><div class="fruit-image-box"><img src="/assets/fruits/grape.png" alt="Grape in Fruit Merge" loading="lazy" /></div>
+<div><h3>Grape</h3><p class="fruit-subtitle">Created by 2 Strawberries</p></div></div>
+<div class="fruit-metrics">
+<div class="metric"><strong>20</strong><span>Merge score</span></div>
+<div class="metric"><strong>4</strong><span>Base cherries</span></div>
+<div class="metric"><strong>25</strong><span>Radius</span></div>
+</div>
+<p class="fruit-note">Compact and mobile, making it a useful connector between early merge groups.</p>
+</article>
+<article class="fruit-card">
+<span class="fruit-level">Lv. 4</span>
+<div class="fruit-card-top"><div class="fruit-image-box"><img src="/assets/fruits/orange.png" alt="Orange in Fruit Merge" loading="lazy" /></div>
+<div><h3>Orange</h3><p class="fruit-subtitle">Created by 2 Grapes</p></div></div>
+<div class="fruit-metrics">
+<div class="metric"><strong>40</strong><span>Merge score</span></div>
+<div class="metric"><strong>8</strong><span>Base cherries</span></div>
+<div class="metric"><strong>32</strong><span>Radius</span></div>
+</div>
+<p class="fruit-note">The first level where poor placement noticeably reduces available board space.</p>
+</article>
+<article class="fruit-card">
+<span class="fruit-level">Lv. 5</span>
+<div class="fruit-card-top"><div class="fruit-image-box"><img src="/assets/fruits/apple.png" alt="Apple in Fruit Merge" loading="lazy" /></div>
+<div><h3>Apple</h3><p class="fruit-subtitle">Created by 2 Oranges</p></div></div>
+<div class="fruit-metrics">
+<div class="metric"><strong>80</strong><span>Merge score</span></div>
+<div class="metric"><strong>16</strong><span>Base cherries</span></div>
+<div class="metric"><strong>39</strong><span>Radius</span></div>
+</div>
+<p class="fruit-note">Needs a clearer landing area. Avoid leaving one alone in the center where it can block later drops.</p>
+</article>
+<article class="fruit-card">
+<span class="fruit-level">Lv. 6</span>
+<div class="fruit-card-top"><div class="fruit-image-box"><img src="/assets/fruits/peach.png" alt="Peach in Fruit Merge" loading="lazy" /></div>
+<div><h3>Peach</h3><p class="fruit-subtitle">Created by 2 Apples</p></div></div>
+<div class="fruit-metrics">
+<div class="metric"><strong>160</strong><span>Merge score</span></div>
+<div class="metric"><strong>32</strong><span>Base cherries</span></div>
+<div class="metric"><strong>48</strong><span>Radius</span></div>
+</div>
+<p class="fruit-note">A useful foundation fruit when placed low and near a side, but large enough to trap smaller fruit.</p>
+</article>
+<article class="fruit-card">
+<span class="fruit-level">Lv. 7</span>
+<div class="fruit-card-top"><div class="fruit-image-box"><img src="/assets/fruits/pineapple.png" alt="Pineapple in Fruit Merge" loading="lazy" /></div>
+<div><h3>Pineapple</h3><p class="fruit-subtitle">Created by 2 Peaches</p></div></div>
+<div class="fruit-metrics">
+<div class="metric"><strong>320</strong><span>Merge score</span></div>
+<div class="metric"><strong>64</strong><span>Base cherries</span></div>
+<div class="metric"><strong>57</strong><span>Radius</span></div>
+</div>
+<p class="fruit-note">Occupies significant horizontal space. Create it on a stable low section, not near the danger line.</p>
+</article>
+<article class="fruit-card">
+<span class="fruit-level">Lv. 8</span>
+<div class="fruit-card-top"><div class="fruit-image-box"><img src="/assets/fruits/watermelon.png" alt="Watermelon in Fruit Merge" loading="lazy" /></div>
+<div><h3>Watermelon</h3><p class="fruit-subtitle">Created by 2 Pineapples</p></div></div>
+<div class="fruit-metrics">
+<div class="metric"><strong>640</strong><span>Merge score</span></div>
+<div class="metric"><strong>128</strong><span>Base cherries</span></div>
+<div class="metric"><strong>68</strong><span>Radius</span></div>
+</div>
+<p class="fruit-note">A large late-game fruit that is usually safer near the side of a low board with space around it.</p>
+</article>
+<article class="fruit-card">
+<span class="fruit-level">Lv. 9</span>
+<div class="fruit-card-top"><div class="fruit-image-box"><img src="/assets/fruits/grapefruit.png" alt="Grapefruit in Fruit Merge" data-fallbacks="/assets/fruits/pomelo.png,/assets/fruits/yuzu.png,/assets/fruits/lemon.png" loading="lazy" /></div>
+<div><h3>Grapefruit</h3><p class="fruit-subtitle">Created by 2 Watermelons</p></div></div>
+<div class="fruit-metrics">
+<div class="metric"><strong>1,280</strong><span>Merge score</span></div>
+<div class="metric"><strong>256</strong><span>Base cherries</span></div>
+<div class="metric"><strong>80</strong><span>Radius</span></div>
+</div>
+<p class="fruit-note">Requires substantial room. Do not create it below a cluttered tower where it cannot settle.</p>
+</article>
+<article class="fruit-card">
+<span class="fruit-level">Lv. 10</span>
+<div class="fruit-card-top"><div class="fruit-image-box"><img src="/assets/fruits/melon.png" alt="Melon in Fruit Merge" data-fallbacks="/assets/fruits/hami-melon.png,/assets/fruits/honeydew.png,/assets/fruits/cantaloupe.png" loading="lazy" /></div>
+<div><h3>Melon</h3><p class="fruit-subtitle">Created by 2 Grapefruits</p></div></div>
+<div class="fruit-metrics">
+<div class="metric"><strong>2,560</strong><span>Merge score</span></div>
+<div class="metric"><strong>512</strong><span>Base cherries</span></div>
+<div class="metric"><strong>92</strong><span>Radius</span></div>
+</div>
+<p class="fruit-note">Difficult to reposition after creation. Plan its final location before completing the merge.</p>
+</article>
+<article class="fruit-card">
+<span class="fruit-level">Lv. 11</span>
+<div class="fruit-card-top"><div class="fruit-image-box"><img src="/assets/fruits/dragonfruit.png" alt="Dragon Fruit in Fruit Merge" data-fallbacks="/assets/fruits/dragon-fruit.png,/assets/fruits/dragon_fruit.png,/assets/fruits/pitaya.png" loading="lazy" /></div>
+<div><h3>Dragon Fruit</h3><p class="fruit-subtitle">Created by 2 Melons</p></div></div>
+<div class="fruit-metrics">
+<div class="metric"><strong>5,120</strong><span>Merge score</span></div>
+<div class="metric"><strong>1,024</strong><span>Base cherries</span></div>
+<div class="metric"><strong>106</strong><span>Radius</span></div>
+</div>
+<p class="fruit-note">The final evolution level. Reaching it requires long-term board control and enough room for two Melons to meet.</p>
+</article></div></section>
+<section class="article-section" id="growth"><p class="section-label">Understanding the progression</p><h2>Why Every Evolution Level Becomes Harder</h2><div class="growth-grid"><article class="growth-card"><b>×2</b><h3>Requirements double</h3><p>Each level requires twice as many base Cherries as the level before it.</p></article><article class="growth-card"><b>+Size</b><h3>The board becomes tighter</h3><p>Higher-level fruits use more physical space and are harder to move after they settle.</p></article><article class="growth-card"><b>+Score</b><h3>Late merges are more valuable</h3><p>The merge value doubles at every level, rewarding successful long chains.</p></article></div><div class="callout"><strong>Practical lesson:</strong> the evolution chain is not only about earning points. Every larger fruit changes the shape of the board and reduces the number of safe landing positions.</div></section>
+<section class="article-section" id="faq"><p class="section-label">Questions and answers</p><h2>Fruit Evolution Guide FAQ</h2><div class="faq-list"><details><summary>What is the complete Fruit Merge evolution order?</summary><p>Cherry, Strawberry, Grape, Orange, Apple, Peach, Pineapple, Watermelon, Grapefruit, Melon, and Dragon Fruit.</p></details><details><summary>How many Cherries are needed for one Dragon Fruit?</summary><p>A perfect theoretical chain requires 1,024 Cherries to create one Dragon Fruit.</p></details><details><summary>Which merge gives the most points?</summary><p>Creating Dragon Fruit gives the highest single merge value: 5,120 points.</p></details><details><summary>Why are higher fruit levels harder to manage?</summary><p>Higher-level fruits have larger logical radii, occupy more space, and can block smaller fruits or the central landing lane.</p></details><details><summary>Can the final Dragon Fruit merge again?</summary><p>No. Dragon Fruit is the final level in the current evolution chain.</p></details></div><div class="related-guides"><a href="/how-to-play-fruit-merge.html">How to Play Fruit Merge<span>Learn the controls, merging rules, and danger-line system.</span></a><a href="/fruit-merge-strategy.html">Fruit Merge Strategy Guide<span>Learn board control, queue planning, and chain-merge tactics.</span></a></div></section>
+</article><aside class="sidebar" aria-label="Evolution guide navigation"><h2>On this page</h2><a href="#evolution-table">Evolution table</a><a href="#fruit-levels">Every fruit level</a><a href="#growth">Why levels get harder</a><a href="#faq">Evolution FAQ</a></aside></div>
+<section class="final-cta"><h2>Can You Reach Dragon Fruit?</h2><p>Use the evolution order to plan future merges, protect enough board space, and build toward the highest fruit level.</p><a class="button button-primary" href="/#game">Play Fruit Merge Online</a></section>
+</main>
+<footer class="site-footer"><div class="footer-inner"><nav class="footer-links" aria-label="Footer navigation"><a href="/">Play Game</a><a href="/how-to-play-fruit-merge.html">How to Play</a><a href="/fruit-merge-strategy.html">Strategy</a><a href="/about.html">About</a><a href="/privacy-policy.html">Privacy Policy</a><a href="/terms.html">Terms</a><a href="/contact.html">Contact</a></nav><p>© 2026 Fruit Merge Online.</p></div></footer>
+<script>(()=>{const emojis={'Grapefruit':'🍋','Melon':'🍈','Dragon Fruit':'🐉'};document.querySelectorAll('img[data-fallbacks]').forEach(image=>{const queue=(image.dataset.fallbacks||'').split(',').map(v=>v.trim()).filter(Boolean);image.addEventListener('error',function handler(){const next=queue.shift();if(next){image.src=next;return}const parent=image.parentElement;if(!parent)return;const fallback=document.createElement('span');fallback.className='img-fallback';fallback.setAttribute('role','img');fallback.setAttribute('aria-label',image.alt||'Fruit');fallback.textContent=emojis[image.alt]||'🍓';image.replaceWith(fallback)})})})();</script>
+</body></html>
