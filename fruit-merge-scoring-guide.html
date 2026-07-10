@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Fruit Merge Scoring Guide: Points, Combos and Calculator</title>
+  <meta
+    name="description"
+    content="Learn how Fruit Merge scoring works, compare every fruit's point value, calculate chain-merge totals, understand score milestones, and use the free score calculator."
+  />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://fruitmerge.online/fruit-merge-scoring-guide.html" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Fruit Merge Online" />
+  <meta property="og:title" content="Fruit Merge Scoring Guide: Points, Combos and Calculator" />
+  <meta
+    property="og:description"
+    content="See the complete Fruit Merge score table, learn how points are awarded, and calculate the value of any merge chain."
+  />
+  <meta property="og:url" content="https://fruitmerge.online/fruit-merge-scoring-guide.html" />
+  <meta property="og:image" content="https://fruitmerge.online/og-image.svg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fruit Merge Scoring Guide" />
+  <meta
+    name="twitter:description"
+    content="Complete Fruit Merge point values, full-chain totals, score milestones, and an interactive merge calculator."
+  />
+  <meta name="twitter:image" content="https://fruitmerge.online/og-image.svg" />
+  <meta name="theme-color" content="#071221" />
+
+  <style>
+    :root {
+      --navy-950: #071221;
+      --navy-900: #0d1c31;
+      --navy-800: #152a47;
+      --navy-700: #24466f;
+      --text: #1b2d46;
+      --muted: #607087;
+      --line: #dbe5ee;
+      --white: #ffffff;
+      --cream: #fff9e8;
+      --yellow: #ffd65c;
+      --orange: #ff7450;
+      --green: #78de4a;
+      --mint: #eafbf4;
+      --blue-soft: #edf6ff;
+      --shadow: 0 18px 55px rgba(18, 43, 71, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255, 214, 92, 0.2), transparent 27%),
+        radial-gradient(circle at 91% 12%, rgba(120, 222, 74, 0.12), transparent 25%),
+        linear-gradient(180deg, #f7fbff 0%, #fffdf5 100%);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.68;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    h1,
+    h2,
+    h3 {
+      color: var(--navy-900);
+      line-height: 1.15;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(7, 18, 33, 0.96);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+    }
+
+    .header-inner,
+    .page-shell,
+    .footer-inner {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .header-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: linear-gradient(145deg, #a8ff6a, #49df55);
+      box-shadow: 0 8px 24px rgba(88, 237, 90, 0.28);
+    }
+
+    .brand strong {
+      color: #8cf05c;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .header-nav a {
+      color: #e9f0fa;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .header-nav a:hover,
+    .header-nav a:focus-visible {
+      color: #a4f66f;
+    }
+
+    .header-play {
+      min-height: 42px;
+      padding: 0 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff8d5d, #ff654b);
+      color: var(--white) !important;
+      box-shadow: 0 10px 28px rgba(255, 104, 73, 0.3);
+    }
+
+    .breadcrumbs {
+      padding: 24px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .breadcrumbs a {
+      color: var(--navy-700);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .hero {
+      padding: 42px 0 54px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: #d95f3f;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 920px;
+      margin: 0 auto;
+      font-size: clamp(40px, 6vw, 68px);
+      letter-spacing: -0.055em;
+      overflow-wrap: anywhere;
+    }
+
+    .hero-lead {
+      max-width: 780px;
+      margin: 22px auto 0;
+      color: #4d6078;
+      font-size: 18px;
+    }
+
+    .hero-actions {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .button {
+      min-height: 50px;
+      padding: 0 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 0;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .button-primary {
+      color: var(--white);
+      background: linear-gradient(135deg, #ff8a57, #ff654b);
+      box-shadow: 0 12px 30px rgba(255, 101, 75, 0.28);
+    }
+
+    .button-secondary {
+      color: var(--navy-800);
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+
+    .score-hero-card {
+      max-width: 1040px;
+      margin: 38px auto 0;
+      padding: 24px;
+      border: 1px solid rgba(255, 198, 64, 0.55);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.7), transparent 24%),
+        linear-gradient(145deg, #fff7cf, #ffe49c);
+      box-shadow: var(--shadow);
+    }
+
+    .score-ladder {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .score-step {
+      position: relative;
+      min-width: 0;
+      padding: 18px 12px 16px;
+      border: 1px solid rgba(150, 105, 37, 0.13);
+      border-radius: 19px;
+      background: rgba(255, 255, 255, 0.82);
+      text-align: center;
+    }
+
+    .score-step:nth-child(5) {
+      background: linear-gradient(145deg, #fff7cf, #ffffff);
+    }
+
+    .score-step img {
+      width: 66px;
+      height: 66px;
+      margin: 0 auto 9px;
+    }
+
+    .score-step small {
+      display: block;
+      color: #8d6a38;
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .score-step strong {
+      display: block;
+      margin-top: 2px;
+      color: var(--navy-900);
+      font-size: clamp(18px, 2.3vw, 28px);
+      letter-spacing: -0.03em;
+    }
+
+    .score-step span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .score-hero-note {
+      margin: 18px 0 0;
+      color: #6a4c22;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .summary-grid {
+      margin: 0 0 68px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .summary-card {
+      min-height: 160px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 10px 30px rgba(28, 57, 91, 0.06);
+    }
+
+    .summary-card b {
+      display: block;
+      margin-bottom: 10px;
+      color: #d95f3f;
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .summary-card h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .summary-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .content-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      align-items: start;
+      gap: 34px;
+    }
+
+    .article {
+      min-width: 0;
+    }
+
+    .article-section {
+      margin-bottom: 28px;
+      padding: 36px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 12px 38px rgba(24, 52, 83, 0.07);
+    }
+
+    .section-label {
+      margin: 0 0 9px;
+      color: #df633f;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .article-section h2 {
+      margin: 0 0 16px;
+      font-size: clamp(28px, 4vw, 38px);
+      letter-spacing: -0.035em;
+    }
+
+    .article-section h3 {
+      margin: 28px 0 9px;
+      font-size: 21px;
+    }
+
+    .article-section p,
+    .article-section li {
+      color: #4e6178;
+    }
+
+    .callout {
+      margin: 24px 0;
+      padding: 20px 22px;
+      border-left: 5px solid #ff7751;
+      border-radius: 0 16px 16px 0;
+      background: #fff7ef;
+    }
+
+    .callout strong {
+      color: var(--navy-900);
+    }
+
+    .formula-box {
+      margin: 24px 0;
+      padding: 24px;
+      border: 1px solid #cfe5f8;
+      border-radius: 18px;
+      background: var(--blue-soft);
+      text-align: center;
+    }
+
+    .formula-box code {
+      display: block;
+      color: var(--navy-900);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: clamp(18px, 3vw, 26px);
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .formula-box span {
+      display: block;
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .table-wrap {
+      margin-top: 24px;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 930px;
+      border-collapse: collapse;
+      background: var(--white);
+    }
+
+    th,
+    td {
+      padding: 14px 15px;
+      text-align: left;
+      vertical-align: middle;
+      border-bottom: 1px solid #e7edf3;
+    }
+
+    th {
+      color: var(--navy-800);
+      background: #f4f8fb;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tbody tr:hover {
+      background: #fffdf3;
+    }
+
+    .table-fruit {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 148px;
+      color: var(--navy-900);
+      font-weight: 850;
+    }
+
+    .table-fruit img {
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+    }
+
+    .point-value {
+      color: #d95f3f;
+      font-weight: 900;
+    }
+
+    .muted-cell {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .example-grid,
+    .milestone-grid,
+    .tip-grid {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .example-card,
+    .milestone-card,
+    .tip-card {
+      min-width: 0;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fbfdff;
+    }
+
+    .example-card b,
+    .milestone-card b {
+      display: block;
+      margin-bottom: 8px;
+      color: #d95f3f;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .example-card h3,
+    .milestone-card h3,
+    .tip-card h3 {
+      margin: 0 0 8px;
+      font-size: 19px;
+    }
+
+    .example-card p,
+    .milestone-card p,
+    .tip-card p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .merge-line {
+      margin: 14px 0 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f2f7fb;
+      color: var(--navy-800);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .calculator-shell {
+      margin-top: 24px;
+      padding: 24px;
+      border: 1px solid #cce7d9;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(120, 222, 74, 0.15), transparent 35%),
+        #f7fffa;
+    }
+
+    .calculator-intro {
+      margin-top: 0;
+    }
+
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .calculator-row {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) 88px;
+      align-items: center;
+      gap: 11px;
+      padding: 12px;
+      border: 1px solid #d9eee2;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .calculator-row img {
+      width: 44px;
+      height: 44px;
+    }
+
+    .calculator-row label {
+      min-width: 0;
+      color: var(--navy-900);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .calculator-row label span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .calculator-row input {
+      width: 100%;
+      min-height: 42px;
+      padding: 8px 10px;
+      border: 1px solid #bdd9c9;
+      border-radius: 10px;
+      color: var(--navy-900);
+      background: var(--white);
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .calculator-result {
+      margin-top: 18px;
+      padding: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border-radius: 17px;
+      color: var(--white);
+      background: linear-gradient(135deg, #173b5f, #0b223b);
+    }
+
+    .calculator-result span {
+      display: block;
+      color: #c9d9e8;
+      font-size: 12px;
+      font-weight: 750;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .calculator-result output {
+      display: block;
+      margin-top: 3px;
+      font-size: clamp(30px, 5vw, 46px);
+      font-weight: 950;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .calculator-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .calculator-actions button {
+      min-height: 42px;
+      padding: 0 15px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 11px;
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .calculator-actions button:hover,
+    .calculator-actions button:focus-visible {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 96px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 12px 36px rgba(24, 52, 83, 0.08);
+    }
+
+    .sidebar h2 {
+      margin: 0 0 15px;
+      font-size: 18px;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 10px 0;
+      color: #52667d;
+      text-decoration: none;
+      border-bottom: 1px solid #edf1f5;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .sidebar a:last-child {
+      border-bottom: 0;
+    }
+
+    .sidebar a:hover,
+    .sidebar a:focus-visible {
+      color: #e36242;
+    }
+
+    .faq-list {
+      margin-top: 20px;
+    }
+
+    details {
+      border-top: 1px solid var(--line);
+    }
+
+    details:last-child {
+      border-bottom: 1px solid var(--line);
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 18px 4px;
+      color: var(--navy-900);
+      font-weight: 850;
+    }
+
+    details p {
+      margin-top: 0;
+      padding: 0 4px 18px;
+    }
+
+    .related-guides {
+      margin-top: 26px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .related-guides a {
+      min-width: 0;
+      padding: 19px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--white);
+      text-decoration: none;
+      font-weight: 850;
+    }
+
+    .related-guides a span {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .final-cta {
+      margin: 56px 0 72px;
+      padding: 42px;
+      text-align: center;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.28), transparent 32%),
+        linear-gradient(135deg, #ffd967, #ff9d62);
+      box-shadow: 0 20px 55px rgba(227, 148, 46, 0.22);
+    }
+
+    .final-cta h2 {
+      margin: 0;
+      font-size: clamp(30px, 5vw, 44px);
+      letter-spacing: -0.04em;
+    }
+
+    .final-cta p {
+      max-width: 680px;
+      margin: 14px auto 24px;
+      color: #63431f;
+    }
+
+    .site-footer {
+      color: #dce8f5;
+      background: var(--navy-950);
+    }
+
+    .footer-inner {
+      min-height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 26px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .footer-links a {
+      color: #e6edf6;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .footer-inner p {
+      margin: 0;
+      color: #93a8bd;
+      font-size: 14px;
+    }
+
+    :focus-visible {
+      outline: 3px solid #8aec59;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 1020px) {
+      .header-nav {
+        gap: 18px;
+      }
+
+      .header-nav a:nth-child(4) {
+        display: none;
+      }
+
+      .score-ladder {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .content-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .related-guides {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .header-inner {
+        min-height: 64px;
+      }
+
+      .header-nav a:not(.header-play) {
+        display: none;
+      }
+
+      .brand {
+        font-size: 19px;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+      }
+
+      .hero {
+        padding-top: 28px;
+      }
+
+      .score-hero-card {
+        padding: 16px;
+        border-radius: 22px;
+      }
+
+      .score-ladder {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .score-step:last-child {
+        grid-column: 1 / -1;
+      }
+
+      .article-section {
+        padding: 25px 20px;
+        border-radius: 20px;
+      }
+
+      .example-grid,
+      .milestone-grid,
+      .tip-grid,
+      .calculator-grid,
+      .related-guides {
+        grid-template-columns: 1fr;
+      }
+
+      .calculator-result {
+        display: block;
+        text-align: center;
+      }
+
+      .calculator-actions {
+        margin-top: 18px;
+        justify-content: center;
+      }
+
+      .final-cta {
+        padding: 34px 22px;
+      }
+
+      .footer-inner {
+        display: block;
+        padding: 32px 0;
+      }
+
+      .footer-links {
+        margin-bottom: 18px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page-shell,
+      .header-inner,
+      .footer-inner {
+        width: min(100% - 22px, 1160px);
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .hero-lead {
+        font-size: 16px;
+      }
+
+      .hero-actions {
+        display: grid;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-card {
+        min-height: 0;
+      }
+
+      .article-section h2 {
+        font-size: 29px;
+      }
+
+      .score-step img {
+        width: 58px;
+        height: 58px;
+      }
+
+      .calculator-shell {
+        padding: 16px;
+      }
+
+      .calculator-row {
+        grid-template-columns: 40px minmax(0, 1fr) 72px;
+        gap: 8px;
+        padding: 10px;
+      }
+
+      .calculator-row img {
+        width: 40px;
+        height: 40px;
+      }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Fruit Merge Scoring Guide: Points, Combos and Calculator",
+    "description": "A complete guide to the Fruit Merge Online scoring system, including point values, full-chain totals, score milestones, chain merges, and an interactive calculator.",
+    "image": "https://fruitmerge.online/og-image.svg",
+    "author": {
+      "@type": "Organization",
+      "name": "Fruit Merge Online"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Fruit Merge Online"
+    },
+    "mainEntityOfPage": "https://fruitmerge.online/fruit-merge-scoring-guide.html"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Fruit Merge Point Values",
+    "numberOfItems": 11,
+    "itemListOrder": "https://schema.org/ItemListOrderAscending",
+    "itemListElement": [
+      {"@type":"ListItem","position":1,"name":"Cherry","description":"Fruit score value: 5 points"},
+      {"@type":"ListItem","position":2,"name":"Strawberry","description":"Merge award: 10 points"},
+      {"@type":"ListItem","position":3,"name":"Grape","description":"Merge award: 20 points"},
+      {"@type":"ListItem","position":4,"name":"Orange","description":"Merge award: 40 points"},
+      {"@type":"ListItem","position":5,"name":"Apple","description":"Merge award: 80 points"},
+      {"@type":"ListItem","position":6,"name":"Peach","description":"Merge award: 160 points"},
+      {"@type":"ListItem","position":7,"name":"Pineapple","description":"Merge award: 320 points"},
+      {"@type":"ListItem","position":8,"name":"Watermelon","description":"Merge award: 640 points"},
+      {"@type":"ListItem","position":9,"name":"Grapefruit","description":"Merge award: 1280 points"},
+      {"@type":"ListItem","position":10,"name":"Melon","description":"Merge award: 2560 points"},
+      {"@type":"ListItem","position":11,"name":"Dragon Fruit","description":"Merge award: 5120 points"}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How are points awarded in Fruit Merge?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "When two identical fruits merge, the game adds the score value of the new fruit created by that merge. Two Cherries create a Strawberry and award 10 points."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many points does a Dragon Fruit give?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Creating a Dragon Fruit awards 5,120 points. A theoretical complete chain from 1,024 Cherries produces 51,200 total points across every merge in the chain."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do chain merges have a separate score multiplier?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No separate multiplier is used in the current scoring system. Each merge in the chain awards its normal new-fruit value, so several automatic merges can still create a large score burst."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why can two runs with similar largest fruits have different scores?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The total depends on every merge completed during the run, not only the largest fruit reached. Starting fruits can also appear at different early levels, so the exact route to a large fruit varies."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Fruit Merge Online",
+        "item": "https://fruitmerge.online/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Fruit Merge Scoring Guide",
+        "item": "https://fruitmerge.online/fruit-merge-scoring-guide.html"
+      }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="Fruit Merge Online home">
+        <span class="brand-mark" aria-hidden="true">🍓</span>
+        <span>Fruit<strong>Merge</strong></span>
+      </a>
+
+      <nav class="header-nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/how-to-play-fruit-merge.html">How to Play</a>
+        <a href="/fruit-merge-strategy.html">Strategy</a>
+        <a href="/fruit-evolution-guide.html">Evolution</a>
+        <a class="header-play" href="/#game">Play Now</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Fruit Merge Online</a>
+      <span aria-hidden="true"> / </span>
+      <span>Scoring Guide</span>
+    </nav>
+
+    <section class="hero">
+      <p class="eyebrow">Points, chains and score math</p>
+      <h1>Fruit Merge Scoring Guide</h1>
+      <p class="hero-lead">
+        Learn exactly when points are added, compare every fruit value, see how
+        full merge chains build your total, and calculate the score from your
+        own sequence of merges.
+      </p>
+
+      <div class="hero-actions">
+        <a class="button button-primary" href="/#game">
+          <span aria-hidden="true">▶</span>
+          Play Fruit Merge Online
+        </a>
+        <a class="button button-secondary" href="#score-table">
+          View the score table
+        </a>
+      </div>
+
+      <div class="score-hero-card" aria-label="Fruit Merge score growth examples">
+        <div class="score-ladder">
+          <article class="score-step">
+            <img src="/assets/fruits/strawberry.png" alt="Strawberry" />
+            <small>Merge award</small>
+            <strong>10</strong>
+            <span>Strawberry</span>
+          </article>
+          <article class="score-step">
+            <img src="/assets/fruits/apple.png" alt="Apple" />
+            <small>Merge award</small>
+            <strong>80</strong>
+            <span>Apple</span>
+          </article>
+          <article class="score-step">
+            <img src="/assets/fruits/pineapple.png" alt="Pineapple" />
+            <small>Merge award</small>
+            <strong>320</strong>
+            <span>Pineapple</span>
+          </article>
+          <article class="score-step">
+            <img
+              src="/assets/fruits/grapefruit.png"
+              data-fallbacks="/assets/fruits/pomelo.png,/assets/fruits/yuzu.png,/assets/fruits/lemon.png"
+              alt="Grapefruit"
+            />
+            <small>Merge award</small>
+            <strong>1,280</strong>
+            <span>Grapefruit</span>
+          </article>
+          <article class="score-step">
+            <img
+              src="/assets/fruits/dragonfruit.png"
+              data-fallbacks="/assets/fruits/dragon-fruit.png,/assets/fruits/dragon_fruit.png,/assets/fruits/pitaya.png"
+              alt="Dragon Fruit"
+            />
+            <small>Highest merge</small>
+            <strong>5,120</strong>
+            <span>Dragon Fruit</span>
+          </article>
+        </div>
+        <p class="score-hero-note">
+          Every new level doubles the previous fruit's score value.
+        </p>
+      </div>
+    </section>
+
+    <section class="summary-grid" aria-label="Fruit Merge scoring summary">
+      <article class="summary-card">
+        <b>10</b>
+        <h2>First merge award</h2>
+        <p>Two Cherries create one Strawberry and add 10 points.</p>
+      </article>
+
+      <article class="summary-card">
+        <b>×2</b>
+        <h2>Value growth</h2>
+        <p>Each next fruit has twice the score value of the level before it.</p>
+      </article>
+
+      <article class="summary-card">
+        <b>5,120</b>
+        <h2>Top single award</h2>
+        <p>Combining two Melons into a Dragon Fruit produces the largest merge award.</p>
+      </article>
+
+      <article class="summary-card">
+        <b>51,200</b>
+        <h2>Full theoretical chain</h2>
+        <p>Total points from every merge needed to build one Dragon Fruit from Cherries.</p>
+      </article>
+    </section>
+
+    <div class="content-layout">
+      <article class="article">
+        <section class="article-section" id="how-scoring-works">
+          <p class="section-label">Core scoring rule</p>
+          <h2>How Does Fruit Merge Scoring Work?</h2>
+
+          <p>
+            Points are added when two identical fruits touch and combine. The
+            award is based on the <strong>new fruit created by the merge</strong>,
+            not the two fruits that disappear.
+          </p>
+
+          <p>
+            For example, two Cherries create one Strawberry. Strawberry has a
+            score value of 10, so that merge adds 10 points. Two Strawberries
+            create a Grape and add 20 points. The pattern continues through the
+            complete evolution chain.
+          </p>
+
+          <div class="formula-box">
+            <code>Merge award = score value of the new fruit</code>
+            <span>Example: 2 Apples → 1 Peach → +160 points</span>
+          </div>
+
+          <div class="callout">
+            <strong>Important:</strong> dropping a fruit does not by itself add
+            the listed score. The score is earned when a merge creates the next
+            fruit. Cherry has a stored value of 5, but it is the starting level
+            and is not normally created by another merge.
+          </div>
+        </section>
+
+        <section class="article-section" id="score-table">
+          <p class="section-label">Complete point list</p>
+          <h2>Fruit Merge Score Table</h2>
+
+          <p>
+            The table separates the value of a single merge from the total
+            score generated by an entire theoretical chain starting with only
+            Cherries. Actual runs can follow different routes because the drop
+            queue can supply several early fruit levels directly.
+          </p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Level</th>
+                  <th>Fruit</th>
+                  <th>Created from</th>
+                  <th>Fruit value</th>
+                  <th>Merge award</th>
+                  <th>Base Cherries</th>
+                  <th>Full-chain total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td><span class="table-fruit"><img src="/assets/fruits/cherry.png" alt="" />Cherry</span></td>
+                  <td class="muted-cell">Starting level</td>
+                  <td class="point-value">5</td>
+                  <td class="muted-cell">Not normally awarded</td>
+                  <td>1</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><span class="table-fruit"><img src="/assets/fruits/strawberry.png" alt="" />Strawberry</span></td>
+                  <td>2 Cherries</td>
+                  <td class="point-value">10</td>
+                  <td class="point-value">+10</td>
+                  <td>2</td>
+                  <td>10</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><span class="table-fruit"><img src="/assets/fruits/grape.png" alt="" />Grape</span></td>
+                  <td>2 Strawberries</td>
+                  <td class="point-value">20</td>
+                  <td class="point-value">+20</td>
+                  <td>4</td>
+                  <td>40</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td><span class="table-fruit"><img src="/assets/fruits/orange.png" alt="" />Orange</span></td>
+                  <td>2 Grapes</td>
+                  <td class="point-value">40</td>
+                  <td class="point-value">+40</td>
+                  <td>8</td>
+                  <td>120</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td><span class="table-fruit"><img src="/assets/fruits/apple.png" alt="" />Apple</span></td>
+                  <td>2 Oranges</td>
+                  <td class="point-value">80</td>
+                  <td class="point-value">+80</td>
+                  <td>16</td>
+                  <td>320</td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td><span class="table-fruit"><img src="/assets/fruits/peach.png" alt="" />Peach</span></td>
+                  <td>2 Apples</td>
+                  <td class="point-value">160</td>
+                  <td class="point-value">+160</td>
+                  <td>32</td>
+                  <td>800</td>
+                </tr>
+                <tr>
+                  <td>7</td>
+                  <td><span class="table-fruit"><img src="/assets/fruits/pineapple.png" alt="" />Pineapple</span></td>
+                  <td>2 Peaches</td>
+                  <td class="point-value">320</td>
+                  <td class="point-value">+320</td>
+                  <td>64</td>
+                  <td>1,920</td>
+                </tr>
+                <tr>
+                  <td>8</td>
+                  <td><span class="table-fruit"><img src="/assets/fruits/watermelon.png" alt="" />Watermelon</span></td>
+                  <td>2 Pineapples</td>
+                  <td class="point-value">640</td>
+                  <td class="point-value">+640</td>
+                  <td>128</td>
+                  <td>4,480</td>
+                </tr>
+                <tr>
+                  <td>9</td>
+                  <td>
+                    <span class="table-fruit">
+                      <img
+                        src="/assets/fruits/grapefruit.png"
+                        data-fallbacks="/assets/fruits/pomelo.png,/assets/fruits/yuzu.png,/assets/fruits/lemon.png"
+                        alt=""
+                      />
+                      Grapefruit
+                    </span>
+                  </td>
+                  <td>2 Watermelons</td>
+                  <td class="point-value">1,280</td>
+                  <td class="point-value">+1,280</td>
+                  <td>256</td>
+                  <td>10,240</td>
+                </tr>
+                <tr>
+                  <td>10</td>
+                  <td>
+                    <span class="table-fruit">
+                      <img
+                        src="/assets/fruits/melon.png"
+                        data-fallbacks="/assets/fruits/hami-melon.png,/assets/fruits/honeydew.png,/assets/fruits/cantaloupe.png"
+                        alt=""
+                      />
+                      Melon
+                    </span>
+                  </td>
+                  <td>2 Grapefruits</td>
+                  <td class="point-value">2,560</td>
+                  <td class="point-value">+2,560</td>
+                  <td>512</td>
+                  <td>23,040</td>
+                </tr>
+                <tr>
+                  <td>11</td>
+                  <td>
+                    <span class="table-fruit">
+                      <img
+                        src="/assets/fruits/dragonfruit.png"
+                        data-fallbacks="/assets/fruits/dragon-fruit.png,/assets/fruits/dragon_fruit.png,/assets/fruits/pitaya.png"
+                        alt=""
+                      />
+                      Dragon Fruit
+                    </span>
+                  </td>
+                  <td>2 Melons</td>
+                  <td class="point-value">5,120</td>
+                  <td class="point-value">+5,120</td>
+                  <td>1,024</td>
+                  <td>51,200</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout">
+            <strong>Do not confuse the last two score columns.</strong> A Dragon
+            Fruit merge gives 5,120 points at that moment. The 51,200 figure is
+            the sum of all lower-level merges in a complete Cherry-to-Dragon-Fruit chain.
+          </div>
+        </section>
+
+        <section class="article-section" id="score-math">
+          <p class="section-label">Understanding cumulative points</p>
+          <h2>How Full-Chain Score Is Calculated</h2>
+
+          <p>
+            Every level doubles in value, but building a high-level fruit also
+            requires all the lower merges below it. That is why the cumulative
+            total grows faster than the final merge award alone.
+          </p>
+
+          <div class="formula-box">
+            <code>Full-chain total = (fruit level − 1) × fruit score value</code>
+            <span>For Dragon Fruit: (11 − 1) × 5,120 = 51,200 points</span>
+          </div>
+
+          <div class="example-grid">
+            <article class="example-card">
+              <b>40</b>
+              <h3>Four Cherries to one Grape</h3>
+              <p>Two Strawberry merges add 20 points in total, then the Grape merge adds another 20.</p>
+              <div class="merge-line">10 + 10 + 20 = 40</div>
+            </article>
+
+            <article class="example-card">
+              <b>120</b>
+              <h3>Eight Cherries to one Orange</h3>
+              <p>The complete route includes four Strawberry merges, two Grape merges, and one Orange merge.</p>
+              <div class="merge-line">4×10 + 2×20 + 1×40 = 120</div>
+            </article>
+
+            <article class="example-card">
+              <b>4,480</b>
+              <h3>One full Watermelon chain</h3>
+              <p>A Watermelon merge awards 640 points, while every required lower merge brings the full total to 4,480.</p>
+              <div class="merge-line">7 levels of scoring × 640 = 4,480</div>
+            </article>
+
+            <article class="example-card">
+              <b>51,200</b>
+              <h3>One full Dragon Fruit chain</h3>
+              <p>The final 5,120-point merge is only the last step. Ten scoring levels contribute to the theoretical total.</p>
+              <div class="merge-line">10 levels of scoring × 5,120 = 51,200</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="article-section" id="chain-merges">
+          <p class="section-label">Fast score bursts</p>
+          <h2>How Chain Merges Affect Your Score</h2>
+
+          <p>
+            A chain merge happens when one merge immediately creates the match
+            for another. Each successful merge is scored separately. There is
+            no separate hidden combo multiplier in the current scoring system,
+            but several normal awards can arrive within a very short time.
+          </p>
+
+          <p>
+            Imagine that an Apple is already touching another Apple. If a new
+            Orange merge creates the second Apple in the correct position, the
+            board can award 80 points for the Apple and then 160 points for the
+            Peach, producing a 240-point burst.
+          </p>
+
+          <div class="formula-box">
+            <code>Chain total = award 1 + award 2 + award 3 + …</code>
+            <span>Example: Apple + Peach chain = 80 + 160 = 240 points</span>
+          </div>
+
+          <div class="tip-grid">
+            <article class="tip-card">
+              <h3>Build connected pairs</h3>
+              <p>Keep matching or near-matching fruits close enough that one merge can feed the next level.</p>
+            </article>
+
+            <article class="tip-card">
+              <h3>Read the next-fruit queue</h3>
+              <p>Use all three previewed fruits to prepare a sequence instead of planning only the current drop.</p>
+            </article>
+
+            <article class="tip-card">
+              <h3>Protect the landing area</h3>
+              <p>A chain is valuable only when the new larger fruit has enough room to settle safely.</p>
+            </article>
+
+            <article class="tip-card">
+              <h3>Do not force every chain</h3>
+              <p>A large point burst is not worth creating a tall tower that immediately reaches the danger line.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="article-section" id="calculator">
+          <p class="section-label">Interactive tool</p>
+          <h2>Fruit Merge Score Calculator</h2>
+
+          <p class="calculator-intro">
+            Enter how many times your run created each fruit. The calculator
+            multiplies every merge count by that fruit's score value. Do not
+            include fruits that appeared directly in the drop queue unless they
+            were also created by a merge.
+          </p>
+
+          <div class="calculator-shell">
+            <div class="calculator-grid">
+              <div class="calculator-row">
+                <img src="/assets/fruits/strawberry.png" alt="" />
+                <label for="merge-strawberry">Strawberry <span>10 points each</span></label>
+                <input id="merge-strawberry" class="merge-input" type="number" min="0" step="1" value="0" data-score="10" inputmode="numeric" />
+              </div>
+
+              <div class="calculator-row">
+                <img src="/assets/fruits/grape.png" alt="" />
+                <label for="merge-grape">Grape <span>20 points each</span></label>
+                <input id="merge-grape" class="merge-input" type="number" min="0" step="1" value="0" data-score="20" inputmode="numeric" />
+              </div>
+
+              <div class="calculator-row">
+                <img src="/assets/fruits/orange.png" alt="" />
+                <label for="merge-orange">Orange <span>40 points each</span></label>
+                <input id="merge-orange" class="merge-input" type="number" min="0" step="1" value="0" data-score="40" inputmode="numeric" />
+              </div>
+
+              <div class="calculator-row">
+                <img src="/assets/fruits/apple.png" alt="" />
+                <label for="merge-apple">Apple <span>80 points each</span></label>
+                <input id="merge-apple" class="merge-input" type="number" min="0" step="1" value="0" data-score="80" inputmode="numeric" />
+              </div>
+
+              <div class="calculator-row">
+                <img src="/assets/fruits/peach.png" alt="" />
+                <label for="merge-peach">Peach <span>160 points each</span></label>
+                <input id="merge-peach" class="merge-input" type="number" min="0" step="1" value="0" data-score="160" inputmode="numeric" />
+              </div>
+
+              <div class="calculator-row">
+                <img src="/assets/fruits/pineapple.png" alt="" />
+                <label for="merge-pineapple">Pineapple <span>320 points each</span></label>
+                <input id="merge-pineapple" class="merge-input" type="number" min="0" step="1" value="0" data-score="320" inputmode="numeric" />
+              </div>
+
+              <div class="calculator-row">
+                <img src="/assets/fruits/watermelon.png" alt="" />
+                <label for="merge-watermelon">Watermelon <span>640 points each</span></label>
+                <input id="merge-watermelon" class="merge-input" type="number" min="0" step="1" value="0" data-score="640" inputmode="numeric" />
+              </div>
+
+              <div class="calculator-row">
+                <img src="/assets/fruits/grapefruit.png" data-fallbacks="/assets/fruits/pomelo.png,/assets/fruits/yuzu.png,/assets/fruits/lemon.png" alt="" />
+                <label for="merge-grapefruit">Grapefruit <span>1,280 points each</span></label>
+                <input id="merge-grapefruit" class="merge-input" type="number" min="0" step="1" value="0" data-score="1280" inputmode="numeric" />
+              </div>
+
+              <div class="calculator-row">
+                <img src="/assets/fruits/melon.png" data-fallbacks="/assets/fruits/hami-melon.png,/assets/fruits/honeydew.png,/assets/fruits/cantaloupe.png" alt="" />
+                <label for="merge-melon">Melon <span>2,560 points each</span></label>
+                <input id="merge-melon" class="merge-input" type="number" min="0" step="1" value="0" data-score="2560" inputmode="numeric" />
+              </div>
+
+              <div class="calculator-row">
+                <img src="/assets/fruits/dragonfruit.png" data-fallbacks="/assets/fruits/dragon-fruit.png,/assets/fruits/dragon_fruit.png,/assets/fruits/pitaya.png" alt="" />
+                <label for="merge-dragonfruit">Dragon Fruit <span>5,120 points each</span></label>
+                <input id="merge-dragonfruit" class="merge-input" type="number" min="0" step="1" value="0" data-score="5120" inputmode="numeric" />
+              </div>
+            </div>
+
+            <div class="calculator-result" aria-live="polite">
+              <div>
+                <span>Calculated merge score</span>
+                <output id="score-output" for="merge-strawberry merge-grape merge-orange merge-apple merge-peach merge-pineapple merge-watermelon merge-grapefruit merge-melon merge-dragonfruit">0</output>
+              </div>
+              <div class="calculator-actions">
+                <button id="load-example" type="button">Load example</button>
+                <button id="reset-calculator" type="button">Reset</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="article-section" id="milestones">
+          <p class="section-label">Reading your results</p>
+          <h2>What Different Score Milestones Mean</h2>
+
+          <p>
+            A score is the sum of all merges completed during the run. It does
+            not identify one exact board state, but these milestones help show
+            how much high-level merging has occurred.
+          </p>
+
+          <div class="milestone-grid">
+            <article class="milestone-card">
+              <b>1,000+</b>
+              <h3>Early chain control</h3>
+              <p>You are consistently reaching mid-level fruits and converting several small pairs instead of leaving clutter.</p>
+            </article>
+
+            <article class="milestone-card">
+              <b>5,000+</b>
+              <h3>Strong board management</h3>
+              <p>Your run probably includes at least one Watermelon-level route or many repeated mid-level merges.</p>
+            </article>
+
+            <article class="milestone-card">
+              <b>10,000+</b>
+              <h3>Advanced merge planning</h3>
+              <p>You are producing multiple large fruits, preserving space, and using the next queue effectively.</p>
+            </article>
+
+            <article class="milestone-card">
+              <b>25,000+</b>
+              <h3>High-score territory</h3>
+              <p>Long survival and repeated high-level conversions matter more than one isolated large merge.</p>
+            </article>
+          </div>
+
+          <div class="callout">
+            <strong>These are practical interpretation ranges, not rank labels.</strong>
+            Local leaderboard positions depend on the scores saved in your own browser.
+          </div>
+        </section>
+
+        <section class="article-section" id="score-higher">
+          <p class="section-label">Turn merges into points</p>
+          <h2>How to Score Higher Without Losing Board Control</h2>
+
+          <div class="tip-grid">
+            <article class="tip-card">
+              <h3>Prioritize repeatable merge lanes</h3>
+              <p>One safe merge is useful. A lane that can accept the next matching fruit is more valuable over the full run.</p>
+            </article>
+
+            <article class="tip-card">
+              <h3>Keep high-value pairs accessible</h3>
+              <p>Do not bury a Peach or Pineapple behind unrelated small fruits. Large blocked pairs delay your biggest awards.</p>
+            </article>
+
+            <article class="tip-card">
+              <h3>Use small merges to lower the board</h3>
+              <p>Small awards still matter because they remove two objects and often open a path toward a later chain.</p>
+            </article>
+
+            <article class="tip-card">
+              <h3>Choose survival over one risky award</h3>
+              <p>A 1,280-point merge is not helpful if the new Grapefruit pushes the stack above the danger line and ends the run.</p>
+            </article>
+          </div>
+
+          <p>
+            The best scoring strategy is therefore not simply “make the largest
+            fruit.” It is to keep creating useful merges for as long as
+            possible. A lower, organized board gives you more future scoring
+            opportunities than a tall board built around one forced pair.
+          </p>
+        </section>
+
+        <section class="article-section" id="faq">
+          <p class="section-label">Questions and answers</p>
+          <h2>Fruit Merge Scoring FAQ</h2>
+
+          <div class="faq-list">
+            <details>
+              <summary>How are points awarded in Fruit Merge?</summary>
+              <p>
+                Two identical fruits merge into the next fruit, and the game
+                adds the score value of that new fruit. Two Cherries create a
+                Strawberry and award 10 points.
+              </p>
+            </details>
+
+            <details>
+              <summary>Does dropping a fruit add points?</summary>
+              <p>
+                No. A normal drop does not add the fruit's listed value. Points
+                are awarded when a merge creates a new fruit.
+              </p>
+            </details>
+
+            <details>
+              <summary>How many points does a Dragon Fruit give?</summary>
+              <p>
+                The final merge from two Melons to one Dragon Fruit awards
+                5,120 points. A complete theoretical chain from 1,024 Cherries
+                totals 51,200 points across all merges.
+              </p>
+            </details>
+
+            <details>
+              <summary>Do chain merges have a combo multiplier?</summary>
+              <p>
+                No separate multiplier is used in the current system. Every
+                merge receives its normal award, and those awards are added
+                together during the chain.
+              </p>
+            </details>
+
+            <details>
+              <summary>Why can two runs with the same largest fruit have different scores?</summary>
+              <p>
+                Score depends on every merge in the run. One player may create
+                more repeated mid-level fruits, while another reaches the same
+                largest fruit through a shorter route using fruits supplied by
+                the queue.
+              </p>
+            </details>
+
+            <details>
+              <summary>Is the full-chain total the score I will always have when I reach that fruit?</summary>
+              <p>
+                No. It is a mathematical reference that assumes the fruit was
+                built entirely from Cherries. Real games can supply early fruit
+                levels directly, and your total also includes other merges elsewhere on the board.
+              </p>
+            </details>
+          </div>
+
+          <div class="related-guides">
+            <a href="/fruit-evolution-guide.html">
+              Fruit Evolution Guide
+              <span>See the complete fruit order, sizes, and level-by-level notes.</span>
+            </a>
+
+            <a href="/fruit-merge-strategy.html">
+              Strategy Guide
+              <span>Learn board control, queue planning, chain routes, and recovery.</span>
+            </a>
+
+            <a href="/how-to-play-fruit-merge.html">
+              How to Play
+              <span>Review controls, merging rules, and the danger-line system.</span>
+            </a>
+          </div>
+        </section>
+      </article>
+
+      <aside class="sidebar" aria-label="Scoring guide navigation">
+        <h2>On this page</h2>
+        <a href="#how-scoring-works">How scoring works</a>
+        <a href="#score-table">Complete score table</a>
+        <a href="#score-math">Full-chain score math</a>
+        <a href="#chain-merges">Chain merge scoring</a>
+        <a href="#calculator">Score calculator</a>
+        <a href="#milestones">Score milestones</a>
+        <a href="#score-higher">How to score higher</a>
+        <a href="#faq">Scoring FAQ</a>
+      </aside>
+    </div>
+
+    <section class="final-cta">
+      <h2>Put the Score Guide Into Practice</h2>
+      <p>
+        Watch the next-fruit queue, build safe pairs, and keep the board low
+        enough to create one more high-value merge.
+      </p>
+      <a class="button button-primary" href="/#game">Play Fruit Merge Online</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/">Play Game</a>
+        <a href="/how-to-play-fruit-merge.html">How to Play</a>
+        <a href="/fruit-merge-strategy.html">Strategy</a>
+        <a href="/fruit-evolution-guide.html">Evolution</a>
+        <a href="/about.html">About</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+
+      <p>© 2026 Fruit Merge Online.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      "use strict";
+
+      function installImageFallbacks() {
+        document.querySelectorAll("img[data-fallbacks]").forEach(function (image) {
+          var fallbacks = image.dataset.fallbacks
+            .split(",")
+            .map(function (path) { return path.trim(); })
+            .filter(Boolean);
+          var index = 0;
+
+          image.addEventListener("error", function handleError() {
+            if (index >= fallbacks.length) {
+              image.removeEventListener("error", handleError);
+              return;
+            }
+            image.src = fallbacks[index];
+            index += 1;
+          });
+        });
+      }
+
+      function installScoreCalculator() {
+        var inputs = Array.prototype.slice.call(document.querySelectorAll(".merge-input"));
+        var output = document.getElementById("score-output");
+        var resetButton = document.getElementById("reset-calculator");
+        var exampleButton = document.getElementById("load-example");
+
+        if (!inputs.length || !output || !resetButton || !exampleButton) {
+          return;
+        }
+
+        function normalizeCount(value) {
+          var parsed = Number.parseInt(value, 10);
+          return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+        }
+
+        function updateTotal() {
+          var total = inputs.reduce(function (sum, input) {
+            var count = normalizeCount(input.value);
+            var score = Number.parseInt(input.dataset.score, 10) || 0;
+            return sum + count * score;
+          }, 0);
+
+          output.value = total.toLocaleString("en-US");
+          output.textContent = total.toLocaleString("en-US");
+        }
+
+        inputs.forEach(function (input) {
+          input.addEventListener("input", updateTotal);
+          input.addEventListener("blur", function () {
+            input.value = String(normalizeCount(input.value));
+            updateTotal();
+          });
+        });
+
+        resetButton.addEventListener("click", function () {
+          inputs.forEach(function (input) { input.value = "0"; });
+          updateTotal();
+        });
+
+        exampleButton.addEventListener("click", function () {
+          var exampleCounts = [18, 8, 4, 2, 1, 1, 1, 0, 0, 0];
+          inputs.forEach(function (input, index) {
+            input.value = String(exampleCounts[index] || 0);
+          });
+          updateTotal();
+        });
+
+        updateTotal();
+      }
+
+      installImageFallbacks();
+      installScoreCalculator();
+    })();
+  </script>
+</body>
+</html>
