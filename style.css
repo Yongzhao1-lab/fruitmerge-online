@@ -1,4 +1,13 @@
-{
+/* =========================================================
+   Fruit Merge Online — Complete Homepage Stylesheet
+   Updated: 2026-07-11
+   Includes homepage entries for:
+   - Fruit Evolution Guide
+   - Fruit Merge Scoring Guide
+   - How to Get Dragon Fruit
+   ========================================================= */
+
+* {
   box-sizing: border-box;
 }
 
@@ -49,6 +58,11 @@ a {
   text-decoration: none;
 }
 
+img,
+canvas {
+  max-width: 100%;
+}
+
 .hidden {
   display: none !important;
 }
@@ -57,12 +71,17 @@ a {
   position: absolute;
   width: 1px;
   height: 1px;
+  padding: 0;
+  margin: -1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
+  border: 0;
 }
 
-/* Layout */
+/* =========================================================
+   Main Layout
+   ========================================================= */
 
 .portal-shell {
   min-height: 100vh;
@@ -103,7 +122,8 @@ a {
   letter-spacing: -0.055em;
 }
 
-.brand > span:last-child span {
+.brand > span:last-child span,
+.brand strong {
   color: var(--green);
 }
 
@@ -251,7 +271,9 @@ a {
   align-items: center;
 }
 
-/* Game Card */
+/* =========================================================
+   Game Card
+   ========================================================= */
 
 .game-player {
   width: min(980px, calc(100vw - 170px));
@@ -329,7 +351,9 @@ a {
   pointer-events: none;
 }
 
-/* Title */
+/* =========================================================
+   Scene Title and Decorations
+   ========================================================= */
 
 .scene-title {
   position: absolute;
@@ -454,7 +478,9 @@ a {
   right: 0;
 }
 
-/* Left Panel */
+/* =========================================================
+   Left Score and Leaderboard Panel
+   ========================================================= */
 
 .scene-left {
   position: absolute;
@@ -659,7 +685,9 @@ a {
   display: none;
 }
 
-/* Center Canvas */
+/* =========================================================
+   Center Canvas
+   ========================================================= */
 
 .scene-center {
   position: absolute;
@@ -703,7 +731,9 @@ a {
   touch-action: none;
 }
 
-/* Game Over */
+/* =========================================================
+   Game Over
+   ========================================================= */
 
 .game-over-panel {
   position: absolute;
@@ -808,7 +838,9 @@ a {
   background: #fff;
 }
 
-/* Right Panel */
+/* =========================================================
+   Right Next and Evolution Panels
+   ========================================================= */
 
 .scene-right {
   position: absolute;
@@ -1034,7 +1066,9 @@ a {
   display: none;
 }
 
-/* Start Overlay */
+/* =========================================================
+   Start Overlay
+   ========================================================= */
 
 .viewport-start-overlay {
   position: absolute;
@@ -1166,7 +1200,9 @@ a {
   font-weight: 1000;
 }
 
-/* Toolbar */
+/* =========================================================
+   Bottom Game Toolbar
+   ========================================================= */
 
 .game-toolbar {
   flex: 0 0 56px;
@@ -1242,7 +1278,9 @@ a {
   background: linear-gradient(180deg, #ff6b77, #f3425e);
 }
 
-/* Content */
+/* =========================================================
+   Homepage Content Sections
+   ========================================================= */
 
 .content-section {
   width: min(100%, 980px);
@@ -1268,6 +1306,11 @@ a {
   font-size: 30px;
   line-height: 1.1;
   letter-spacing: -0.04em;
+}
+
+.content-section > p:not(.section-kicker) {
+  color: var(--muted);
+  line-height: 1.7;
 }
 
 .info-grid {
@@ -1341,7 +1384,9 @@ a {
   font-weight: 800;
 }
 
-/* Desktop Responsive */
+/* =========================================================
+   Desktop Responsive
+   ========================================================= */
 
 @media (min-width: 881px) and (max-width: 1180px) {
   .search-box {
@@ -1397,7 +1442,9 @@ a {
   }
 }
 
-/* Mobile Default */
+/* =========================================================
+   Mobile Default Layout
+   ========================================================= */
 
 .mobile-game-hud,
 .mobile-menu-button,
@@ -1441,6 +1488,11 @@ a {
     overflow-x: auto;
     white-space: nowrap;
     font-size: 12px;
+    scrollbar-width: none;
+  }
+
+  .top-nav::-webkit-scrollbar {
+    display: none;
   }
 
   .portal-main {
@@ -1458,6 +1510,7 @@ a {
     height: auto;
     min-height: 0;
     padding: 10px 6px 12px;
+    border-radius: 0;
   }
 
   .game-scene {
@@ -1513,6 +1566,7 @@ a {
 
   .score-panel {
     min-height: 0;
+    max-height: none;
     padding: 10px 8px;
     border-radius: 18px;
   }
@@ -1538,8 +1592,12 @@ a {
   }
 
   .top-runs-title {
-    margin: 8px 0 6px;
+    margin: 6px 0 4px;
     font-size: 7px;
+  }
+
+  .leaderboard-list {
+    gap: 4px;
   }
 
   .leaderboard-item {
@@ -1579,6 +1637,7 @@ a {
 
   .next-panel {
     min-height: 110px;
+    max-height: none;
     padding: 10px 6px;
     border-radius: 18px;
   }
@@ -1586,6 +1645,10 @@ a {
   .next-panel h2,
   .evolution-panel h2 {
     font-size: 10px;
+  }
+
+  .panel-sparkle {
+    display: none;
   }
 
   .next-main canvas {
@@ -1597,6 +1660,10 @@ a {
     font-size: 8px;
   }
 
+  .next-divider {
+    margin: 5px auto;
+  }
+
   .next-mini-row {
     gap: 6px;
   }
@@ -1604,6 +1671,10 @@ a {
   .next-mini-row canvas {
     width: 24px;
     height: 24px;
+  }
+
+  .next-mini-row small {
+    font-size: 7px;
   }
 
   .restart-button {
@@ -1614,9 +1685,19 @@ a {
     font-size: 17px;
   }
 
+  .evolution-panel {
+    margin-top: 6px;
+    padding: 8px 5px 7px;
+    border-radius: 18px;
+  }
+
   .evolution-circle {
     width: 82px;
     height: 82px;
+  }
+
+  .evolution-circle::before {
+    inset: 25px;
   }
 
   .fm-evo-item {
@@ -1660,12 +1741,19 @@ a {
     padding: 20px;
   }
 
+  .content-section h2 {
+    font-size: 25px;
+  }
+
   .info-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* Mobile Immersive */
+/* =========================================================
+   Mobile Immersive Mode
+   Canvas keeps the 420 × 560 logical aspect ratio.
+   ========================================================= */
 
 @media (max-width: 880px) {
   body.mobile-playing {
@@ -1681,7 +1769,10 @@ a {
   body.mobile-playing .content-section,
   body.mobile-playing .site-footer,
   body.mobile-playing .scene-left,
-  body.mobile-playing .scene-right {
+  body.mobile-playing .scene-right,
+  body.mobile-playing .scene-title,
+  body.mobile-playing .fruit-corner,
+  body.mobile-playing .scene-decoration {
     display: none !important;
   }
 
@@ -1781,12 +1872,14 @@ a {
     place-items: center !important;
     width: 44px !important;
     height: 42px !important;
+    border: 0 !important;
     border-radius: 14px !important;
     color: #6a4115 !important;
     background:
       radial-gradient(circle at 30% 22%, rgba(255,255,255,0.88), transparent 25%),
       linear-gradient(180deg, rgba(255,249,218,0.94), rgba(255,207,89,0.84)) !important;
     border: 1.5px solid rgba(255,255,255,0.72) !important;
+    box-shadow: 0 7px 16px rgba(108,67,14,0.14) !important;
   }
 
   body.mobile-playing .scene-center {
@@ -1853,6 +1946,11 @@ a {
       linear-gradient(180deg, rgba(255,249,220,0.96), rgba(255,221,139,0.92)) !important;
     border: 2px solid rgba(255,255,255,0.72) !important;
     text-align: center !important;
+    box-shadow: 0 26px 70px rgba(61, 33, 5, 0.28) !important;
+  }
+
+  body.mobile-playing .mobile-menu-card h2 {
+    margin: 0 0 14px !important;
   }
 
   body.mobile-playing .mobile-menu-actions {
@@ -1897,6 +1995,7 @@ a {
     background:
       linear-gradient(180deg, rgba(255,249,220,0.96), rgba(255,221,139,0.92)) !important;
     border: 2px solid rgba(255,255,255,0.72) !important;
+    box-shadow: 0 22px 50px rgba(61, 33, 5, 0.22) !important;
   }
 
   body.mobile-playing .mobile-share-grid {
@@ -1962,11 +2061,12 @@ a {
 
 /* =========================================================
    Homepage Guide Entry Buttons
-   Supports the existing inline-button HTML inside #levels.
+   This single section controls all three guide links inside #levels.
    ========================================================= */
 
 #levels a[href="/fruit-evolution-guide.html"],
-#levels a[href="/fruit-merge-scoring-guide.html"] {
+#levels a[href="/fruit-merge-scoring-guide.html"],
+#levels a[href="/how-to-get-dragon-fruit.html"] {
   min-height: 50px !important;
   padding: 0 22px !important;
   margin: 6px !important;
@@ -2002,8 +2102,14 @@ a {
     linear-gradient(180deg, #ffe987 0%, #ffd052 100%) !important;
 }
 
+#levels a[href="/how-to-get-dragon-fruit.html"] {
+  background:
+    linear-gradient(180deg, #ffb6cf 0%, #ff7fa7 100%) !important;
+}
+
 #levels a[href="/fruit-evolution-guide.html"]:hover,
-#levels a[href="/fruit-merge-scoring-guide.html"]:hover {
+#levels a[href="/fruit-merge-scoring-guide.html"]:hover,
+#levels a[href="/how-to-get-dragon-fruit.html"]:hover {
   transform: translateY(-3px) !important;
   filter: brightness(1.04) !important;
   box-shadow:
@@ -2012,17 +2118,17 @@ a {
 }
 
 #levels a[href="/fruit-evolution-guide.html"]:active,
-#levels a[href="/fruit-merge-scoring-guide.html"]:active {
+#levels a[href="/fruit-merge-scoring-guide.html"]:active,
+#levels a[href="/how-to-get-dragon-fruit.html"]:active {
   transform: translateY(-1px) scale(0.99) !important;
 }
 
 #levels a[href="/fruit-evolution-guide.html"]:focus-visible,
-#levels a[href="/fruit-merge-scoring-guide.html"]:focus-visible {
+#levels a[href="/fruit-merge-scoring-guide.html"]:focus-visible,
+#levels a[href="/how-to-get-dragon-fruit.html"]:focus-visible {
   outline: 3px solid #ffffff !important;
   outline-offset: 4px !important;
 }
-
-/* Optional class-based layout, in case the two links use guide-link-row. */
 
 .guide-link-row {
   display: flex;
@@ -2038,7 +2144,8 @@ a {
 
 @media (max-width: 600px) {
   #levels a[href="/fruit-evolution-guide.html"],
-  #levels a[href="/fruit-merge-scoring-guide.html"] {
+  #levels a[href="/fruit-merge-scoring-guide.html"],
+  #levels a[href="/how-to-get-dragon-fruit.html"] {
     width: 100% !important;
     min-height: 52px !important;
     margin: 6px 0 !important;
