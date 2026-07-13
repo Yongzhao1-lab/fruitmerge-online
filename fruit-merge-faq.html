@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Fruit Merge FAQ: Gameplay, Scores, Saves and Troubleshooting</title>
+  <meta
+    name="description"
+    content="Find answers to common Fruit Merge questions about controls, merging rules, scores, Dragon Fruit, saved records, mobile play, sound, game over, and troubleshooting."
+  />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://fruitmerge.online/fruit-merge-faq.html" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Fruit Merge Online" />
+  <meta property="og:title" content="Fruit Merge FAQ" />
+  <meta
+    property="og:description"
+    content="Quick answers about Fruit Merge gameplay, controls, scoring, fruit evolution, saved records, mobile play, sound, and common technical problems."
+  />
+  <meta property="og:url" content="https://fruitmerge.online/fruit-merge-faq.html" />
+  <meta property="og:image" content="https://fruitmerge.online/og-image.svg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fruit Merge FAQ" />
+  <meta
+    name="twitter:description"
+    content="Gameplay rules, scoring answers, saved-score help, mobile controls, Dragon Fruit questions, and troubleshooting for Fruit Merge Online."
+  />
+  <meta name="twitter:image" content="https://fruitmerge.online/og-image.svg" />
+  <meta name="theme-color" content="#071221" />
+
+  <style>
+    :root {
+      --navy-950: #071221;
+      --navy-900: #0d1c31;
+      --navy-800: #152a47;
+      --navy-700: #24466f;
+      --text: #1b2d46;
+      --muted: #607087;
+      --line: #dbe5ee;
+      --white: #ffffff;
+      --cream: #fff9e8;
+      --yellow: #ffd65c;
+      --orange: #ff7450;
+      --orange-dark: #d95f3f;
+      --green: #78de4a;
+      --mint: #eafbf4;
+      --blue-soft: #edf6ff;
+      --shadow: 0 18px 55px rgba(18, 43, 71, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255, 214, 92, 0.2), transparent 27%),
+        radial-gradient(circle at 91% 12%, rgba(120, 222, 74, 0.12), transparent 25%),
+        linear-gradient(180deg, #f7fbff 0%, #fffdf5 100%);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.68;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    h1,
+    h2,
+    h3 {
+      color: var(--navy-900);
+      line-height: 1.15;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(7, 18, 33, 0.96);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+    }
+
+    .header-inner,
+    .page-shell,
+    .footer-inner {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .header-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: linear-gradient(145deg, #a8ff6a, #49df55);
+      box-shadow: 0 8px 24px rgba(88, 237, 90, 0.28);
+    }
+
+    .brand strong {
+      color: #8cf05c;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .header-nav a {
+      color: #e9f0fa;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .header-nav a:hover,
+    .header-nav a:focus-visible {
+      color: #a4f66f;
+    }
+
+    .header-play {
+      min-height: 42px;
+      padding: 0 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff8d5d, #ff654b);
+      color: var(--white) !important;
+      box-shadow: 0 10px 28px rgba(255, 104, 73, 0.3);
+    }
+
+    .breadcrumbs {
+      padding: 24px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .breadcrumbs a {
+      color: var(--navy-700);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .hero {
+      padding: 42px 0 50px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--orange-dark);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 900px;
+      margin: 0 auto;
+      font-size: clamp(40px, 6vw, 68px);
+      letter-spacing: -0.055em;
+      overflow-wrap: anywhere;
+    }
+
+    .hero-lead {
+      max-width: 790px;
+      margin: 22px auto 0;
+      color: #4d6078;
+      font-size: 18px;
+    }
+
+    .hero-actions {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .button {
+      min-height: 50px;
+      padding: 0 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 0;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .button-primary {
+      color: var(--white);
+      background: linear-gradient(135deg, #ff8a57, #ff654b);
+      box-shadow: 0 12px 30px rgba(255, 101, 75, 0.28);
+    }
+
+    .button-secondary {
+      color: var(--navy-800);
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+
+    .faq-search-card {
+      max-width: 920px;
+      margin: 38px auto 0;
+      padding: 26px;
+      border: 1px solid rgba(255, 198, 64, 0.55);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 13% 22%, rgba(255, 255, 255, 0.75), transparent 25%),
+        linear-gradient(145deg, #fff8d9, #ffe7aa);
+      box-shadow: var(--shadow);
+      text-align: left;
+    }
+
+    .search-label {
+      display: block;
+      margin-bottom: 10px;
+      color: #6c4d25;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
+    .search-field {
+      position: relative;
+    }
+
+    .search-field span {
+      position: absolute;
+      top: 50%;
+      left: 18px;
+      transform: translateY(-50%);
+      font-size: 20px;
+      pointer-events: none;
+    }
+
+    #faq-search {
+      width: 100%;
+      min-height: 56px;
+      padding: 0 18px 0 52px;
+      border: 1px solid rgba(116, 85, 37, 0.25);
+      border-radius: 15px;
+      color: var(--navy-900);
+      background: rgba(255, 255, 255, 0.94);
+      outline: none;
+    }
+
+    #faq-search:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 4px rgba(255, 116, 80, 0.14);
+    }
+
+    .clear-search {
+      min-width: 92px;
+      border: 0;
+      border-radius: 15px;
+      color: var(--navy-800);
+      background: rgba(255, 255, 255, 0.86);
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .search-note {
+      margin: 11px 0 0;
+      color: #73572d;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .category-nav {
+      margin: 0 0 54px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .category-button {
+      min-height: 104px;
+      padding: 18px 14px;
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      color: var(--navy-800);
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 9px 28px rgba(28, 57, 91, 0.06);
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .category-button span,
+    .category-button strong {
+      display: block;
+    }
+
+    .category-button span {
+      margin-bottom: 8px;
+      font-size: 25px;
+    }
+
+    .category-button strong {
+      font-size: 14px;
+    }
+
+    .category-button small {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .category-button:hover,
+    .category-button:focus-visible,
+    .category-button.active {
+      border-color: rgba(255, 116, 80, 0.5);
+      background: #fff8ef;
+      transform: translateY(-2px);
+    }
+
+    .content-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      align-items: start;
+      gap: 34px;
+    }
+
+    .article {
+      min-width: 0;
+    }
+
+    .faq-section {
+      margin-bottom: 28px;
+      padding: 34px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 12px 38px rgba(24, 52, 83, 0.07);
+      scroll-margin-top: 94px;
+    }
+
+    .section-label {
+      margin: 0 0 9px;
+      color: var(--orange-dark);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .faq-section h2 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 38px);
+      letter-spacing: -0.035em;
+    }
+
+    .section-intro {
+      margin: 12px 0 23px;
+      color: var(--muted);
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .faq-item {
+      overflow: hidden;
+      border: 1px solid #dfe7ef;
+      border-radius: 17px;
+      background: #ffffff;
+    }
+
+    .faq-item[open] {
+      border-color: rgba(255, 116, 80, 0.42);
+      box-shadow: 0 10px 26px rgba(27, 54, 86, 0.07);
+    }
+
+    .faq-item summary {
+      position: relative;
+      padding: 18px 54px 18px 20px;
+      color: var(--navy-900);
+      font-weight: 850;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-item summary::after {
+      content: "+";
+      position: absolute;
+      top: 50%;
+      right: 19px;
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      transform: translateY(-50%);
+      border-radius: 999px;
+      color: #c94e32;
+      background: #fff0e9;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .faq-item[open] summary::after {
+      content: "−";
+    }
+
+    .faq-answer {
+      padding: 0 20px 19px;
+      color: #4e6178;
+    }
+
+    .faq-answer p {
+      margin: 0;
+    }
+
+    .faq-answer a {
+      color: #be4f35;
+      font-weight: 800;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 96px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 12px 34px rgba(24, 52, 83, 0.07);
+    }
+
+    .sidebar h2 {
+      margin: 0 0 15px;
+      font-size: 18px;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 10px 0;
+      border-bottom: 1px solid #e8edf2;
+      color: #53667d;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 720;
+    }
+
+    .sidebar a:last-child {
+      border-bottom: 0;
+    }
+
+    .sidebar a:hover,
+    .sidebar a:focus-visible {
+      color: #ca5739;
+    }
+
+    .no-results {
+      display: none;
+      margin: 0 0 28px;
+      padding: 34px;
+      border: 1px dashed #cad6e2;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.78);
+      text-align: center;
+    }
+
+    .no-results h2 {
+      margin: 0 0 8px;
+      font-size: 26px;
+    }
+
+    .no-results p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .related-guides {
+      margin: 8px 0 68px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .related-guides a {
+      min-height: 170px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 21px;
+      color: var(--navy-900);
+      background:
+        radial-gradient(circle at 94% 4%, rgba(255, 214, 92, 0.24), transparent 32%),
+        #ffffff;
+      text-decoration: none;
+      font-weight: 900;
+      box-shadow: 0 10px 30px rgba(28, 57, 91, 0.06);
+    }
+
+    .related-guides a:hover,
+    .related-guides a:focus-visible {
+      transform: translateY(-3px);
+      border-color: rgba(255, 116, 80, 0.45);
+    }
+
+    .related-guides span {
+      display: block;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .final-cta {
+      margin: 0 0 72px;
+      padding: 44px 32px;
+      border-radius: 28px;
+      color: #ffffff;
+      background:
+        radial-gradient(circle at 12% 15%, rgba(255, 214, 92, 0.28), transparent 28%),
+        linear-gradient(135deg, #102540, #071221);
+      text-align: center;
+      box-shadow: 0 22px 58px rgba(7, 18, 33, 0.22);
+    }
+
+    .final-cta h2 {
+      margin: 0;
+      color: #ffffff;
+      font-size: clamp(30px, 5vw, 46px);
+      letter-spacing: -0.04em;
+    }
+
+    .final-cta p {
+      max-width: 660px;
+      margin: 14px auto 24px;
+      color: #c9d6e6;
+    }
+
+    .site-footer {
+      padding: 30px 0;
+      color: #c9d6e6;
+      background: var(--navy-950);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .footer-inner p {
+      margin: 0;
+      font-size: 13px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .footer-links a {
+      color: #e6edf6;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    :focus-visible {
+      outline: 3px solid #8aec59;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 1020px) {
+      .category-nav {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .content-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .related-guides {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .header-inner {
+        min-height: 64px;
+      }
+
+      .header-nav a:not(.header-play) {
+        display: none;
+      }
+
+      .brand {
+        font-size: 19px;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+      }
+
+      .hero {
+        padding-top: 28px;
+      }
+
+      .faq-section {
+        padding: 25px 20px;
+        border-radius: 20px;
+      }
+
+      .faq-search-card {
+        padding: 20px;
+        border-radius: 22px;
+      }
+
+      .category-nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .related-guides {
+        grid-template-columns: 1fr;
+      }
+
+      .final-cta {
+        padding: 34px 22px;
+      }
+
+      .footer-inner {
+        display: block;
+      }
+
+      .footer-links {
+        margin-bottom: 18px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page-shell,
+      .header-inner,
+      .footer-inner {
+        width: min(100% - 22px, 1160px);
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .hero-lead {
+        font-size: 16px;
+      }
+
+      .hero-actions {
+        display: grid;
+      }
+
+      .search-row {
+        grid-template-columns: 1fr;
+      }
+
+      .clear-search {
+        min-height: 48px;
+      }
+
+      .category-nav {
+        grid-template-columns: 1fr;
+      }
+
+      .category-button {
+        min-height: 88px;
+      }
+
+      .faq-section h2 {
+        font-size: 29px;
+      }
+
+      .faq-item summary {
+        padding-left: 17px;
+      }
+
+      .faq-answer {
+        padding-left: 17px;
+        padding-right: 17px;
+      }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .category-button,
+      .related-guides a,
+      .button {
+        transition:
+          transform 0.18s ease,
+          border-color 0.18s ease,
+          box-shadow 0.18s ease;
+      }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is Fruit Merge Online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Fruit Merge Online is a free browser puzzle game where you drop fruits, combine identical fruits, unlock larger levels, and keep the stack below the danger line."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is Fruit Merge Online free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The game is free to play in a web browser and does not require an account."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to download or install Fruit Merge?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Fruit Merge Online runs directly in a modern web browser on desktop and mobile devices."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I play Fruit Merge on desktop?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Move the mouse to choose a horizontal drop position, then click to release the current fruit."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I play Fruit Merge on mobile?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tap the horizontal position where you want the current fruit to fall. A single deliberate tap selects the position and releases the fruit."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which fruits can merge?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Only two fruits of the same type can merge. Different fruit types do not combine."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the complete Fruit Merge evolution order?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The current order is Cherry, Strawberry, Grape, Orange, Apple, Peach, Pineapple, Watermelon, Grapefruit, Melon, and Dragon Fruit."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I get Dragon Fruit?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Merge two Melons to create Dragon Fruit. Dragon Fruit is the final level in the current evolution chain."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How are points awarded in Fruit Merge?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Points are awarded when two identical fruits merge and create a new fruit. A normal fruit drop does not add points."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many points does Dragon Fruit give?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Creating Dragon Fruit from two Melons awards 5,120 points in the current scoring system."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do chain merges have a combo multiplier?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No separate combo multiplier is used. Every merge receives its normal point award, and the awards are added together."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why did my Fruit Merge game end?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The game ends when settled fruits remain above the danger line for too long."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does the next-fruit preview do?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The preview shows the upcoming fruit queue so you can plan the current drop and prepare space for the following fruits."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Fruit Merge Online save my best score?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Your best score, recent runs, and selected music preference are stored locally in your browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why did my saved score disappear?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Local records can disappear if browser storage is cleared, private browsing is used, site data is removed, or you switch to another browser or device."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does my score sync between devices?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. The current game stores records locally, so scores do not automatically sync between different browsers or devices."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is the game not loading?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Reload the page, confirm JavaScript is enabled, try a current browser, and open the site directly instead of through an in-app browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why is the game not responding to taps or clicks?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Wait until the current fruit has been released, avoid rapid repeated input, reload the page, and check whether another overlay or browser gesture is blocking the game area."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Fruit Merge Online",
+        "item": "https://fruitmerge.online/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Fruit Merge FAQ",
+        "item": "https://fruitmerge.online/fruit-merge-faq.html"
+      }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="Fruit Merge Online home">
+        <span class="brand-mark" aria-hidden="true">🍓</span>
+        <span>Fruit<strong>Merge</strong></span>
+      </a>
+
+      <nav class="header-nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/how-to-play-fruit-merge.html">How to Play</a>
+        <a href="/fruit-merge-strategy.html">Strategy</a>
+        <a href="/fruit-evolution-guide.html">Evolution</a>
+        <a class="header-play" href="/#game">Play Now</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Fruit Merge Online</a>
+      <span aria-hidden="true"> / </span>
+      <span>FAQ</span>
+    </nav>
+
+    <section class="hero">
+      <p class="eyebrow">Gameplay help center</p>
+      <h1>Fruit Merge FAQ</h1>
+      <p class="hero-lead">
+        Get clear answers about controls, merging rules, scores, fruit
+        evolution, Dragon Fruit, saved records, mobile play, sound settings,
+        game over, and common technical problems.
+      </p>
+
+      <div class="hero-actions">
+        <a class="button button-primary" href="/#game">
+          <span aria-hidden="true">▶</span>
+          Play Fruit Merge Online
+        </a>
+        <a class="button button-secondary" href="#faq-content">
+          Browse all questions
+        </a>
+      </div>
+
+      <div class="faq-search-card">
+        <label class="search-label" for="faq-search">Search the FAQ</label>
+        <div class="search-row">
+          <div class="search-field">
+            <span aria-hidden="true">⌕</span>
+            <input
+              id="faq-search"
+              type="search"
+              placeholder="Try “Dragon Fruit”, “score”, “mobile” or “game over”"
+              autocomplete="off"
+            />
+          </div>
+          <button class="clear-search" id="clear-search" type="button">Clear</button>
+        </div>
+        <p class="search-note" id="search-status" aria-live="polite">
+          Search all questions or choose a topic below.
+        </p>
+      </div>
+    </section>
+
+    <nav class="category-nav" aria-label="FAQ categories">
+      <button class="category-button active" type="button" data-category="all">
+        <span aria-hidden="true">🍒</span>
+        <strong>All Questions</strong>
+        <small>View the complete FAQ</small>
+      </button>
+      <button class="category-button" type="button" data-category="getting-started">
+        <span aria-hidden="true">▶</span>
+        <strong>Getting Started</strong>
+        <small>Free play and controls</small>
+      </button>
+      <button class="category-button" type="button" data-category="rules-scoring">
+        <span aria-hidden="true">＋</span>
+        <strong>Rules &amp; Scoring</strong>
+        <small>Merges, points and game over</small>
+      </button>
+      <button class="category-button" type="button" data-category="progress">
+        <span aria-hidden="true">🐉</span>
+        <strong>Fruit Progress</strong>
+        <small>Evolution and Dragon Fruit</small>
+      </button>
+      <button class="category-button" type="button" data-category="saves-help">
+        <span aria-hidden="true">⚙</span>
+        <strong>Saves &amp; Help</strong>
+        <small>Records and troubleshooting</small>
+      </button>
+    </nav>
+
+    <div class="content-layout" id="faq-content">
+      <article class="article">
+        <section class="faq-section" id="getting-started" data-section-category="getting-started">
+          <p class="section-label">Play in your browser</p>
+          <h2>Getting Started</h2>
+          <p class="section-intro">
+            Basic answers for new players using Fruit Merge Online on desktop,
+            phone, or tablet.
+          </p>
+
+          <div class="faq-list">
+            <details class="faq-item" data-category="getting-started">
+              <summary>What is Fruit Merge Online?</summary>
+              <div class="faq-answer">
+                <p>
+                  Fruit Merge Online is a free physics puzzle game. You drop
+                  fruits into the container, combine identical fruits into
+                  larger levels, earn points, and try to keep the stack below
+                  the danger line.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="getting-started">
+              <summary>Is Fruit Merge Online free?</summary>
+              <div class="faq-answer">
+                <p>
+                  Yes. You can play for free in your browser. The current game
+                  does not require an account, payment, or subscription.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="getting-started">
+              <summary>Do I need to download or install the game?</summary>
+              <div class="faq-answer">
+                <p>
+                  No. Open Fruit Merge Online in a modern browser and start
+                  playing. There is no separate app or installation file
+                  required.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="getting-started">
+              <summary>How do I play Fruit Merge on desktop?</summary>
+              <div class="faq-answer">
+                <p>
+                  Move the mouse across the game area to choose the horizontal
+                  drop position. Click once to release the current fruit. Use
+                  the drop guide and next-fruit preview before each move.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="getting-started">
+              <summary>How do I play Fruit Merge on mobile?</summary>
+              <div class="faq-answer">
+                <p>
+                  Tap the horizontal position where you want the fruit to fall.
+                  A single deliberate tap selects the position and releases the
+                  current fruit. Avoid rapid repeated taps while a fruit is
+                  still moving.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="getting-started">
+              <summary>Can I play Fruit Merge in full screen on mobile?</summary>
+              <div class="faq-answer">
+                <p>
+                  Supported mobile browsers can use the game’s immersive or
+                  full-screen controls. Browser behavior may vary, especially
+                  inside social-media or messaging-app browsers, so opening the
+                  site directly in Chrome, Safari, or another current browser
+                  usually gives the best result.
+                </p>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="faq-section" id="rules-scoring" data-section-category="rules-scoring">
+          <p class="section-label">Merges, points and survival</p>
+          <h2>Rules and Scoring</h2>
+          <p class="section-intro">
+            Learn what can merge, when points are added, how chains work, and
+            why a run ends.
+          </p>
+
+          <div class="faq-list">
+            <details class="faq-item" data-category="rules-scoring">
+              <summary>Which fruits can merge?</summary>
+              <div class="faq-answer">
+                <p>
+                  Only two fruits of the same type can merge. Different fruit
+                  types may touch, roll, or block each other, but they do not
+                  combine.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="rules-scoring">
+              <summary>How are points awarded?</summary>
+              <div class="faq-answer">
+                <p>
+                  Points are added when two identical fruits merge and create
+                  the next fruit. A normal fruit drop does not add points. See
+                  the <a href="/fruit-merge-scoring-guide.html">complete scoring guide</a>
+                  for every merge value.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="rules-scoring">
+              <summary>Do chain merges have a combo multiplier?</summary>
+              <div class="faq-answer">
+                <p>
+                  No separate combo multiplier is used in the current scoring
+                  system. Each successful merge receives its normal point
+                  award, and all awards in the chain are added together.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="rules-scoring">
+              <summary>Why can two runs with the same largest fruit have different scores?</summary>
+              <div class="faq-answer">
+                <p>
+                  Your total includes every merge made during the run. One
+                  player may create more repeated mid-level fruits, while
+                  another reaches the same largest fruit through a shorter
+                  route using fruits supplied by the queue.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="rules-scoring">
+              <summary>Why did my game end?</summary>
+              <div class="faq-answer">
+                <p>
+                  The game ends when settled fruits remain above the red danger
+                  line for too long. A fruit briefly crossing the line may not
+                  end the run if it quickly falls or merges back into a safe
+                  position.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="rules-scoring">
+              <summary>What does the next-fruit preview do?</summary>
+              <div class="faq-answer">
+                <p>
+                  The preview shows the upcoming fruit queue. Use it to plan the
+                  current drop, reserve a safe position for the following
+                  fruits, and avoid separating future matching pairs.
+                </p>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="faq-section" id="progress" data-section-category="progress">
+          <p class="section-label">Fruit levels and final evolution</p>
+          <h2>Fruit Progress and Dragon Fruit</h2>
+          <p class="section-intro">
+            Answers about the evolution order, the highest fruit, and the
+            safest way to progress through larger levels.
+          </p>
+
+          <div class="faq-list">
+            <details class="faq-item" data-category="progress">
+              <summary>What is the complete Fruit Merge evolution order?</summary>
+              <div class="faq-answer">
+                <p>
+                  The current order is Cherry, Strawberry, Grape, Orange,
+                  Apple, Peach, Pineapple, Watermelon, Grapefruit, Melon, and
+                  Dragon Fruit. The
+                  <a href="/fruit-evolution-guide.html">Fruit Evolution Guide</a>
+                  shows the full level-by-level chain.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="progress">
+              <summary>How do I get Dragon Fruit?</summary>
+              <div class="faq-answer">
+                <p>
+                  Merge two Melons to create Dragon Fruit. Build the Melons low
+                  on the board and keep a clear approach lane so the final pair
+                  can touch safely. The
+                  <a href="/how-to-get-dragon-fruit.html">Dragon Fruit guide</a>
+                  explains the complete route.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="progress">
+              <summary>How many points does Dragon Fruit give?</summary>
+              <div class="faq-answer">
+                <p>
+                  The final merge from two Melons to one Dragon Fruit awards
+                  5,120 points in the current scoring system.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="progress">
+              <summary>Can two Dragon Fruits merge again?</summary>
+              <div class="faq-answer">
+                <p>
+                  No. Dragon Fruit is the final level in the current evolution
+                  chain and does not evolve into another fruit.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="progress">
+              <summary>How many Cherries are needed for one Dragon Fruit?</summary>
+              <div class="faq-answer">
+                <p>
+                  A perfect theoretical chain requires 1,024 Cherries. In a
+                  real run, the queue may provide higher starting fruit levels,
+                  so you may not need to drop that many Cherries yourself.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="progress">
+              <summary>What is the best way to build larger fruits?</summary>
+              <div class="faq-answer">
+                <p>
+                  Keep related fruit levels near each other, build a stable low
+                  base, protect the center drop lane, and use the queue before
+                  every move. The
+                  <a href="/fruit-merge-strategy.html">strategy guide</a>
+                  covers board zones, recovery, and chain planning.
+                </p>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="faq-section" id="saves-help" data-section-category="saves-help">
+          <p class="section-label">Local records and technical help</p>
+          <h2>Saved Scores, Sound and Troubleshooting</h2>
+          <p class="section-intro">
+            Find out where records are stored and what to try when the game,
+            controls, audio, or saved data do not behave as expected.
+          </p>
+
+          <div class="faq-list">
+            <details class="faq-item" data-category="saves-help">
+              <summary>Does Fruit Merge Online save my best score?</summary>
+              <div class="faq-answer">
+                <p>
+                  Yes. Your best score, recent runs, and selected music
+                  preference are stored locally in your browser.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="saves-help">
+              <summary>Does my score sync between devices?</summary>
+              <div class="faq-answer">
+                <p>
+                  No. The current version uses local browser storage, so scores
+                  do not automatically sync between phones, computers,
+                  browsers, or browser profiles.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="saves-help">
+              <summary>Why did my saved score disappear?</summary>
+              <div class="faq-answer">
+                <p>
+                  Local records can be removed when browser site data is
+                  cleared, private browsing is used, storage permission is
+                  restricted, or you switch to another browser or device.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="saves-help">
+              <summary>Does restarting delete my best score?</summary>
+              <div class="faq-answer">
+                <p>
+                  Restart begins a new run. Your saved best score and local
+                  records normally remain unless the browser’s site data is
+                  cleared.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="saves-help">
+              <summary>Why is there no music?</summary>
+              <div class="faq-answer">
+                <p>
+                  Background music is off by default. Use the music control to
+                  enable it. Some browsers also block audio until you tap or
+                  click the page once.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="saves-help">
+              <summary>Why is the game not loading?</summary>
+              <div class="faq-answer">
+                <p>
+                  Reload the page, confirm JavaScript is enabled, and try a
+                  current version of Chrome, Safari, Edge, or Firefox. Opening
+                  the site directly in the browser can also help when an
+                  in-app browser does not load the game correctly.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="saves-help">
+              <summary>Why is the game not responding to taps or clicks?</summary>
+              <div class="faq-answer">
+                <p>
+                  Wait until the current fruit has been released, avoid rapid
+                  repeated input, and check whether a menu, share window, or
+                  browser gesture is covering the game area. Reloading the page
+                  usually clears a temporary input problem.
+                </p>
+              </div>
+            </details>
+
+            <details class="faq-item" data-category="saves-help">
+              <summary>Where can I report a problem?</summary>
+              <div class="faq-answer">
+                <p>
+                  Use the <a href="/contact.html">Contact page</a> and include
+                  your device, browser, screen size, what happened, and the
+                  steps that caused the problem. A screenshot or short screen
+                  recording is especially helpful.
+                </p>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <div class="no-results" id="no-results">
+          <h2>No matching questions found</h2>
+          <p>
+            Try a shorter search such as “score”, “mobile”, “save”, “sound” or
+            “Dragon Fruit”.
+          </p>
+        </div>
+      </article>
+
+      <aside class="sidebar" aria-label="FAQ page navigation">
+        <h2>FAQ Topics</h2>
+        <a href="#getting-started">Getting Started</a>
+        <a href="#rules-scoring">Rules and Scoring</a>
+        <a href="#progress">Fruit Progress</a>
+        <a href="#saves-help">Saves and Troubleshooting</a>
+        <a href="/how-to-play-fruit-merge.html">How to Play Guide</a>
+        <a href="/fruit-merge-strategy.html">Strategy Guide</a>
+        <a href="/fruit-merge-scoring-guide.html">Scoring Guide</a>
+      </aside>
+    </div>
+
+    <section aria-labelledby="related-guides-title">
+      <p class="section-label">Continue learning</p>
+      <h2 id="related-guides-title">Fruit Merge Guides</h2>
+
+      <div class="related-guides">
+        <a href="/how-to-play-fruit-merge.html">
+          How to Play Fruit Merge
+          <span>Learn desktop and mobile controls, merging rules, and the danger-line system.</span>
+        </a>
+
+        <a href="/fruit-merge-strategy.html">
+          Fruit Merge Strategy
+          <span>Improve board control, queue planning, chain routes, and recovery decisions.</span>
+        </a>
+
+        <a href="/fruit-evolution-guide.html">
+          Fruit Evolution Guide
+          <span>See every fruit level, score value, size, and complete evolution route.</span>
+        </a>
+
+        <a href="/how-to-get-dragon-fruit.html">
+          How to Get Dragon Fruit
+          <span>Build the final two Melons and complete the highest-level merge safely.</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <h2>Ready to Start Your Next Run?</h2>
+      <p>
+        Use the next-fruit preview, keep matching levels close, protect the
+        center lane, and stop the stack from staying above the danger line.
+      </p>
+      <a class="button button-primary" href="/#game">Play Fruit Merge Online</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/">Play Game</a>
+        <a href="/how-to-play-fruit-merge.html">How to Play</a>
+        <a href="/fruit-merge-strategy.html">Strategy</a>
+        <a href="/fruit-evolution-guide.html">Evolution</a>
+        <a href="/fruit-merge-scoring-guide.html">Scoring</a>
+        <a href="/fruit-merge-faq.html">FAQ</a>
+        <a href="/about.html">About</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+      <p>© 2026 Fruit Merge Online.</p>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const searchInput = document.getElementById("faq-search");
+      const clearButton = document.getElementById("clear-search");
+      const searchStatus = document.getElementById("search-status");
+      const noResults = document.getElementById("no-results");
+      const faqItems = [...document.querySelectorAll(".faq-item")];
+      const faqSections = [...document.querySelectorAll(".faq-section")];
+      const categoryButtons = [...document.querySelectorAll(".category-button")];
+
+      let activeCategory = "all";
+
+      const normalize = (value) =>
+        value.toLowerCase().replace(/\s+/g, " ").trim();
+
+      const applyFilters = () => {
+        const query = normalize(searchInput.value);
+        let visibleCount = 0;
+
+        faqItems.forEach((item) => {
+          const matchesCategory =
+            activeCategory === "all" ||
+            item.dataset.category === activeCategory;
+
+          const matchesSearch =
+            !query || normalize(item.textContent).includes(query);
+
+          const isVisible = matchesCategory && matchesSearch;
+          item.hidden = !isVisible;
+
+          if (isVisible) {
+            visibleCount += 1;
+            if (query) item.open = true;
+          } else {
+            item.open = false;
+          }
+        });
+
+        faqSections.forEach((section) => {
+          const hasVisibleQuestion = [...section.querySelectorAll(".faq-item")]
+            .some((item) => !item.hidden);
+          section.hidden = !hasVisibleQuestion;
+        });
+
+        noResults.style.display = visibleCount ? "none" : "block";
+
+        if (query) {
+          searchStatus.textContent =
+            `${visibleCount} question${visibleCount === 1 ? "" : "s"} found for “${searchInput.value.trim()}”.`;
+        } else if (activeCategory !== "all") {
+          const activeButton = categoryButtons.find(
+            (button) => button.dataset.category === activeCategory
+          );
+          searchStatus.textContent =
+            `${visibleCount} questions shown in ${activeButton?.querySelector("strong")?.textContent || "this topic"}.`;
+        } else {
+          searchStatus.textContent =
+            `Showing all ${visibleCount} Fruit Merge questions.`;
+        }
+      };
+
+      categoryButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          activeCategory = button.dataset.category;
+
+          categoryButtons.forEach((item) => {
+            const isActive = item === button;
+            item.classList.toggle("active", isActive);
+            item.setAttribute("aria-pressed", String(isActive));
+          });
+
+          applyFilters();
+
+          if (activeCategory !== "all") {
+            const target = document.getElementById(activeCategory);
+            if (target && !target.hidden) {
+              target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          }
+        });
+      });
+
+      searchInput.addEventListener("input", applyFilters);
+
+      clearButton.addEventListener("click", () => {
+        searchInput.value = "";
+        activeCategory = "all";
+
+        categoryButtons.forEach((button) => {
+          const isActive = button.dataset.category === "all";
+          button.classList.toggle("active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+        });
+
+        applyFilters();
+        searchInput.focus();
+      });
+
+      categoryButtons.forEach((button) => {
+        button.setAttribute(
+          "aria-pressed",
+          String(button.dataset.category === "all")
+        );
+      });
+
+      applyFilters();
+    })();
+  </script>
+</body>
+</html>
