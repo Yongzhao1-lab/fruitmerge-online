@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Fruit Merge Guides: How to Play, Tips, Strategy and Scores</title>
+
+  <meta
+    name="description"
+    content="Browse every Fruit Merge guide in one place. Learn how to play, improve your score, understand the fruit evolution chain, calculate points, and reach Dragon Fruit."
+  />
+  <meta
+    name="keywords"
+    content="fruit merge guides, fruit merge tips, fruit merge strategy, fruit merge scoring guide, fruit evolution guide, how to play fruit merge"
+  />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+
+  <link rel="canonical" href="https://fruitmerge.online/guides.html" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Fruit Merge Online" />
+  <meta
+    property="og:title"
+    content="Fruit Merge Guides: How to Play, Tips, Strategy and Scores"
+  />
+  <meta
+    property="og:description"
+    content="Find every Fruit Merge guide, from beginner controls and practical tips to scoring, evolution, and Dragon Fruit strategy."
+  />
+  <meta property="og:url" content="https://fruitmerge.online/guides.html" />
+  <meta property="og:image" content="https://fruitmerge.online/og-image.svg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta
+    name="twitter:title"
+    content="Fruit Merge Guides"
+  />
+  <meta
+    name="twitter:description"
+    content="All Fruit Merge tutorials, tips, scoring references, and evolution guides in one place."
+  />
+  <meta name="twitter:image" content="https://fruitmerge.online/og-image.svg" />
+
+  <meta name="theme-color" content="#071221" />
+
+  <style>
+    :root {
+      --navy-950: #071221;
+      --navy-900: #0d1c31;
+      --navy-850: #11243d;
+      --navy-800: #162d4c;
+      --navy-700: #24466f;
+      --white: #ffffff;
+      --text: #1b2d46;
+      --muted: #607087;
+      --line: #dbe5ee;
+      --green: #8df04f;
+      --yellow: #ffd65c;
+      --orange: #ff7450;
+      --pink: #ff8fb1;
+      --blue: #9fc9ff;
+      --shadow: 0 18px 55px rgba(18, 43, 71, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(255, 214, 92, 0.22), transparent 28%),
+        radial-gradient(circle at 94% 12%, rgba(141, 240, 79, 0.16), transparent 26%),
+        linear-gradient(180deg, #f6fbff 0%, #fffdf5 100%);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin-top: 0;
+      color: var(--navy-900);
+      line-height: 1.16;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(7, 18, 33, 0.96);
+      backdrop-filter: blur(14px);
+    }
+
+    .header-inner,
+    .page-shell,
+    .footer-inner {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .header-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: linear-gradient(145deg, #a8ff6a, #49df55);
+      box-shadow: 0 8px 24px rgba(88, 237, 90, 0.28);
+    }
+
+    .brand strong {
+      color: var(--green);
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 23px;
+    }
+
+    .header-nav a {
+      color: #e9f0fa;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 780;
+    }
+
+    .header-nav a:hover,
+    .header-nav a:focus-visible,
+    .header-nav a[aria-current="page"] {
+      color: #a4f66f;
+    }
+
+    .header-play {
+      min-height: 42px;
+      padding: 0 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      color: var(--white) !important;
+      background: linear-gradient(135deg, #ff8d5d, #ff654b);
+      box-shadow: 0 10px 28px rgba(255, 104, 73, 0.3);
+    }
+
+    .breadcrumbs {
+      padding-top: 24px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .breadcrumbs a {
+      color: var(--navy-700);
+      text-decoration: none;
+      font-weight: 750;
+    }
+
+    .hero {
+      padding: 48px 0 38px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: #d95f3f;
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 950px;
+      margin: 0 auto;
+      font-size: clamp(42px, 6vw, 70px);
+      letter-spacing: -0.055em;
+      overflow-wrap: anywhere;
+    }
+
+    .hero-lead {
+      max-width: 800px;
+      margin: 21px auto 0;
+      color: #50647c;
+      font-size: 18px;
+    }
+
+    .hero-search-wrap {
+      max-width: 730px;
+      margin: 30px auto 0;
+      padding: 9px;
+      display: grid;
+      grid-template-columns: 46px minmax(0, 1fr) auto;
+      align-items: center;
+      border: 1px solid #d3e0eb;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: var(--shadow);
+    }
+
+    .search-icon {
+      color: var(--navy-700);
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .hero-search-wrap input {
+      width: 100%;
+      min-width: 0;
+      height: 48px;
+      padding: 0 8px;
+      border: 0;
+      outline: 0;
+      color: var(--navy-900);
+      background: transparent;
+      font-size: 16px;
+      font-weight: 650;
+    }
+
+    .hero-search-wrap button {
+      min-height: 46px;
+      padding: 0 19px;
+      border: 0;
+      border-radius: 13px;
+      color: var(--white);
+      background: var(--navy-900);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .search-status {
+      min-height: 26px;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .quick-paths {
+      margin: 5px 0 64px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .quick-path {
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 21px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 10px 30px rgba(28, 57, 91, 0.06);
+      text-align: left;
+    }
+
+    .quick-path span {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 15px;
+      border-radius: 13px;
+      font-size: 22px;
+    }
+
+    .quick-path:nth-child(1) span {
+      background: #e9fbdc;
+    }
+
+    .quick-path:nth-child(2) span {
+      background: #fff2ba;
+    }
+
+    .quick-path:nth-child(3) span {
+      background: #e8f2ff;
+    }
+
+    .quick-path h2 {
+      margin-bottom: 8px;
+      font-size: 20px;
+    }
+
+    .quick-path p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .guide-section {
+      margin-bottom: 62px;
+      scroll-margin-top: 100px;
+    }
+
+    .section-heading {
+      margin-bottom: 22px;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .section-kicker {
+      margin: 0 0 7px;
+      color: #d95f3f;
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 0;
+      font-size: clamp(30px, 4vw, 42px);
+      letter-spacing: -0.04em;
+    }
+
+    .section-heading p {
+      max-width: 430px;
+      margin: 0;
+      color: var(--muted);
+      text-align: right;
+      font-size: 14px;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .guide-card {
+      position: relative;
+      min-height: 275px;
+      padding: 29px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 12px 38px rgba(24, 52, 83, 0.07);
+      transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .guide-card:hover {
+      transform: translateY(-4px);
+      border-color: #b6cadc;
+      box-shadow: 0 18px 42px rgba(24, 52, 83, 0.12);
+    }
+
+    .guide-card[hidden] {
+      display: none;
+    }
+
+    .card-top {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .card-icon {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 17px;
+      font-size: 27px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    .card-level {
+      padding: 6px 10px;
+      border: 1px solid #dce6ef;
+      border-radius: 999px;
+      color: var(--muted);
+      background: #f8fbfd;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .guide-card h3 {
+      position: relative;
+      z-index: 2;
+      margin: 22px 0 10px;
+      font-size: 25px;
+      letter-spacing: -0.025em;
+    }
+
+    .guide-card p {
+      position: relative;
+      z-index: 2;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .card-link {
+      position: relative;
+      z-index: 2;
+      margin-top: auto;
+      padding-top: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--navy-900);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .card-link::after {
+      content: "→";
+      transition: transform 0.18s ease;
+    }
+
+    .guide-card:hover .card-link::after {
+      transform: translateX(4px);
+    }
+
+    .card-orb {
+      position: absolute;
+      right: -55px;
+      bottom: -64px;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+
+    .green .card-icon,
+    .green .card-orb {
+      background: linear-gradient(145deg, #b4ff77, #66df42);
+    }
+
+    .yellow .card-icon,
+    .yellow .card-orb {
+      background: linear-gradient(145deg, #fff09a, #ffc63f);
+    }
+
+    .pink .card-icon,
+    .pink .card-orb {
+      background: linear-gradient(145deg, #ffc0d4, #ff77a4);
+    }
+
+    .blue .card-icon,
+    .blue .card-orb {
+      background: linear-gradient(145deg, #c7e5ff, #79b4ff);
+    }
+
+    .orange .card-icon,
+    .orange .card-orb {
+      background: linear-gradient(145deg, #ffc09f, #ff7852);
+    }
+
+    .purple .card-icon,
+    .purple .card-orb {
+      background: linear-gradient(145deg, #d9c2ff, #9c7aff);
+    }
+
+    .teal .card-icon,
+    .teal .card-orb {
+      background: linear-gradient(145deg, #a9f4e3, #54cbb6);
+    }
+
+    .no-results {
+      margin: 0 0 62px;
+      padding: 34px;
+      border: 1px dashed #bfcddd;
+      border-radius: 22px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.7);
+      text-align: center;
+    }
+
+    .no-results[hidden] {
+      display: none;
+    }
+
+    .no-results h2 {
+      margin-bottom: 8px;
+      font-size: 25px;
+    }
+
+    .no-results p {
+      margin: 0;
+    }
+
+    .final-cta {
+      margin: 16px 0 72px;
+      padding: 46px;
+      border-radius: 28px;
+      color: var(--white);
+      background:
+        radial-gradient(circle at 86% 8%, rgba(139, 240, 92, 0.22), transparent 29%),
+        linear-gradient(135deg, #0c2038, #183b61);
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .final-cta h2 {
+      margin: 0;
+      color: var(--white);
+      font-size: clamp(31px, 4vw, 44px);
+    }
+
+    .final-cta p {
+      max-width: 700px;
+      margin: 15px auto 24px;
+      color: #cbd8e7;
+    }
+
+    .button {
+      min-height: 50px;
+      padding: 0 23px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      color: var(--white);
+      background: linear-gradient(135deg, #ff8a57, #ff654b);
+      text-decoration: none;
+      font-weight: 900;
+      box-shadow: 0 12px 30px rgba(255, 101, 75, 0.28);
+    }
+
+    .site-footer {
+      color: #9fb0c3;
+      background: var(--navy-950);
+    }
+
+    .footer-inner {
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 26px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .footer-links a {
+      color: #e6edf6;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 720;
+    }
+
+    :focus-visible {
+      outline: 3px solid #8aec59;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 820px) {
+      .header-nav a:not(.header-play):not([aria-current="page"]) {
+        display: none;
+      }
+
+      .quick-paths {
+        grid-template-columns: 1fr;
+      }
+
+      .section-heading {
+        display: block;
+      }
+
+      .section-heading p {
+        margin-top: 10px;
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .guide-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-search-wrap {
+        grid-template-columns: 42px minmax(0, 1fr);
+      }
+
+      .hero-search-wrap button {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
+
+      .footer-inner {
+        display: block;
+        padding: 28px 0;
+      }
+
+      .footer-links {
+        margin-bottom: 18px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .header-inner,
+      .page-shell,
+      .footer-inner {
+        width: min(100% - 22px, 1160px);
+      }
+
+      .header-inner {
+        min-height: 64px;
+      }
+
+      .brand {
+        font-size: 19px;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .hero {
+        padding-top: 34px;
+      }
+
+      .hero-lead {
+        font-size: 16px;
+      }
+
+      .guide-card {
+        min-height: 0;
+        padding: 24px 21px;
+      }
+
+      .guide-card h3 {
+        font-size: 22px;
+      }
+
+      .final-cta {
+        padding: 35px 22px;
+      }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Fruit Merge Guides",
+    "url": "https://fruitmerge.online/guides.html",
+    "description": "A central library of Fruit Merge tutorials, tips, strategy, scoring, evolution, Dragon Fruit, and FAQ pages.",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Fruit Merge Online",
+      "url": "https://fruitmerge.online/"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Fruit Merge Guide Library",
+    "numberOfItems": 7,
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "How to Play Fruit Merge",
+        "url": "https://fruitmerge.online/how-to-play-fruit-merge.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Fruit Merge Tips and Tricks",
+        "url": "https://fruitmerge.online/fruit-merge-tips-and-tricks.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Fruit Merge Strategy Guide",
+        "url": "https://fruitmerge.online/fruit-merge-strategy.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "Fruit Evolution Guide",
+        "url": "https://fruitmerge.online/fruit-evolution-guide.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 5,
+        "name": "Fruit Merge Scoring Guide",
+        "url": "https://fruitmerge.online/fruit-merge-scoring-guide.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 6,
+        "name": "How to Get Dragon Fruit",
+        "url": "https://fruitmerge.online/how-to-get-dragon-fruit.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 7,
+        "name": "Fruit Merge FAQ",
+        "url": "https://fruitmerge.online/fruit-merge-faq.html"
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Fruit Merge Online",
+        "item": "https://fruitmerge.online/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Fruit Merge Guides",
+        "item": "https://fruitmerge.online/guides.html"
+      }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="Fruit Merge Online home">
+        <span class="brand-mark" aria-hidden="true">🍓</span>
+        <span>Fruit<strong>Merge</strong></span>
+      </a>
+
+      <nav class="header-nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/how-to-play-fruit-merge.html">How to Play</a>
+        <a href="/fruit-merge-tips-and-tricks.html">Tips</a>
+        <a href="/guides.html" aria-current="page">Guides</a>
+        <a class="header-play" href="/#game">Play Now</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Fruit Merge Online</a>
+      <span aria-hidden="true"> / </span>
+      <span>Guides</span>
+    </nav>
+
+    <section class="hero">
+      <p class="eyebrow">Complete learning center</p>
+      <h1>Fruit Merge Guides</h1>
+
+      <p class="hero-lead">
+        Start with the controls, improve your board strategy, understand every
+        score and evolution level, and follow a clear route to Dragon Fruit.
+        Every current Fruit Merge guide is organized here.
+      </p>
+
+      <form class="hero-search-wrap" id="guideSearchForm" role="search">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input
+          id="guideSearch"
+          type="search"
+          name="q"
+          placeholder="Search tips, scoring, Dragon Fruit..."
+          autocomplete="off"
+        />
+        <button type="submit">Search Guides</button>
+      </form>
+
+      <p class="search-status" id="searchStatus" aria-live="polite">
+        Showing all 7 guides.
+      </p>
+    </section>
+
+    <section class="quick-paths" aria-label="Choose a guide path">
+      <article class="quick-path">
+        <span aria-hidden="true">🎮</span>
+        <h2>New to the Game?</h2>
+        <p>Begin with the controls, merge rules, next-fruit preview, and danger line.</p>
+      </article>
+
+      <article class="quick-path">
+        <span aria-hidden="true">🏆</span>
+        <h2>Want a Higher Score?</h2>
+        <p>Use practical tips, stronger board planning, and complete score references.</p>
+      </article>
+
+      <article class="quick-path">
+        <span aria-hidden="true">🐉</span>
+        <h2>Chasing Dragon Fruit?</h2>
+        <p>Study the full evolution chain and plan the final two Melons safely.</p>
+      </article>
+    </section>
+
+    <section class="guide-section" id="getting-started">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Getting started</p>
+          <h2>Learn the Game</h2>
+        </div>
+        <p>Understand the controls and find fast answers before working on advanced strategy.</p>
+      </div>
+
+      <div class="guide-grid">
+        <article
+          class="guide-card green"
+          data-guide
+          data-search="how to play beginner controls desktop mobile merge rules danger line next fruit preview"
+        >
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">🎮</span>
+            <span class="card-level">Beginner</span>
+          </div>
+          <h3>How to Play Fruit Merge</h3>
+          <p>
+            Learn desktop and mobile controls, identical-fruit merging, the
+            three-fruit preview, game-over rules, and common beginner mistakes.
+          </p>
+          <a class="card-link" href="/how-to-play-fruit-merge.html">Read the guide</a>
+          <span class="card-orb" aria-hidden="true"></span>
+        </article>
+
+        <article
+          class="guide-card blue"
+          data-guide
+          data-search="fruit merge faq questions answers free download save score rules help troubleshooting"
+        >
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">?</span>
+            <span class="card-level">Quick answers</span>
+          </div>
+          <h3>Fruit Merge FAQ</h3>
+          <p>
+            Find concise answers about gameplay, scoring, saving local records,
+            mobile use, downloading, fruit levels, and the final Dragon Fruit.
+          </p>
+          <a class="card-link" href="/fruit-merge-faq.html">Browse the FAQ</a>
+          <span class="card-orb" aria-hidden="true"></span>
+        </article>
+      </div>
+    </section>
+
+    <section class="guide-section" id="improve-score">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Improve your score</p>
+          <h2>Play More Consistently</h2>
+        </div>
+        <p>Use quick practical advice first, then move into deeper board-planning decisions.</p>
+      </div>
+
+      <div class="guide-grid">
+        <article
+          class="guide-card yellow"
+          data-guide
+          data-search="fruit merge tips tricks high score quick tips board low center preview chain merge danger line mobile"
+        >
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">💡</span>
+            <span class="card-level">Practical</span>
+          </div>
+          <h3>Fruit Merge Tips and Tricks</h3>
+          <p>
+            Use 15 practical tips, a before-every-drop checklist, danger-line
+            recovery rules, and an interactive next-move helper.
+          </p>
+          <a class="card-link" href="/fruit-merge-tips-and-tricks.html">View all tips</a>
+          <span class="card-orb" aria-hidden="true"></span>
+        </article>
+
+        <article
+          class="guide-card orange"
+          data-guide
+          data-search="fruit merge strategy high score board control queue planning chain routes recovery large fruits center side"
+        >
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">♟</span>
+            <span class="card-level">Advanced</span>
+          </div>
+          <h3>Fruit Merge Strategy Guide</h3>
+          <p>
+            Build a lower and wider board, protect the center, plan from the
+            queue, control chain merges, and recover from unstable positions.
+          </p>
+          <a class="card-link" href="/fruit-merge-strategy.html">Study the strategy</a>
+          <span class="card-orb" aria-hidden="true"></span>
+        </article>
+      </div>
+    </section>
+
+    <section class="guide-section" id="evolution-scoring">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Evolution and scoring</p>
+          <h2>Understand Every Level</h2>
+        </div>
+        <p>Compare the complete fruit order, point awards, chain totals, and final evolution route.</p>
+      </div>
+
+      <div class="guide-grid">
+        <article
+          class="guide-card pink"
+          data-guide
+          data-search="fruit evolution guide order cherry strawberry grape orange apple peach pineapple watermelon grapefruit melon dragon fruit levels sizes"
+        >
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">🍉</span>
+            <span class="card-level">Reference</span>
+          </div>
+          <h3>Fruit Evolution Guide</h3>
+          <p>
+            Follow all 11 fruit levels from Cherry to Dragon Fruit with merge
+            requirements, score values, sizes, and level-by-level gameplay notes.
+          </p>
+          <a class="card-link" href="/fruit-evolution-guide.html">View the evolution chain</a>
+          <span class="card-orb" aria-hidden="true"></span>
+        </article>
+
+        <article
+          class="guide-card purple"
+          data-guide
+          data-search="fruit merge scoring guide points score values calculator combos chain merge milestones full chain totals"
+        >
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">🏆</span>
+            <span class="card-level">Calculator</span>
+          </div>
+          <h3>Fruit Merge Scoring Guide</h3>
+          <p>
+            Compare every point award, understand chain scoring, calculate
+            full-chain totals, and use the interactive score calculator.
+          </p>
+          <a class="card-link" href="/fruit-merge-scoring-guide.html">Check the score table</a>
+          <span class="card-orb" aria-hidden="true"></span>
+        </article>
+
+        <article
+          class="guide-card teal"
+          data-guide
+          data-search="how to get dragon fruit two melons grapefruit watermelon final fruit strategy requirements calculator"
+        >
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">🐉</span>
+            <span class="card-level">Goal guide</span>
+          </div>
+          <h3>How to Get Dragon Fruit</h3>
+          <p>
+            Calculate what you need, position the final two Melons, avoid
+            late-game mistakes, and complete the highest-level merge safely.
+          </p>
+          <a class="card-link" href="/how-to-get-dragon-fruit.html">Build toward Dragon Fruit</a>
+          <span class="card-orb" aria-hidden="true"></span>
+        </article>
+      </div>
+    </section>
+
+    <section class="no-results" id="noResults" hidden>
+      <h2>No guide matched your search</h2>
+      <p>Try a shorter term such as “score,” “tips,” “mobile,” “evolution,” or “Dragon Fruit.”</p>
+    </section>
+
+    <section class="final-cta">
+      <h2>Learn a Rule, Then Test It in the Game</h2>
+      <p>
+        Use the guide library whenever you need an answer, but the fastest way
+        to improve is to apply one idea at a time in a new Fruit Merge run.
+      </p>
+      <a class="button" href="/#game">Play Fruit Merge Online</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/">Play Game</a>
+        <a href="/guides.html">All Guides</a>
+        <a href="/how-to-play-fruit-merge.html">How to Play</a>
+        <a href="/fruit-merge-tips-and-tricks.html">Tips</a>
+        <a href="/fruit-merge-strategy.html">Strategy</a>
+        <a href="/fruit-evolution-guide.html">Evolution</a>
+        <a href="/fruit-merge-scoring-guide.html">Scoring</a>
+        <a href="/how-to-get-dragon-fruit.html">Dragon Fruit</a>
+        <a href="/fruit-merge-faq.html">FAQ</a>
+        <a href="/about.html">About</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+
+      <p>© 2026 Fruit Merge Online.</p>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const form = document.getElementById("guideSearchForm");
+      const input = document.getElementById("guideSearch");
+      const cards = [...document.querySelectorAll("[data-guide]")];
+      const sections = [...document.querySelectorAll(".guide-section")];
+      const status = document.getElementById("searchStatus");
+      const noResults = document.getElementById("noResults");
+
+      const normalize = (value) =>
+        value.toLowerCase().replace(/\s+/g, " ").trim();
+
+      function filterGuides(query, updateUrl = true) {
+        const normalizedQuery = normalize(query);
+        let visibleCount = 0;
+
+        cards.forEach((card) => {
+          const searchableText = normalize(
+            `${card.dataset.search || ""} ${card.textContent}`
+          );
+          const isVisible =
+            !normalizedQuery || searchableText.includes(normalizedQuery);
+
+          card.hidden = !isVisible;
+
+          if (isVisible) visibleCount += 1;
+        });
+
+        sections.forEach((section) => {
+          const hasVisibleCards = [...section.querySelectorAll("[data-guide]")]
+            .some((card) => !card.hidden);
+
+          section.hidden = !hasVisibleCards;
+        });
+
+        noResults.hidden = visibleCount !== 0;
+
+        if (!normalizedQuery) {
+          status.textContent = `Showing all ${cards.length} guides.`;
+        } else if (visibleCount === 1) {
+          status.textContent = `1 guide matched “${query.trim()}”.`;
+        } else {
+          status.textContent = `${visibleCount} guides matched “${query.trim()}”.`;
+        }
+
+        if (updateUrl) {
+          const url = new URL(window.location.href);
+
+          if (normalizedQuery) {
+            url.searchParams.set("q", query.trim());
+          } else {
+            url.searchParams.delete("q");
+          }
+
+          window.history.replaceState({}, "", url);
+        }
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        filterGuides(input.value);
+      });
+
+      input.addEventListener("input", () => {
+        filterGuides(input.value);
+      });
+
+      const initialQuery = new URLSearchParams(window.location.search).get("q") || "";
+      input.value = initialQuery;
+      filterGuides(initialQuery, false);
+    })();
+  </script>
+</body>
+</html>
