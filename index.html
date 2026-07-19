@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Fruit Merge Online - Play Free Fruit Merging Game</title>
+
+  <meta
+    name="description"
+    content="Play Fruit Merge Online for free. Drop matching fruits, create bigger fruits, reach Dragon Fruit, and challenge your best score in this browser puzzle game."
+  />
+  <meta
+    name="keywords"
+    content="fruit merge, fruit merge online, fruit merge game, merge fruit game, watermelon game, browser puzzle game"
+  />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+
+  <link rel="canonical" href="https://fruitmerge.online/" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/style.css" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Fruit Merge Online" />
+  <meta property="og:title" content="Fruit Merge Online - Play Free Fruit Merging Game" />
+  <meta
+    property="og:description"
+    content="Drop fruits, merge matching pairs, unlock bigger fruits, reach Dragon Fruit, and challenge your best score."
+  />
+  <meta property="og:url" content="https://fruitmerge.online/" />
+  <meta property="og:image" content="https://fruitmerge.online/og-image.svg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fruit Merge Online - Play Free Fruit Merging Game" />
+  <meta
+    name="twitter:description"
+    content="Drop fruits, merge matching pairs, unlock bigger fruits, and challenge your best score."
+  />
+  <meta name="twitter:image" content="https://fruitmerge.online/og-image.svg" />
+  <meta name="theme-color" content="#071221" />
+
+  <style>
+    /*
+      Homepage guide navigation:
+      - Four featured guides remain fixed.
+      - New future guides belong on /guides.html.
+      - The FAQ call-to-action remains contextual inside the FAQ section.
+    */
+
+    .all-guides-row {
+      margin-top: 22px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .all-guides-row a {
+      min-height: 48px;
+      padding: 0 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 1px solid rgba(157, 201, 255, 0.32);
+      border-radius: 999px;
+      color: #e9f3ff;
+      background: rgba(12, 32, 56, 0.72);
+      font-size: 14px;
+      line-height: 1.2;
+      font-weight: 900;
+      text-align: center;
+      text-decoration: none;
+      box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.09);
+      transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease;
+    }
+
+    .all-guides-row a:hover {
+      transform: translateY(-2px);
+      border-color: rgba(157, 201, 255, 0.68);
+      background: rgba(18, 47, 80, 0.92);
+    }
+
+    .all-guides-row a:focus-visible {
+      outline: 3px solid #ffffff;
+      outline-offset: 4px;
+    }
+
+    #faq a[href="/fruit-merge-faq.html"] {
+      min-height: 50px !important;
+      padding: 0 22px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 8px !important;
+      border: 1px solid rgba(255, 255, 255, 0.18) !important;
+      border-radius: 14px !important;
+      color: #111827 !important;
+      background: linear-gradient(180deg, #b9dcff 0%, #78afff 100%) !important;
+      font-size: 14px !important;
+      line-height: 1.25 !important;
+      font-weight: 900 !important;
+      text-align: center !important;
+      text-decoration: none !important;
+      box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.46) !important;
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        filter 0.18s ease !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #faq a[href="/fruit-merge-faq.html"]:hover {
+      transform: translateY(-3px) !important;
+      filter: brightness(1.04) !important;
+      box-shadow:
+        0 17px 34px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.58) !important;
+    }
+
+    #faq a[href="/fruit-merge-faq.html"]:active {
+      transform: translateY(-1px) scale(0.99) !important;
+    }
+
+    #faq a[href="/fruit-merge-faq.html"]:focus-visible {
+      outline: 3px solid #ffffff !important;
+      outline-offset: 4px !important;
+    }
+
+    .faq-more-row {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 600px) {
+      .all-guides-row {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .all-guides-row a,
+      #faq a[href="/fruit-merge-faq.html"] {
+        width: 100% !important;
+        min-height: 52px !important;
+        margin: 0 !important;
+        padding: 0 16px !important;
+        font-size: 13px !important;
+      }
+
+      .faq-more-row {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Game",
+    "name": "Fruit Merge Online",
+    "url": "https://fruitmerge.online/",
+    "description": "Fruit Merge Online is a free browser puzzle game where players drop and merge identical fruits, unlock larger fruit levels, and chase high scores.",
+    "genre": ["Puzzle", "Casual", "Merge"],
+    "gamePlatform": "Web browser",
+    "applicationCategory": "Game",
+    "operatingSystem": "Any",
+    "inLanguage": "en",
+    "isAccessibleForFree": true,
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is Fruit Merge Online free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Fruit Merge Online is free to play directly in your browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to download Fruit Merge Online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Fruit Merge Online works directly in a modern browser without downloads or installation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Fruit Merge Online save my score?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Your best score and local top runs are stored in your browser."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <div class="portal-shell">
+    <header class="portal-header">
+      <a class="brand" href="/" aria-label="Fruit Merge Online home">
+        <span class="brand-mark" aria-hidden="true">🍓</span>
+        <span>Fruit<span>Merge</span></span>
+      </a>
+
+      <label class="search-box" aria-label="Search Fruit Merge guides">
+        <span aria-hidden="true">⌕</span>
+        <input
+          id="homepageGuideSearch"
+          type="search"
+          placeholder="Search Fruit Merge guides"
+        />
+      </label>
+
+      <nav class="top-nav" aria-label="Main navigation">
+        <a class="active" href="#game">Play</a>
+        <a href="#features">Features</a>
+        <a href="#how-to-play">How to Play</a>
+        <a href="#levels">Levels</a>
+        <a href="/guides.html">Guides</a>
+      </nav>
+    </header>
+
+    <aside class="icon-sidebar" aria-label="Quick navigation">
+      <a href="/" aria-label="Home">
+        <span aria-hidden="true">⌂</span>
+        <small>Home</small>
+      </a>
+
+      <a href="#features" aria-label="Popular features">
+        <span aria-hidden="true">★</span>
+        <small>Popular</small>
+      </a>
+
+      <a href="/fruit-merge-strategy.html" aria-label="Fruit Merge challenges and strategy">
+        <span aria-hidden="true">◆</span>
+        <small>Challenges</small>
+      </a>
+
+      <a href="#game" aria-label="Leaderboard">
+        <span aria-hidden="true">♛</span>
+        <small>Leaderboard</small>
+      </a>
+
+      <a href="/guides.html" aria-label="Fruit Merge guides and help">
+        <span aria-hidden="true">?</span>
+        <small>Guides</small>
+      </a>
+
+      <button class="side-settings" type="button" aria-label="Settings">⚙</button>
+    </aside>
+
+    <main class="portal-main">
+      <section class="game-player" id="game" aria-labelledby="game-title">
+        <div class="game-viewport">
+          <div class="game-scene">
+            <div class="scene-bg" aria-hidden="true"></div>
+
+            <div class="scene-title" aria-hidden="true">
+              <span>Fruit</span><strong>Merge</strong>
+            </div>
+
+            <span class="scene-decoration scene-leaf-one" aria-hidden="true">🍃</span>
+            <span class="scene-decoration scene-leaf-two" aria-hidden="true">🌿</span>
+            <span class="scene-decoration scene-star-one" aria-hidden="true">✦</span>
+            <span class="scene-decoration scene-star-two" aria-hidden="true">✦</span>
+
+            <div class="fruit-corner fruit-corner-left" aria-hidden="true">
+              <span>🍊</span><span>🍇</span><span>🍓</span>
+            </div>
+
+            <div class="fruit-corner fruit-corner-right" aria-hidden="true">
+              <span>🍍</span><span>🍉</span><span>🍒</span>
+            </div>
+
+            <aside class="scene-left" aria-label="Score and local leaderboard">
+              <div class="score-orb">
+                <span class="score-crown" aria-hidden="true">♛</span>
+                <span>Score</span>
+                <strong id="score">0</strong>
+                <small>Best Score</small>
+                <b id="bestScore">0</b>
+              </div>
+
+              <div class="score-panel">
+                <div class="panel-title">
+                  <h2>Local Record Board</h2>
+                  <p>Your best runs are saved in this browser.</p>
+                </div>
+
+                <div class="time-card">
+                  <span>Time</span>
+                  <strong id="time">00:00</strong>
+                </div>
+
+                <div class="top-runs-title">
+                  <span aria-hidden="true"></span>
+                  <b>Top Runs</b>
+                  <span aria-hidden="true"></span>
+                </div>
+
+                <div id="leaderboardList" class="leaderboard-list">
+                  <div class="leaderboard-item">
+                    <div class="leaderboard-rank">1</div>
+                    <div class="leaderboard-main">
+                      <strong>No run yet</strong>
+                      <span>Start your first game</span>
+                    </div>
+                    <div class="leaderboard-score">0</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="quick-buttons">
+                <button id="musicToggleButton" type="button" aria-label="Toggle background music">♪</button>
+                <button id="fullscreenButton" type="button" aria-label="Enter full screen">⛶</button>
+              </div>
+            </aside>
+
+            <section class="scene-center" aria-label="Fruit Merge game board">
+              <div class="glass-top" aria-hidden="true"></div>
+
+              <div class="canvas-frame">
+                <canvas
+                  id="gameCanvas"
+                  width="420"
+                  height="560"
+                  aria-label="Fruit Merge Online game canvas"
+                ></canvas>
+
+                <div id="gameOverPanel" class="game-over-panel hidden">
+                  <div class="game-over-card">
+                    <p class="game-over-badge" id="gameOverBadge">Game Over</p>
+                    <h2>Final Score</h2>
+                    <div class="game-over-score" id="gameOverScore">0</div>
+
+                    <div class="game-over-meta">
+                      <div>
+                        <span>Time</span>
+                        <strong id="gameOverTime">00:00</strong>
+                      </div>
+                      <div>
+                        <span>Best</span>
+                        <strong id="gameOverBest">0</strong>
+                      </div>
+                    </div>
+
+                    <p class="game-over-tip" id="gameOverTip">
+                      Great run! Keep merging to beat your best score.
+                    </p>
+
+                    <div class="game-over-actions">
+                      <button id="playAgainButton" class="primary" type="button">Play Again</button>
+                      <button id="shareScoreButton" class="secondary" type="button">Share</button>
+                    </div>
+
+                    <div id="gameOverLeaderboard" class="hidden" aria-hidden="true"></div>
+                  </div>
+                </div>
+
+                <div id="gameOverOverlay" class="hidden" aria-hidden="true"></div>
+              </div>
+            </section>
+
+            <aside class="scene-right" aria-label="Upcoming fruits and evolution progress">
+              <div class="next-panel">
+                <span class="panel-sparkle" aria-hidden="true">✦</span>
+                <h2>Next Fruit</h2>
+
+                <div class="next-main">
+                  <canvas id="nextFruitCanvas0" width="74" height="74" aria-label="Next fruit preview"></canvas>
+                  <span id="nextFruitName">Cherry</span>
+                </div>
+
+                <div class="next-divider" aria-hidden="true"></div>
+
+                <div class="next-mini-row">
+                  <div>
+                    <canvas id="nextFruitCanvas1" width="44" height="44" aria-label="Second upcoming fruit"></canvas>
+                    <small>2nd</small>
+                  </div>
+                  <div>
+                    <canvas id="nextFruitCanvas2" width="44" height="44" aria-label="Third upcoming fruit"></canvas>
+                    <small>3rd</small>
+                  </div>
+                </div>
+
+                <button id="restartButton" class="restart-button" type="button" aria-label="Restart game">
+                  ↻
+                </button>
+              </div>
+
+              <div class="evolution-panel">
+                <h2><span aria-hidden="true">✦</span> Circle of Evolution</h2>
+                <div id="evolutionBar" class="evolution-circle" aria-label="Fruit evolution progress"></div>
+              </div>
+
+              <button id="shareCurrentButton" class="share-current" type="button">
+                Share Score
+              </button>
+            </aside>
+          </div>
+
+          <div id="startOverlay" class="viewport-start-overlay">
+            <div class="cover-art" aria-hidden="true">
+              <div class="cover-fruit-row">
+                <span>🍓</span><span>🍊</span><span>🍇</span>
+              </div>
+              <div class="cover-title">
+                <span>Fruit</span>
+                <strong>Merge</strong>
+              </div>
+              <div class="cover-fruit-bottom">
+                <span>🍍</span><span>🍉</span><span>🍒</span>
+              </div>
+            </div>
+
+            <div class="cover-mask" aria-hidden="true"></div>
+
+            <button id="startButton" class="cover-play-button" type="button">
+              <span aria-hidden="true">▶</span>
+              Play Fruit Merge
+            </button>
+          </div>
+
+          <div class="mobile-game-hud" aria-label="Mobile game information">
+            <div class="mobile-hud-pill">
+              <span>Score</span>
+              <strong id="mobileScore">0</strong>
+            </div>
+            <div class="mobile-hud-pill">
+              <span>Best</span>
+              <strong id="mobileBestScore">0</strong>
+            </div>
+            <div class="mobile-hud-pill">
+              <span>Time</span>
+              <strong id="mobileTime">00:00</strong>
+            </div>
+            <div class="mobile-hud-pill mobile-next-pill">
+              <span>Next</span>
+              <canvas id="mobileNextFruitCanvas" width="32" height="32" aria-label="Next fruit"></canvas>
+            </div>
+          </div>
+
+          <button
+            id="mobileMenuButton"
+            class="mobile-menu-button"
+            type="button"
+            aria-label="Open game controls"
+            aria-expanded="false"
+          >
+            ⚙
+          </button>
+
+          <div id="mobileGameMenu" class="mobile-game-menu hidden" aria-hidden="true">
+            <div class="mobile-game-menu-card">
+              <p class="section-kicker">GAME CONTROLS</p>
+              <h2>Fruit Merge Menu</h2>
+
+              <div class="mobile-menu-actions">
+                <button id="mobileResumeButton" type="button">Resume</button>
+                <button id="mobileRestartButton" type="button">Restart</button>
+                <button id="mobileMusicButton" type="button">Music</button>
+                <button id="mobileShareButton" type="button">Share</button>
+                <button id="mobileExitButton" type="button">Exit Full Screen</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="mobileSharePopover" class="mobile-share-popover hidden" aria-hidden="true">
+            <div class="mobile-share-card">
+              <button id="mobileShareClose" type="button" aria-label="Close share window">×</button>
+              <p class="section-kicker">SHARE SCORE</p>
+              <h2>Share Your Fruit Merge Run</h2>
+
+              <div class="mobile-share-grid">
+                <button type="button" data-share-platform="facebook">Facebook</button>
+                <button type="button" data-share-platform="instagram">Instagram</button>
+                <button type="button" data-share-platform="copy">Copy Link</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-toolbar">
+          <div class="game-info">
+            <div class="game-icon" aria-hidden="true">🍓</div>
+            <div>
+              <h1 id="game-title">Fruit Merge Online</h1>
+              <p>Drop, match, merge, and reach Dragon Fruit.</p>
+            </div>
+          </div>
+
+          <div class="toolbar-actions">
+            <button id="toolbarShareButton" type="button" aria-label="Share Fruit Merge">➤</button>
+            <button id="toolbarFullscreenButton" type="button" aria-label="Full screen">⛶</button>
+            <button id="toolbarLikeButton" type="button" aria-label="Like Fruit Merge">♥</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section" id="features">
+        <p class="section-kicker">GAME FEATURES</p>
+        <h2>Why Play Fruit Merge Online?</h2>
+
+        <div class="info-grid">
+          <article>
+            <h3>Instant Browser Play</h3>
+            <p>
+              Start immediately on desktop or mobile. No account, download, or
+              installation is required.
+            </p>
+          </article>
+
+          <article>
+            <h3>Three-Fruit Preview</h3>
+            <p>
+              See the next three fruits and plan several moves ahead instead of
+              reacting to only one drop.
+            </p>
+          </article>
+
+          <article>
+            <h3>Local Score Records</h3>
+            <p>
+              Your best score and recent runs are stored locally in your
+              browser so you can challenge your own record.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content-section" id="how-to-play">
+        <p class="section-kicker">HOW TO PLAY</p>
+        <h2>How to Play Fruit Merge Online</h2>
+
+        <div class="info-grid">
+          <article>
+            <h3>1. Choose a Drop Position</h3>
+            <p>
+              Move your mouse on desktop or tap the desired horizontal position
+              on mobile.
+            </p>
+          </article>
+
+          <article>
+            <h3>2. Merge Matching Fruits</h3>
+            <p>
+              When two identical fruits touch, they combine into the next fruit
+              and add points to your score.
+            </p>
+          </article>
+
+          <article>
+            <h3>3. Stay Below the Danger Line</h3>
+            <p>
+              Keep the stack low. The run ends when settled fruits remain above
+              the danger line for too long.
+            </p>
+          </article>
+        </div>
+
+        <div class="guide-link-row">
+          <a href="/how-to-play-fruit-merge.html">Read the Complete How to Play Guide →</a>
+        </div>
+      </section>
+
+      <section class="content-section" id="strategy">
+        <p class="section-kicker">STRATEGY</p>
+        <h2>Fruit Merge Tips for a Higher Score</h2>
+
+        <div class="info-grid">
+          <article>
+            <h3>Build a Low Base</h3>
+            <p>
+              Keep larger fruits low and avoid creating narrow towers that can
+              quickly cross the danger line.
+            </p>
+          </article>
+
+          <article>
+            <h3>Protect the Center Lane</h3>
+            <p>
+              A clear center gives you more control over future drops and helps
+              connect fruits on either side.
+            </p>
+          </article>
+
+          <article>
+            <h3>Plan with the Queue</h3>
+            <p>
+              Use all three previewed fruits to prepare pairs, chain merges, and
+              safe temporary placements.
+            </p>
+          </article>
+        </div>
+
+        <div class="guide-link-row">
+          <a href="/fruit-merge-strategy.html">Read the Complete Strategy Guide →</a>
+        </div>
+      </section>
+
+      <section class="content-section" id="levels">
+        <p class="section-kicker">FRUIT LEVELS</p>
+        <h2>Fruit Merge Evolution Levels</h2>
+
+        <div class="evolution-table-wrap">
+          <table class="evolution-table">
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Fruit</th>
+                <th>Created By</th>
+                <th>Merge Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>Cherry</td><td>Starting fruit</td><td>5</td></tr>
+              <tr><td>2</td><td>Strawberry</td><td>2 Cherries</td><td>10</td></tr>
+              <tr><td>3</td><td>Grape</td><td>2 Strawberries</td><td>20</td></tr>
+              <tr><td>4</td><td>Orange</td><td>2 Grapes</td><td>40</td></tr>
+              <tr><td>5</td><td>Apple</td><td>2 Oranges</td><td>80</td></tr>
+              <tr><td>6</td><td>Peach</td><td>2 Apples</td><td>160</td></tr>
+              <tr><td>7</td><td>Pineapple</td><td>2 Peaches</td><td>320</td></tr>
+              <tr><td>8</td><td>Watermelon</td><td>2 Pineapples</td><td>640</td></tr>
+              <tr><td>9</td><td>Grapefruit</td><td>2 Watermelons</td><td>1,280</td></tr>
+              <tr><td>10</td><td>Melon</td><td>2 Grapefruits</td><td>2,560</td></tr>
+              <tr><td>11</td><td>Dragon Fruit</td><td>2 Melons</td><td>5,120</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="guide-link-row" aria-label="Featured Fruit Merge guides">
+          <a href="/fruit-merge-tips-and-tricks.html">Fruit Merge Tips and Tricks →</a>
+          <a href="/fruit-evolution-guide.html">Fruit Evolution Guide →</a>
+          <a href="/fruit-merge-scoring-guide.html">Fruit Merge Scoring Guide →</a>
+          <a href="/how-to-get-dragon-fruit.html">How to Get Dragon Fruit →</a>
+        </div>
+
+        <div class="all-guides-row">
+          <a href="/guides.html">
+            View All Fruit Merge Guides
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Related games remain hidden until real additional games are available. -->
+
+      <section class="content-section" id="faq">
+        <p class="section-kicker">FAQ</p>
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-list">
+          <article>
+            <h3>Is Fruit Merge Online free?</h3>
+            <p>
+              Yes. You can play Fruit Merge Online for free directly in your
+              browser.
+            </p>
+          </article>
+
+          <article>
+            <h3>Do I need to download anything?</h3>
+            <p>
+              No. The game works online without an app, download, registration,
+              or installation.
+            </p>
+          </article>
+
+          <article>
+            <h3>Does Fruit Merge Online save my score?</h3>
+            <p>
+              Your best score and local top runs are stored in your current
+              browser.
+            </p>
+          </article>
+        </div>
+
+        <div class="faq-more-row">
+          <a href="/fruit-merge-faq.html">Browse the Complete Fruit Merge FAQ →</a>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <nav aria-label="Footer navigation">
+          <a href="/">Play Game</a>
+          <a href="/guides.html">All Guides</a>
+          <a href="/how-to-play-fruit-merge.html">How to Play</a>
+          <a href="/fruit-merge-tips-and-tricks.html">Tips</a>
+          <a href="/fruit-merge-strategy.html">Strategy</a>
+          <a href="/fruit-evolution-guide.html">Evolution</a>
+          <a href="/fruit-merge-scoring-guide.html">Scoring</a>
+          <a href="/how-to-get-dragon-fruit.html">Dragon Fruit</a>
+          <a href="/fruit-merge-faq.html">FAQ</a>
+          <a href="/about.html">About</a>
+          <a href="/privacy-policy.html">Privacy Policy</a>
+          <a href="/terms.html">Terms</a>
+          <a href="/contact.html">Contact</a>
+        </nav>
+
+        <p>© 2026 Fruit Merge Online. Free browser puzzle game.</p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      const searchInput = document.getElementById("homepageGuideSearch");
+
+      if (!searchInput) return;
+
+      searchInput.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter") return;
+
+        event.preventDefault();
+        const query = searchInput.value.trim();
+        const target = query
+          ? `/guides.html?q=${encodeURIComponent(query)}`
+          : "/guides.html";
+
+        window.location.href = target;
+      });
+    })();
+  </script>
+
+  <script src="/game.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const evolutionBar = document.getElementById("evolutionBar");
+      const nextFruitNameEl = document.getElementById("nextFruitName");
+
+      if (!evolutionBar || !nextFruitNameEl) return;
+
+      const fruits = [
+        { name: "Cherry", keys: ["cherry"], files: ["cherry.png"], fallback: "🍒" },
+        { name: "Strawberry", keys: ["strawberry"], files: ["strawberry.png"], fallback: "🍓" },
+        { name: "Grape", keys: ["grape"], files: ["grape.png"], fallback: "🍇" },
+        { name: "Orange", keys: ["orange"], files: ["orange.png"], fallback: "🍊" },
+        { name: "Apple", keys: ["apple"], files: ["apple.png"], fallback: "🍎" },
+        { name: "Peach", keys: ["peach"], files: ["peach.png"], fallback: "🍑" },
+        { name: "Pineapple", keys: ["pineapple"], files: ["pineapple.png"], fallback: "🍍" },
+        { name: "Watermelon", keys: ["watermelon"], files: ["watermelon.png"], fallback: "🍉" },
+        {
+          name: "Grapefruit",
+          keys: ["grapefruit", "pomelo", "yuzu", "lemon"],
+          files: ["grapefruit.png", "pomelo.png", "yuzu.png", "lemon.png"],
+          fallback: "🍋"
+        },
+        {
+          name: "Melon",
+          keys: ["melon", "hami melon", "hami-melon", "honeydew", "cantaloupe"],
+          files: ["melon.png", "hami-melon.png", "honeydew.png", "cantaloupe.png"],
+          fallback: "🍈"
+        },
+        {
+          name: "Dragon Fruit",
+          keys: ["dragon fruit", "dragonfruit", "dragon-fruit", "pitaya"],
+          files: ["dragonfruit.png", "dragon-fruit.png", "dragon_fruit.png", "pitaya.png"],
+          fallback: "🐉"
+        }
+      ];
+
+      let lastActiveIndex = -1;
+      let resizeTimer = null;
+
+      function normalize(value) {
+        return String(value || "")
+          .toLowerCase()
+          .replace(/[_-]+/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function getCurrentIndex() {
+        const currentName = normalize(nextFruitNameEl.textContent);
+
+        const index = fruits.findIndex((fruit) =>
+          fruit.keys.some((key) => normalize(key) === currentName)
+        );
+
+        return index >= 0 ? index : 0;
+      }
+
+      function createFruitImage(item, fruit) {
+        const img = document.createElement("img");
+        img.alt = fruit.name;
+        img.draggable = false;
+
+        let fileIndex = 0;
+
+        img.onerror = () => {
+          fileIndex += 1;
+
+          if (fileIndex < fruit.files.length) {
+            img.src = `/assets/fruits/${fruit.files[fileIndex]}`;
+          } else {
+            item.innerHTML = `<span aria-hidden="true">${fruit.fallback}</span>`;
+          }
+        };
+
+        img.src = `/assets/fruits/${fruit.files[0]}`;
+        return img;
+      }
+
+      function getCircleRadius() {
+        const size = evolutionBar.getBoundingClientRect().width || 150;
+        return Math.max(38, size / 2 - 18);
+      }
+
+      function buildCircle() {
+        evolutionBar.innerHTML = "";
+
+        const count = fruits.length;
+        const radius = getCircleRadius();
+
+        fruits.forEach((fruit, index) => {
+          const item = document.createElement("div");
+          const angle = -90 + (360 / count) * index;
+          const transform =
+            `rotate(${angle}deg) translate(${radius}px) rotate(${-angle}deg)`;
+
+          item.className = "fm-evo-item";
+          item.dataset.index = String(index);
+          item.dataset.name = fruit.name;
+          item.style.setProperty("--fm-evo-transform", transform);
+          item.title = fruit.name;
+          item.setAttribute("aria-label", fruit.name);
+
+          item.appendChild(createFruitImage(item, fruit));
+          evolutionBar.appendChild(item);
+        });
+
+        updateActive(true);
+      }
+
+      function updateActive(forcePulse = false) {
+        const activeIndex = getCurrentIndex();
+        const items = evolutionBar.querySelectorAll(".fm-evo-item");
+
+        items.forEach((item) => {
+          const index = Number(item.dataset.index);
+          item.classList.toggle("is-active", index === activeIndex);
+        });
+
+        if (forcePulse || activeIndex !== lastActiveIndex) {
+          const activeItem = evolutionBar.querySelector(
+            `.fm-evo-item[data-index="${activeIndex}"]`
+          );
+
+          if (activeItem) {
+            activeItem.classList.remove("is-pulse");
+
+            requestAnimationFrame(() => {
+              activeItem.classList.add("is-pulse");
+
+              window.setTimeout(() => {
+                activeItem.classList.remove("is-pulse");
+              }, 380);
+            });
+          }
+        }
+
+        lastActiveIndex = activeIndex;
+      }
+
+      buildCircle();
+
+      const observer = new MutationObserver(() => {
+        updateActive(true);
+      });
+
+      observer.observe(nextFruitNameEl, {
+        childList: true,
+        characterData: true,
+        subtree: true
+      });
+
+      window.addEventListener("resize", () => {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(buildCircle, 120);
+      });
+
+      window.setInterval(updateActive, 300);
+      window.setTimeout(buildCircle, 500);
+      window.setTimeout(updateActive, 1000);
+    });
+  </script>
+</body>
+</html>
