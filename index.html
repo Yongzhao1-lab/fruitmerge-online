@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <title>Fruit Merge Online - Play Free Fruit Merging Game</title>
+
+  <meta
+    name="description"
+    content="Play Fruit Merge Online for free. Drop matching fruits, create bigger fruits, reach Dragon Fruit, and challenge your best score in this browser puzzle game."
+  />
+  <meta
+    name="keywords"
+    content="fruit merge, fruit merge online, fruit merge game, merge fruit game, watermelon game, browser puzzle game"
+  />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+
+  <link rel="canonical" href="https://fruitmerge.online/" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/style.css" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Fruit Merge Online" />
+  <meta property="og:title" content="Fruit Merge Online - Play Free Fruit Merging Game" />
+  <meta
+    property="og:description"
+    content="Drop fruits, merge matching pairs, unlock bigger fruits, reach Dragon Fruit, and challenge your best score."
+  />
+  <meta property="og:url" content="https://fruitmerge.online/" />
+  <meta property="og:image" content="https://fruitmerge.online/og-image.svg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fruit Merge Online - Play Free Fruit Merging Game" />
+  <meta
+    name="twitter:description"
+    content="Drop fruits, merge matching pairs, unlock bigger fruits, and challenge your best score."
+  />
+  <meta name="twitter:image" content="https://fruitmerge.online/og-image.svg" />
+  <meta name="theme-color" content="#071221" />
+
+  <style>
+    /*
+      Homepage guide navigation:
+      - Four featured guides remain fixed.
+      - New future guides belong on /guides.html.
+      - The FAQ call-to-action remains contextual inside the FAQ section.
+    */
+
+    .all-guides-row {
+      margin-top: 22px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .all-guides-row a {
+      min-height: 48px;
+      padding: 0 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 1px solid rgba(157, 201, 255, 0.32);
+      border-radius: 999px;
+      color: #e9f3ff;
+      background: rgba(12, 32, 56, 0.72);
+      font-size: 14px;
+      line-height: 1.2;
+      font-weight: 900;
+      text-align: center;
+      text-decoration: none;
+      box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.09);
+      transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease;
+    }
+
+    .all-guides-row a:hover {
+      transform: translateY(-2px);
+      border-color: rgba(157, 201, 255, 0.68);
+      background: rgba(18, 47, 80, 0.92);
+    }
+
+    .all-guides-row a:focus-visible {
+      outline: 3px solid #ffffff;
+      outline-offset: 4px;
+    }
+
+    #faq a[href="/fruit-merge-faq.html"] {
+      min-height: 50px !important;
+      padding: 0 22px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 8px !important;
+      border: 1px solid rgba(255, 255, 255, 0.18) !important;
+      border-radius: 14px !important;
+      color: #111827 !important;
+      background: linear-gradient(180deg, #b9dcff 0%, #78afff 100%) !important;
+      font-size: 14px !important;
+      line-height: 1.25 !important;
+      font-weight: 900 !important;
+      text-align: center !important;
+      text-decoration: none !important;
+      box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.46) !important;
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        filter 0.18s ease !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #faq a[href="/fruit-merge-faq.html"]:hover {
+      transform: translateY(-3px) !important;
+      filter: brightness(1.04) !important;
+      box-shadow:
+        0 17px 34px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.58) !important;
+    }
+
+    #faq a[href="/fruit-merge-faq.html"]:active {
+      transform: translateY(-1px) scale(0.99) !important;
+    }
+
+    #faq a[href="/fruit-merge-faq.html"]:focus-visible {
+      outline: 3px solid #ffffff !important;
+      outline-offset: 4px !important;
+    }
+
+    .faq-more-row {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+    }
+
+    @media (max-width: 600px) {
+      .all-guides-row {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .all-guides-row a,
+      #faq a[href="/fruit-merge-faq.html"] {
+        width: 100% !important;
+        min-height: 52px !important;
+        margin: 0 !important;
+        padding: 0 16px !important;
+        font-size: 13px !important;
+      }
+
+      .faq-more-row {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+    }
+  
+    /* Universal share dialog: desktop, mobile and game-over share buttons */
+    .fm-share-dialog {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(3, 12, 24, 0.76);
+      backdrop-filter: blur(10px);
+    }
+
+    .fm-share-dialog[hidden] {
+      display: none;
+    }
+
+    .fm-share-card {
+      width: min(430px, 100%);
+      padding: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 24px;
+      color: #eaf2fb;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(139, 240, 92, 0.16), transparent 32%),
+        linear-gradient(145deg, #10243d, #071525);
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.44);
+    }
+
+    .fm-share-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .fm-share-card-header p {
+      margin: 0 0 5px;
+      color: #8df04f;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .fm-share-card-header h2 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 25px;
+      line-height: 1.15;
+    }
+
+    .fm-share-close {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 50%;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .fm-share-score {
+      margin: 22px 0 18px;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 17px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .fm-share-score div {
+      min-width: 0;
+    }
+
+    .fm-share-score span {
+      display: block;
+      margin-bottom: 3px;
+      color: #aebdd0;
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .fm-share-score strong {
+      display: block;
+      overflow: hidden;
+      color: #ffffff;
+      font-size: 23px;
+      line-height: 1.15;
+      text-overflow: ellipsis;
+    }
+
+    .fm-share-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 11px;
+    }
+
+    .fm-share-actions button,
+    .fm-share-actions a {
+      min-height: 48px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 14px;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .fm-share-actions .fm-share-primary {
+      border-color: transparent;
+      color: #102019;
+      background: linear-gradient(145deg, #b1ff76, #67e24b);
+    }
+
+    .fm-share-actions button:hover,
+    .fm-share-actions a:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .fm-share-actions .fm-share-primary:hover {
+      background: linear-gradient(145deg, #c2ff94, #78ed5d);
+    }
+
+    .fm-share-feedback {
+      min-height: 22px;
+      margin: 14px 0 0;
+      color: #b9c9da;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    body.fm-share-open {
+      overflow: hidden;
+    }
+
+    @media (max-width: 520px) {
+      .fm-share-card {
+        padding: 22px 18px;
+        border-radius: 21px;
+      }
+
+      .fm-share-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  
+    /* =========================================================
+       Mobile immersive play
+       - Activated only after the user presses Play.
+       - Keeps the Canvas at its original 420:560 (3:4) ratio.
+       - CSS scales width and height together; no stretching.
+       ========================================================= */
+
+    @media (max-width: 880px) {
+      html.fm-mobile-playing,
+      body.mobile-playing {
+        --fm-mobile-top-safe: 42px;
+        --fm-mobile-top-safe: max(
+          42px,
+          calc(env(safe-area-inset-top) + 24px)
+        );
+        width: 100%;
+        height: 100%;
+        overflow: hidden !important;
+        overscroll-behavior: none !important;
+        background: #fff0b7 !important;
+      }
+
+      body.mobile-playing {
+        position: fixed !important;
+        inset: 0 !important;
+        margin: 0 !important;
+        touch-action: none !important;
+      }
+
+      body.mobile-playing .portal-header,
+      body.mobile-playing .icon-sidebar,
+      body.mobile-playing .game-toolbar,
+      body.mobile-playing .content-section,
+      body.mobile-playing .site-footer,
+      body.mobile-playing .scene-left,
+      body.mobile-playing .scene-right,
+      body.mobile-playing .scene-title,
+      body.mobile-playing .fruit-corner,
+      body.mobile-playing .scene-decoration {
+        display: none !important;
+      }
+
+      body.mobile-playing .portal-shell,
+      body.mobile-playing .portal-main,
+      body.mobile-playing .game-player,
+      body.mobile-playing .game-viewport {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: var(--fm-mobile-height, 100dvh) !important;
+        min-width: 0 !important;
+        min-height: var(--fm-mobile-height, 100dvh) !important;
+        max-width: none !important;
+        max-height: var(--fm-mobile-height, 100dvh) !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        z-index: 9990 !important;
+        background:
+          radial-gradient(circle at 50% 5%, rgba(255, 255, 255, 0.34), transparent 24%),
+          linear-gradient(180deg, #d79a53 0%, #c98735 22%, #fff0b4 22%, #fff5d0 100%) !important;
+      }
+
+      body.mobile-playing .game-scene {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: var(--fm-mobile-height, 100dvh) !important;
+        min-height: var(--fm-mobile-height, 100dvh) !important;
+        max-height: var(--fm-mobile-height, 100dvh) !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        aspect-ratio: auto !important;
+        transform: none !important;
+        z-index: 9992 !important;
+      }
+
+      body.mobile-playing .mobile-game-hud {
+        position: fixed !important;
+        top: var(--fm-mobile-top-safe) !important;
+        left: 8px !important;
+        right: 58px !important;
+        z-index: 10020 !important;
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 5px !important;
+        width: auto !important;
+        pointer-events: none !important;
+      }
+
+      body.mobile-playing .mobile-hud-pill {
+        min-width: 0 !important;
+        min-height: 44px !important;
+        padding: 5px 3px !important;
+        display: grid !important;
+        place-items: center !important;
+        align-content: center !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.78) !important;
+        border-radius: 14px !important;
+        color: #5d3911 !important;
+        background:
+          linear-gradient(180deg, rgba(255, 251, 225, 0.96), rgba(255, 211, 103, 0.88)) !important;
+        box-shadow:
+          0 7px 17px rgba(97, 57, 10, 0.18),
+          inset 0 1px 0 rgba(255, 255, 255, 0.88) !important;
+        text-align: center !important;
+        backdrop-filter: blur(9px) !important;
+      }
+
+      body.mobile-playing .mobile-hud-pill span {
+        display: block !important;
+        margin: 0 0 2px !important;
+        font-size: 7px !important;
+        line-height: 1 !important;
+        font-weight: 900 !important;
+        text-transform: uppercase !important;
+        opacity: 0.75 !important;
+      }
+
+      body.mobile-playing .mobile-hud-pill strong {
+        display: block !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        font-size: 14px !important;
+        line-height: 1.05 !important;
+        font-weight: 1000 !important;
+        text-overflow: ellipsis !important;
+      }
+
+      body.mobile-playing .mobile-next-pill {
+        grid-template-columns: 1fr auto !important;
+        column-gap: 2px !important;
+      }
+
+      body.mobile-playing .mobile-next-pill canvas {
+        width: 25px !important;
+        height: 25px !important;
+        max-width: 25px !important;
+        max-height: 25px !important;
+      }
+
+      body.mobile-playing .mobile-menu-button {
+        position: fixed !important;
+        top: var(--fm-mobile-top-safe) !important;
+        right: 8px !important;
+        z-index: 10030 !important;
+        width: 44px !important;
+        height: 44px !important;
+        display: grid !important;
+        place-items: center !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.78) !important;
+        border-radius: 14px !important;
+        color: #5d3911 !important;
+        background:
+          radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.92), transparent 25%),
+          linear-gradient(180deg, rgba(255, 249, 218, 0.96), rgba(255, 205, 82, 0.91)) !important;
+        box-shadow: 0 7px 17px rgba(97, 57, 10, 0.17) !important;
+      }
+
+      /*
+        The available height and width are both considered.
+        0.75 = 420 / 560, so the displayed game always remains 3:4.
+      */
+      body.mobile-playing .scene-center {
+        position: fixed !important;
+        left: 50% !important;
+        top: calc(var(--fm-mobile-top-safe) + 54px) !important;
+        width: min(
+          calc(100vw - 10px),
+          calc(
+            (
+              var(--fm-mobile-height, 100dvh)
+              - var(--fm-mobile-top-safe)
+              - max(8px, env(safe-area-inset-bottom))
+              - 68px
+            ) * 0.75
+          ),
+          420px
+        ) !important;
+        height: auto !important;
+        margin: 0 !important;
+        display: grid !important;
+        grid-template-rows: auto auto !important;
+        justify-items: center !important;
+        transform: translateX(-50%) !important;
+        z-index: 10000 !important;
+      }
+
+      body.mobile-playing .glass-top {
+        display: block !important;
+        width: 43% !important;
+        height: 11px !important;
+        min-height: 11px !important;
+        flex: 0 0 11px !important;
+      }
+
+      body.mobile-playing .canvas-frame {
+        width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 420 / 560 !important;
+        padding: 4px !important;
+        overflow: hidden !important;
+        border-radius: 21px !important;
+      }
+
+      body.mobile-playing #gameCanvas {
+        width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 420 / 560 !important;
+        display: block !important;
+        max-width: none !important;
+        border-radius: 17px !important;
+        touch-action: none !important;
+      }
+
+      body.mobile-playing .viewport-start-overlay {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: var(--fm-mobile-height, 100dvh) !important;
+        z-index: 10100 !important;
+      }
+
+      body.mobile-playing .mobile-game-menu {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 10120 !important;
+        display: grid !important;
+        place-items: center !important;
+        padding:
+          var(--fm-mobile-top-safe)
+          18px
+          max(18px, env(safe-area-inset-bottom)) !important;
+        background: rgba(52, 30, 5, 0.42) !important;
+        backdrop-filter: blur(11px) !important;
+      }
+
+      body.mobile-playing .mobile-game-menu.hidden {
+        display: none !important;
+      }
+
+      body.mobile-playing .mobile-game-menu-card {
+        width: min(88vw, 350px) !important;
+        padding: 23px 20px 20px !important;
+        border: 2px solid rgba(255, 255, 255, 0.78) !important;
+        border-radius: 27px !important;
+        color: #633b0f !important;
+        background:
+          linear-gradient(180deg, rgba(255, 251, 224, 0.98), rgba(255, 218, 133, 0.96)) !important;
+        box-shadow: 0 25px 70px rgba(54, 30, 4, 0.31) !important;
+        text-align: center !important;
+      }
+
+      body.mobile-playing .mobile-game-menu-card h2 {
+        margin: 0 0 15px !important;
+        color: #633b0f !important;
+      }
+
+      body.mobile-playing .mobile-game-menu-card .section-kicker {
+        margin-bottom: 6px !important;
+        color: #d45d2e !important;
+      }
+
+      body.mobile-playing .mobile-menu-actions {
+        display: grid !important;
+        gap: 10px !important;
+      }
+
+      body.mobile-playing .mobile-menu-actions button {
+        min-height: 48px !important;
+        border: 0 !important;
+        border-radius: 999px !important;
+        font-weight: 900 !important;
+      }
+
+      body.mobile-playing #mobileResumeButton {
+        color: #ffffff !important;
+        background: linear-gradient(180deg, #35de75, #15b95b) !important;
+      }
+
+      body.mobile-playing #mobileExitButton {
+        color: #ffffff !important;
+        background: linear-gradient(180deg, #ff8b65, #ed603f) !important;
+      }
+
+      body.mobile-playing .fm-share-dialog {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: var(--fm-mobile-height, 100dvh) !important;
+        z-index: 10200 !important;
+        padding:
+          var(--fm-mobile-top-safe)
+          18px
+          max(18px, env(safe-area-inset-bottom)) !important;
+        overflow-y: auto !important;
+      }
+
+      body.mobile-playing .fm-share-card {
+        margin: auto !important;
+      }
+    }
+
+    @media (max-width: 390px) {
+      body.mobile-playing .mobile-game-hud {
+        left: 6px !important;
+        right: 54px !important;
+        gap: 4px !important;
+      }
+
+      body.mobile-playing .mobile-menu-button {
+        right: 6px !important;
+        width: 42px !important;
+        height: 42px !important;
+      }
+
+      body.mobile-playing .mobile-hud-pill {
+        min-height: 42px !important;
+        padding: 4px 2px !important;
+      }
+
+      body.mobile-playing .mobile-hud-pill span {
+        font-size: 6px !important;
+      }
+
+      body.mobile-playing .mobile-hud-pill strong {
+        font-size: 13px !important;
+      }
+
+      body.mobile-playing .scene-center {
+        width: min(
+          calc(100vw - 8px),
+          calc(
+            (
+              var(--fm-mobile-height, 100dvh)
+              - var(--fm-mobile-top-safe)
+              - max(8px, env(safe-area-inset-bottom))
+              - 66px
+            ) * 0.75
+          ),
+          420px
+        ) !important;
+      }
+    }
+
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Game",
+    "name": "Fruit Merge Online",
+    "url": "https://fruitmerge.online/",
+    "description": "Fruit Merge Online is a free browser puzzle game where players drop and merge identical fruits, unlock larger fruit levels, and chase high scores.",
+    "genre": ["Puzzle", "Casual", "Merge"],
+    "gamePlatform": "Web browser",
+    "applicationCategory": "Game",
+    "operatingSystem": "Any",
+    "inLanguage": "en",
+    "isAccessibleForFree": true,
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is Fruit Merge Online free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Fruit Merge Online is free to play directly in your browser."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to download Fruit Merge Online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Fruit Merge Online works directly in a modern browser without downloads or installation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Fruit Merge Online save my score?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Your best score and local top runs are stored in your browser."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <div class="portal-shell">
+    <header class="portal-header">
+      <a class="brand" href="/" aria-label="Fruit Merge Online home">
+        <span class="brand-mark" aria-hidden="true">🍓</span>
+        <span>Fruit<span>Merge</span></span>
+      </a>
+
+      <label class="search-box" aria-label="Search Fruit Merge guides">
+        <span aria-hidden="true">⌕</span>
+        <input
+          id="homepageGuideSearch"
+          type="search"
+          placeholder="Search Fruit Merge guides"
+        />
+      </label>
+
+      <nav class="top-nav" aria-label="Main navigation">
+        <a class="active" href="#game">Play</a>
+        <a href="#features">Features</a>
+        <a href="#how-to-play">How to Play</a>
+        <a href="#levels">Levels</a>
+        <a href="/guides.html">Guides</a>
+      </nav>
+    </header>
+
+    <aside class="icon-sidebar" aria-label="Quick navigation">
+      <a href="/" aria-label="Home">
+        <span aria-hidden="true">⌂</span>
+        <small>Home</small>
+      </a>
+
+      <a href="#features" aria-label="Popular features">
+        <span aria-hidden="true">★</span>
+        <small>Popular</small>
+      </a>
+
+      <a href="/fruit-merge-strategy.html" aria-label="Fruit Merge challenges and strategy">
+        <span aria-hidden="true">◆</span>
+        <small>Challenges</small>
+      </a>
+
+      <a href="#game" aria-label="Leaderboard">
+        <span aria-hidden="true">♛</span>
+        <small>Leaderboard</small>
+      </a>
+
+      <a href="/guides.html" aria-label="Fruit Merge guides and help">
+        <span aria-hidden="true">?</span>
+        <small>Guides</small>
+      </a>
+
+      <button class="side-settings" type="button" aria-label="Settings">⚙</button>
+    </aside>
+
+    <main class="portal-main">
+      <section class="game-player" id="game" aria-labelledby="game-title">
+        <div class="game-viewport">
+          <div class="game-scene">
+            <div class="scene-bg" aria-hidden="true"></div>
+
+            <div class="scene-title" aria-hidden="true">
+              <span>Fruit</span><strong>Merge</strong>
+            </div>
+
+            <span class="scene-decoration scene-leaf-one" aria-hidden="true">🍃</span>
+            <span class="scene-decoration scene-leaf-two" aria-hidden="true">🌿</span>
+            <span class="scene-decoration scene-star-one" aria-hidden="true">✦</span>
+            <span class="scene-decoration scene-star-two" aria-hidden="true">✦</span>
+
+            <div class="fruit-corner fruit-corner-left" aria-hidden="true">
+              <span>🍊</span><span>🍇</span><span>🍓</span>
+            </div>
+
+            <div class="fruit-corner fruit-corner-right" aria-hidden="true">
+              <span>🍍</span><span>🍉</span><span>🍒</span>
+            </div>
+
+            <aside class="scene-left" aria-label="Score and local leaderboard">
+              <div class="score-orb">
+                <span class="score-crown" aria-hidden="true">♛</span>
+                <span>Score</span>
+                <strong id="score">0</strong>
+                <small>Best Score</small>
+                <b id="bestScore">0</b>
+              </div>
+
+              <div class="score-panel">
+                <div class="panel-title">
+                  <h2>Local Record Board</h2>
+                  <p>Your best runs are saved in this browser.</p>
+                </div>
+
+                <div class="time-card">
+                  <span>Time</span>
+                  <strong id="time">00:00</strong>
+                </div>
+
+                <div class="top-runs-title">
+                  <span aria-hidden="true"></span>
+                  <b>Top Runs</b>
+                  <span aria-hidden="true"></span>
+                </div>
+
+                <div id="leaderboardList" class="leaderboard-list">
+                  <div class="leaderboard-item">
+                    <div class="leaderboard-rank">1</div>
+                    <div class="leaderboard-main">
+                      <strong>No run yet</strong>
+                      <span>Start your first game</span>
+                    </div>
+                    <div class="leaderboard-score">0</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="quick-buttons">
+                <button id="musicToggleButton" type="button" aria-label="Toggle background music">♪</button>
+                <button id="fullscreenButton" type="button" aria-label="Enter full screen">⛶</button>
+              </div>
+            </aside>
+
+            <section class="scene-center" aria-label="Fruit Merge game board">
+              <div class="glass-top" aria-hidden="true"></div>
+
+              <div class="canvas-frame">
+                <canvas
+                  id="gameCanvas"
+                  width="420"
+                  height="560"
+                  aria-label="Fruit Merge Online game canvas"
+                ></canvas>
+
+                <div id="gameOverPanel" class="game-over-panel hidden">
+                  <div class="game-over-card">
+                    <p class="game-over-badge" id="gameOverBadge">Game Over</p>
+                    <h2>Final Score</h2>
+                    <div class="game-over-score" id="gameOverScore">0</div>
+
+                    <div class="game-over-meta">
+                      <div>
+                        <span>Time</span>
+                        <strong id="gameOverTime">00:00</strong>
+                      </div>
+                      <div>
+                        <span>Best</span>
+                        <strong id="gameOverBest">0</strong>
+                      </div>
+                    </div>
+
+                    <p class="game-over-tip" id="gameOverTip">
+                      Great run! Keep merging to beat your best score.
+                    </p>
+
+                    <div class="game-over-actions">
+                      <button id="playAgainButton" class="primary" type="button">Play Again</button>
+                      <button id="shareScoreButton" class="secondary" type="button">Share</button>
+                    </div>
+
+                    <div id="gameOverLeaderboard" class="hidden" aria-hidden="true"></div>
+                  </div>
+                </div>
+
+                <div id="gameOverOverlay" class="hidden" aria-hidden="true"></div>
+              </div>
+            </section>
+
+            <aside class="scene-right" aria-label="Upcoming fruits and evolution progress">
+              <div class="next-panel">
+                <span class="panel-sparkle" aria-hidden="true">✦</span>
+                <h2>Next Fruit</h2>
+
+                <div class="next-main">
+                  <canvas id="nextFruitCanvas0" width="74" height="74" aria-label="Next fruit preview"></canvas>
+                  <span id="nextFruitName">Cherry</span>
+                </div>
+
+                <div class="next-divider" aria-hidden="true"></div>
+
+                <div class="next-mini-row">
+                  <div>
+                    <canvas id="nextFruitCanvas1" width="44" height="44" aria-label="Second upcoming fruit"></canvas>
+                    <small>2nd</small>
+                  </div>
+                  <div>
+                    <canvas id="nextFruitCanvas2" width="44" height="44" aria-label="Third upcoming fruit"></canvas>
+                    <small>3rd</small>
+                  </div>
+                </div>
+
+                <button id="restartButton" class="restart-button" type="button" aria-label="Restart game">
+                  ↻
+                </button>
+              </div>
+
+              <div class="evolution-panel">
+                <h2><span aria-hidden="true">✦</span> Circle of Evolution</h2>
+                <div id="evolutionBar" class="evolution-circle" aria-label="Fruit evolution progress"></div>
+              </div>
+
+              <button id="shareCurrentButton" class="share-current" type="button">
+                Share Score
+              </button>
+            </aside>
+          </div>
+
+          <div id="startOverlay" class="viewport-start-overlay">
+            <div class="cover-art" aria-hidden="true">
+              <div class="cover-fruit-row">
+                <span>🍓</span><span>🍊</span><span>🍇</span>
+              </div>
+              <div class="cover-title">
+                <span>Fruit</span>
+                <strong>Merge</strong>
+              </div>
+              <div class="cover-fruit-bottom">
+                <span>🍍</span><span>🍉</span><span>🍒</span>
+              </div>
+            </div>
+
+            <div class="cover-mask" aria-hidden="true"></div>
+
+            <button id="startButton" class="cover-play-button" type="button">
+              <span aria-hidden="true">▶</span>
+              Play Fruit Merge
+            </button>
+          </div>
+
+          <div class="mobile-game-hud" aria-label="Mobile game information">
+            <div class="mobile-hud-pill">
+              <span>Score</span>
+              <strong id="mobileScore">0</strong>
+            </div>
+            <div class="mobile-hud-pill">
+              <span>Best</span>
+              <strong id="mobileBestScore">0</strong>
+            </div>
+            <div class="mobile-hud-pill">
+              <span>Time</span>
+              <strong id="mobileTime">00:00</strong>
+            </div>
+            <div class="mobile-hud-pill mobile-next-pill">
+              <span>Next</span>
+              <canvas id="mobileNextFruitCanvas" width="32" height="32" aria-label="Next fruit"></canvas>
+            </div>
+          </div>
+
+          <button
+            id="mobileMenuButton"
+            class="mobile-menu-button"
+            type="button"
+            aria-label="Open game controls"
+            aria-expanded="false"
+          >
+            ⚙
+          </button>
+
+          <div id="mobileGameMenu" class="mobile-game-menu hidden" aria-hidden="true">
+            <div class="mobile-game-menu-card">
+              <p class="section-kicker">GAME CONTROLS</p>
+              <h2>Fruit Merge Menu</h2>
+
+              <div class="mobile-menu-actions">
+                <button id="mobileResumeButton" type="button">Resume</button>
+                <button id="mobileRestartButton" type="button">Restart</button>
+                <button id="mobileMusicButton" type="button">Music</button>
+                <button id="mobileShareButton" type="button">Share</button>
+                <button id="mobileExitButton" type="button">Exit Full Screen</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="mobileSharePopover" class="mobile-share-popover hidden" aria-hidden="true">
+            <div class="mobile-share-card">
+              <button id="mobileShareClose" type="button" aria-label="Close share window">×</button>
+              <p class="section-kicker">SHARE SCORE</p>
+              <h2>Share Your Fruit Merge Run</h2>
+
+              <div class="mobile-share-grid">
+                <button type="button" data-share-platform="facebook">Facebook</button>
+                <button type="button" data-share-platform="instagram">Instagram</button>
+                <button type="button" data-share-platform="copy">Copy Link</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-toolbar">
+          <div class="game-info">
+            <div class="game-icon" aria-hidden="true">🍓</div>
+            <div>
+              <h1 id="game-title">Fruit Merge Online</h1>
+              <p>Drop, match, merge, and reach Dragon Fruit.</p>
+            </div>
+          </div>
+
+          <div class="toolbar-actions">
+            <button id="toolbarShareButton" type="button" aria-label="Share Fruit Merge">➤</button>
+            <button id="toolbarFullscreenButton" type="button" aria-label="Full screen">⛶</button>
+            <button id="toolbarLikeButton" type="button" aria-label="Like Fruit Merge">♥</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section" id="features">
+        <p class="section-kicker">GAME FEATURES</p>
+        <h2>Why Play Fruit Merge Online?</h2>
+
+        <div class="info-grid">
+          <article>
+            <h3>Instant Browser Play</h3>
+            <p>
+              Start immediately on desktop or mobile. No account, download, or
+              installation is required.
+            </p>
+          </article>
+
+          <article>
+            <h3>Three-Fruit Preview</h3>
+            <p>
+              See the next three fruits and plan several moves ahead instead of
+              reacting to only one drop.
+            </p>
+          </article>
+
+          <article>
+            <h3>Local Score Records</h3>
+            <p>
+              Your best score and recent runs are stored locally in your
+              browser so you can challenge your own record.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content-section" id="how-to-play">
+        <p class="section-kicker">HOW TO PLAY</p>
+        <h2>How to Play Fruit Merge Online</h2>
+
+        <div class="info-grid">
+          <article>
+            <h3>1. Choose a Drop Position</h3>
+            <p>
+              Move your mouse on desktop or tap the desired horizontal position
+              on mobile.
+            </p>
+          </article>
+
+          <article>
+            <h3>2. Merge Matching Fruits</h3>
+            <p>
+              When two identical fruits touch, they combine into the next fruit
+              and add points to your score.
+            </p>
+          </article>
+
+          <article>
+            <h3>3. Stay Below the Danger Line</h3>
+            <p>
+              Keep the stack low. The run ends when settled fruits remain above
+              the danger line for too long.
+            </p>
+          </article>
+        </div>
+
+        <div class="guide-link-row">
+          <a href="/how-to-play-fruit-merge.html">Read the Complete How to Play Guide →</a>
+        </div>
+      </section>
+
+      <section class="content-section" id="strategy">
+        <p class="section-kicker">STRATEGY</p>
+        <h2>Fruit Merge Tips for a Higher Score</h2>
+
+        <div class="info-grid">
+          <article>
+            <h3>Build a Low Base</h3>
+            <p>
+              Keep larger fruits low and avoid creating narrow towers that can
+              quickly cross the danger line.
+            </p>
+          </article>
+
+          <article>
+            <h3>Protect the Center Lane</h3>
+            <p>
+              A clear center gives you more control over future drops and helps
+              connect fruits on either side.
+            </p>
+          </article>
+
+          <article>
+            <h3>Plan with the Queue</h3>
+            <p>
+              Use all three previewed fruits to prepare pairs, chain merges, and
+              safe temporary placements.
+            </p>
+          </article>
+        </div>
+
+        <div class="guide-link-row">
+          <a href="/fruit-merge-strategy.html">Read the Complete Strategy Guide →</a>
+        </div>
+      </section>
+
+      <section class="content-section" id="levels">
+        <p class="section-kicker">FRUIT LEVELS</p>
+        <h2>Fruit Merge Evolution Levels</h2>
+
+        <div class="evolution-table-wrap">
+          <table class="evolution-table">
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Fruit</th>
+                <th>Created By</th>
+                <th>Merge Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>Cherry</td><td>Starting fruit</td><td>5</td></tr>
+              <tr><td>2</td><td>Strawberry</td><td>2 Cherries</td><td>10</td></tr>
+              <tr><td>3</td><td>Grape</td><td>2 Strawberries</td><td>20</td></tr>
+              <tr><td>4</td><td>Orange</td><td>2 Grapes</td><td>40</td></tr>
+              <tr><td>5</td><td>Apple</td><td>2 Oranges</td><td>80</td></tr>
+              <tr><td>6</td><td>Peach</td><td>2 Apples</td><td>160</td></tr>
+              <tr><td>7</td><td>Pineapple</td><td>2 Peaches</td><td>320</td></tr>
+              <tr><td>8</td><td>Watermelon</td><td>2 Pineapples</td><td>640</td></tr>
+              <tr><td>9</td><td>Grapefruit</td><td>2 Watermelons</td><td>1,280</td></tr>
+              <tr><td>10</td><td>Melon</td><td>2 Grapefruits</td><td>2,560</td></tr>
+              <tr><td>11</td><td>Dragon Fruit</td><td>2 Melons</td><td>5,120</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="guide-link-row" aria-label="Featured Fruit Merge guides">
+          <a href="/fruit-merge-tips-and-tricks.html">Fruit Merge Tips and Tricks →</a>
+          <a href="/fruit-evolution-guide.html">Fruit Evolution Guide →</a>
+          <a href="/fruit-merge-scoring-guide.html">Fruit Merge Scoring Guide →</a>
+          <a href="/how-to-get-dragon-fruit.html">How to Get Dragon Fruit →</a>
+        </div>
+
+        <div class="all-guides-row">
+          <a href="/guides.html">
+            View All Fruit Merge Guides
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Related games remain hidden until real additional games are available. -->
+
+      <section class="content-section" id="faq">
+        <p class="section-kicker">FAQ</p>
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-list">
+          <article>
+            <h3>Is Fruit Merge Online free?</h3>
+            <p>
+              Yes. You can play Fruit Merge Online for free directly in your
+              browser.
+            </p>
+          </article>
+
+          <article>
+            <h3>Do I need to download anything?</h3>
+            <p>
+              No. The game works online without an app, download, registration,
+              or installation.
+            </p>
+          </article>
+
+          <article>
+            <h3>Does Fruit Merge Online save my score?</h3>
+            <p>
+              Your best score and local top runs are stored in your current
+              browser.
+            </p>
+          </article>
+        </div>
+
+        <div class="faq-more-row">
+          <a href="/fruit-merge-faq.html">Browse the Complete Fruit Merge FAQ →</a>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <nav aria-label="Footer navigation">
+          <a href="/">Play Game</a>
+          <a href="/guides.html">All Guides</a>
+          <a href="/how-to-play-fruit-merge.html">How to Play</a>
+          <a href="/fruit-merge-tips-and-tricks.html">Tips</a>
+          <a href="/fruit-merge-strategy.html">Strategy</a>
+          <a href="/fruit-evolution-guide.html">Evolution</a>
+          <a href="/fruit-merge-scoring-guide.html">Scoring</a>
+          <a href="/how-to-get-dragon-fruit.html">Dragon Fruit</a>
+          <a href="/fruit-merge-faq.html">FAQ</a>
+          <a href="/about.html">About</a>
+          <a href="/privacy-policy.html">Privacy Policy</a>
+          <a href="/terms.html">Terms</a>
+          <a href="/contact.html">Contact</a>
+        </nav>
+
+        <p>© 2026 Fruit Merge Online. Free browser puzzle game.</p>
+      </footer>
+    </main>
+  </div>
+
+
+  <div
+    id="fmShareDialog"
+    class="fm-share-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="fmShareTitle"
+    hidden
+  >
+    <div class="fm-share-card">
+      <div class="fm-share-card-header">
+        <div>
+          <p>Share your run</p>
+          <h2 id="fmShareTitle">Fruit Merge Score</h2>
+        </div>
+
+        <button
+          id="fmShareClose"
+          class="fm-share-close"
+          type="button"
+          aria-label="Close share window"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="fm-share-score">
+        <div>
+          <span>Current Score</span>
+          <strong id="fmShareScoreValue">0</strong>
+        </div>
+        <div>
+          <span>Best Score</span>
+          <strong id="fmShareBestValue">0</strong>
+        </div>
+      </div>
+
+      <div class="fm-share-actions">
+        <button id="fmNativeShare" class="fm-share-primary" type="button">
+          Share
+        </button>
+
+        <a
+          id="fmFacebookShare"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Facebook
+        </a>
+
+        <a
+          id="fmXShare"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          X
+        </a>
+
+        <button id="fmCopyShare" type="button">
+          Copy Link
+        </button>
+      </div>
+
+      <p id="fmShareFeedback" class="fm-share-feedback" aria-live="polite"></p>
+    </div>
+  </div>
+
+
+  <script>
+    (() => {
+      const searchInput = document.getElementById("homepageGuideSearch");
+
+      if (!searchInput) return;
+
+      searchInput.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter") return;
+
+        event.preventDefault();
+        const query = searchInput.value.trim();
+        const target = query
+          ? `/guides.html?q=${encodeURIComponent(query)}`
+          : "/guides.html";
+
+        window.location.href = target;
+      });
+    })();
+  </script>
+
+  <script src="/game.js"></script>
+
+
+  <script>
+    (() => {
+      const MOBILE_QUERY = "(max-width: 880px)";
+      const startButton = document.getElementById("startButton");
+      const gamePlayer = document.querySelector(".game-player");
+      const fullscreenButton = document.getElementById("fullscreenButton");
+      const toolbarFullscreenButton = document.getElementById("toolbarFullscreenButton");
+      const mobileMenuButton = document.getElementById("mobileMenuButton");
+      const mobileGameMenu = document.getElementById("mobileGameMenu");
+      const mobileResumeButton = document.getElementById("mobileResumeButton");
+      const mobileRestartButton = document.getElementById("mobileRestartButton");
+      const mobileMusicButton = document.getElementById("mobileMusicButton");
+      const mobileExitButton = document.getElementById("mobileExitButton");
+      const restartButton = document.getElementById("restartButton");
+      const musicToggleButton = document.getElementById("musicToggleButton");
+
+      let immersiveRequested = false;
+      let viewportTimer = 0;
+
+      function isMobileScreen() {
+        return window.matchMedia(MOBILE_QUERY).matches;
+      }
+
+      function getViewportHeight() {
+        const visualHeight = window.visualViewport?.height;
+        return Math.max(
+          320,
+          Math.round(visualHeight || window.innerHeight || document.documentElement.clientHeight)
+        );
+      }
+
+      function syncMobileViewport() {
+        if (!document.body.classList.contains("mobile-playing")) return;
+
+        document.documentElement.style.setProperty(
+          "--fm-mobile-height",
+          `${getViewportHeight()}px`
+        );
+
+        window.clearTimeout(viewportTimer);
+        viewportTimer = window.setTimeout(() => {
+          window.scrollTo(0, 0);
+          window.dispatchEvent(new Event("resize"));
+        }, 80);
+      }
+
+      function closeMobileMenu() {
+        if (!mobileGameMenu) return;
+        mobileGameMenu.classList.add("hidden");
+        mobileGameMenu.setAttribute("aria-hidden", "true");
+        mobileMenuButton?.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("mobile-menu-open");
+      }
+
+      function openMobileMenu() {
+        if (!mobileGameMenu) return;
+        mobileGameMenu.classList.remove("hidden");
+        mobileGameMenu.setAttribute("aria-hidden", "false");
+        mobileMenuButton?.setAttribute("aria-expanded", "true");
+        document.body.classList.add("mobile-menu-open");
+      }
+
+      function requestRealFullscreen() {
+        const target = gamePlayer || document.documentElement;
+
+        if (
+          document.fullscreenElement ||
+          !document.fullscreenEnabled ||
+          typeof target?.requestFullscreen !== "function"
+        ) {
+          return;
+        }
+
+        try {
+          const result = target.requestFullscreen({ navigationUI: "hide" });
+
+          if (result && typeof result.catch === "function") {
+            result.catch(() => {
+              /*
+                Some mobile browsers block the Fullscreen API.
+                The fixed CSS immersive mode remains active as a fallback.
+              */
+            });
+          }
+        } catch (error) {
+          try {
+            target.requestFullscreen()?.catch?.(() => {});
+          } catch (fallbackError) {}
+        }
+      }
+
+      function tryLockPortrait() {
+        if (
+          document.fullscreenElement &&
+          screen.orientation &&
+          typeof screen.orientation.lock === "function"
+        ) {
+          screen.orientation.lock("portrait").catch(() => {});
+        }
+      }
+
+      function enterMobilePlayMode() {
+        if (!isMobileScreen()) return false;
+
+        immersiveRequested = true;
+        closeMobileMenu();
+
+        document.documentElement.classList.add("fm-mobile-playing");
+        document.body.classList.add("mobile-playing");
+        document.body.classList.remove("mobile-share-open");
+
+        document.documentElement.style.setProperty(
+          "--fm-mobile-height",
+          `${getViewportHeight()}px`
+        );
+
+        window.scrollTo(0, 0);
+
+        /*
+          This call remains inside the original user click event, which is
+          required by mobile browsers before they allow fullscreen.
+        */
+        requestRealFullscreen();
+
+        window.setTimeout(() => {
+          syncMobileViewport();
+          tryLockPortrait();
+        }, 90);
+
+        window.setTimeout(syncMobileViewport, 260);
+        return true;
+      }
+
+      function exitMobilePlayMode() {
+        immersiveRequested = false;
+        closeMobileMenu();
+
+        document.documentElement.classList.remove("fm-mobile-playing");
+        document.body.classList.remove(
+          "mobile-playing",
+          "mobile-menu-open",
+          "mobile-share-open"
+        );
+        document.documentElement.style.removeProperty("--fm-mobile-height");
+
+        if (document.fullscreenElement) {
+          document.exitFullscreen?.().catch?.(() => {});
+        }
+
+        if (
+          screen.orientation &&
+          typeof screen.orientation.unlock === "function"
+        ) {
+          try {
+            screen.orientation.unlock();
+          } catch (error) {}
+        }
+
+        window.setTimeout(() => {
+          window.dispatchEvent(new Event("resize"));
+        }, 120);
+      }
+
+      function toggleFullscreenOrMobileMode(event) {
+        event?.preventDefault();
+
+        if (isMobileScreen()) {
+          if (document.body.classList.contains("mobile-playing")) {
+            requestRealFullscreen();
+            syncMobileViewport();
+          } else {
+            enterMobilePlayMode();
+          }
+          return;
+        }
+
+        const target = gamePlayer || document.documentElement;
+
+        if (!document.fullscreenElement) {
+          target.requestFullscreen?.().catch?.(() => {});
+        } else {
+          document.exitFullscreen?.().catch?.(() => {});
+        }
+      }
+
+      startButton?.addEventListener("click", () => {
+        enterMobilePlayMode();
+      });
+
+      toolbarFullscreenButton?.addEventListener(
+        "click",
+        toggleFullscreenOrMobileMode
+      );
+
+      fullscreenButton?.addEventListener(
+        "click",
+        toggleFullscreenOrMobileMode
+      );
+
+      mobileMenuButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (mobileGameMenu?.classList.contains("hidden")) {
+          openMobileMenu();
+        } else {
+          closeMobileMenu();
+        }
+      });
+
+      mobileResumeButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+        closeMobileMenu();
+      });
+
+      mobileRestartButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+        restartButton?.click();
+        closeMobileMenu();
+      });
+
+      mobileMusicButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+        musicToggleButton?.click();
+        closeMobileMenu();
+      });
+
+      mobileExitButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+        exitMobilePlayMode();
+      });
+
+      mobileGameMenu?.addEventListener("click", (event) => {
+        if (event.target === mobileGameMenu) {
+          closeMobileMenu();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !mobileGameMenu?.classList.contains("hidden")) {
+          closeMobileMenu();
+        }
+      });
+
+      document.addEventListener("fullscreenchange", () => {
+        if (document.fullscreenElement) {
+          tryLockPortrait();
+          syncMobileViewport();
+          return;
+        }
+
+        /*
+          When the user leaves browser fullscreen directly, return to the
+          normal webpage. If the API was never available, immersiveRequested
+          remains active and the CSS fallback is not cancelled.
+        */
+        if (
+          immersiveRequested &&
+          document.body.classList.contains("mobile-playing") &&
+          document.fullscreenEnabled
+        ) {
+          exitMobilePlayMode();
+        }
+      });
+
+      window.addEventListener("resize", syncMobileViewport);
+      window.addEventListener("orientationchange", () => {
+        window.setTimeout(syncMobileViewport, 120);
+      });
+      window.visualViewport?.addEventListener("resize", syncMobileViewport);
+      window.visualViewport?.addEventListener("scroll", syncMobileViewport);
+    })();
+  </script>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const evolutionBar = document.getElementById("evolutionBar");
+      const nextFruitNameEl = document.getElementById("nextFruitName");
+
+      if (!evolutionBar || !nextFruitNameEl) return;
+
+      const fruits = [
+        { name: "Cherry", keys: ["cherry"], files: ["cherry.png"], fallback: "🍒" },
+        { name: "Strawberry", keys: ["strawberry"], files: ["strawberry.png"], fallback: "🍓" },
+        { name: "Grape", keys: ["grape"], files: ["grape.png"], fallback: "🍇" },
+        { name: "Orange", keys: ["orange"], files: ["orange.png"], fallback: "🍊" },
+        { name: "Apple", keys: ["apple"], files: ["apple.png"], fallback: "🍎" },
+        { name: "Peach", keys: ["peach"], files: ["peach.png"], fallback: "🍑" },
+        { name: "Pineapple", keys: ["pineapple"], files: ["pineapple.png"], fallback: "🍍" },
+        { name: "Watermelon", keys: ["watermelon"], files: ["watermelon.png"], fallback: "🍉" },
+        {
+          name: "Grapefruit",
+          keys: ["grapefruit", "pomelo", "yuzu", "lemon"],
+          files: ["grapefruit.png", "pomelo.png", "yuzu.png", "lemon.png"],
+          fallback: "🍋"
+        },
+        {
+          name: "Melon",
+          keys: ["melon", "hami melon", "hami-melon", "honeydew", "cantaloupe"],
+          files: ["melon.png", "hami-melon.png", "honeydew.png", "cantaloupe.png"],
+          fallback: "🍈"
+        },
+        {
+          name: "Dragon Fruit",
+          keys: ["dragon fruit", "dragonfruit", "dragon-fruit", "pitaya"],
+          files: ["dragonfruit.png", "dragon-fruit.png", "dragon_fruit.png", "pitaya.png"],
+          fallback: "🐉"
+        }
+      ];
+
+      let lastActiveIndex = -1;
+      let resizeTimer = null;
+
+      function normalize(value) {
+        return String(value || "")
+          .toLowerCase()
+          .replace(/[_-]+/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function getCurrentIndex() {
+        const currentName = normalize(nextFruitNameEl.textContent);
+
+        const index = fruits.findIndex((fruit) =>
+          fruit.keys.some((key) => normalize(key) === currentName)
+        );
+
+        return index >= 0 ? index : 0;
+      }
+
+      function createFruitImage(item, fruit) {
+        const img = document.createElement("img");
+        img.alt = fruit.name;
+        img.draggable = false;
+
+        let fileIndex = 0;
+
+        img.onerror = () => {
+          fileIndex += 1;
+
+          if (fileIndex < fruit.files.length) {
+            img.src = `/assets/fruits/${fruit.files[fileIndex]}`;
+          } else {
+            item.innerHTML = `<span aria-hidden="true">${fruit.fallback}</span>`;
+          }
+        };
+
+        img.src = `/assets/fruits/${fruit.files[0]}`;
+        return img;
+      }
+
+      function getCircleRadius() {
+        const size = evolutionBar.getBoundingClientRect().width || 150;
+        return Math.max(38, size / 2 - 18);
+      }
+
+      function buildCircle() {
+        evolutionBar.innerHTML = "";
+
+        const count = fruits.length;
+        const radius = getCircleRadius();
+
+        fruits.forEach((fruit, index) => {
+          const item = document.createElement("div");
+          const angle = -90 + (360 / count) * index;
+          const transform =
+            `rotate(${angle}deg) translate(${radius}px) rotate(${-angle}deg)`;
+
+          item.className = "fm-evo-item";
+          item.dataset.index = String(index);
+          item.dataset.name = fruit.name;
+          item.style.setProperty("--fm-evo-transform", transform);
+          item.title = fruit.name;
+          item.setAttribute("aria-label", fruit.name);
+
+          item.appendChild(createFruitImage(item, fruit));
+          evolutionBar.appendChild(item);
+        });
+
+        updateActive(true);
+      }
+
+      function updateActive(forcePulse = false) {
+        const activeIndex = getCurrentIndex();
+        const items = evolutionBar.querySelectorAll(".fm-evo-item");
+
+        items.forEach((item) => {
+          const index = Number(item.dataset.index);
+          item.classList.toggle("is-active", index === activeIndex);
+        });
+
+        if (forcePulse || activeIndex !== lastActiveIndex) {
+          const activeItem = evolutionBar.querySelector(
+            `.fm-evo-item[data-index="${activeIndex}"]`
+          );
+
+          if (activeItem) {
+            activeItem.classList.remove("is-pulse");
+
+            requestAnimationFrame(() => {
+              activeItem.classList.add("is-pulse");
+
+              window.setTimeout(() => {
+                activeItem.classList.remove("is-pulse");
+              }, 380);
+            });
+          }
+        }
+
+        lastActiveIndex = activeIndex;
+      }
+
+      buildCircle();
+
+      const observer = new MutationObserver(() => {
+        updateActive(true);
+      });
+
+      observer.observe(nextFruitNameEl, {
+        childList: true,
+        characterData: true,
+        subtree: true
+      });
+
+      window.addEventListener("resize", () => {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(buildCircle, 120);
+      });
+
+      window.setInterval(updateActive, 300);
+      window.setTimeout(buildCircle, 500);
+      window.setTimeout(updateActive, 1000);
+    });
+  </script>
+
+  <script>
+    (() => {
+      const triggerIds = new Set([
+        "toolbarShareButton",
+        "shareCurrentButton",
+        "shareScoreButton",
+        "mobileShareButton"
+      ]);
+
+      const dialog = document.getElementById("fmShareDialog");
+      const closeButton = document.getElementById("fmShareClose");
+      const nativeButton = document.getElementById("fmNativeShare");
+      const facebookLink = document.getElementById("fmFacebookShare");
+      const xLink = document.getElementById("fmXShare");
+      const copyButton = document.getElementById("fmCopyShare");
+      const scoreValue = document.getElementById("fmShareScoreValue");
+      const bestValue = document.getElementById("fmShareBestValue");
+      const feedback = document.getElementById("fmShareFeedback");
+
+      if (!dialog || !closeButton || !copyButton) return;
+
+      let lastFocusedElement = null;
+
+      function getNumberText(id, fallback = "0") {
+        const element = document.getElementById(id);
+        const value = element ? element.textContent.trim() : "";
+        return value || fallback;
+      }
+
+      function getShareData() {
+        const gameOverPanel = document.getElementById("gameOverPanel");
+        const gameOverVisible =
+          gameOverPanel && !gameOverPanel.classList.contains("hidden");
+
+        const currentScore = gameOverVisible
+          ? getNumberText("gameOverScore", getNumberText("score"))
+          : getNumberText("score");
+
+        const bestScore = gameOverVisible
+          ? getNumberText("gameOverBest", getNumberText("bestScore"))
+          : getNumberText("bestScore");
+
+        const url = `${window.location.origin}/`;
+        const text =
+          `I scored ${currentScore} in Fruit Merge Online! ` +
+          `My best score is ${bestScore}. Can you beat it?`;
+
+        return {
+          title: "Fruit Merge Online",
+          text,
+          url,
+          currentScore,
+          bestScore
+        };
+      }
+
+      function refreshShareLinks() {
+        const data = getShareData();
+        const encodedUrl = encodeURIComponent(data.url);
+        const encodedText = encodeURIComponent(data.text);
+
+        scoreValue.textContent = data.currentScore;
+        bestValue.textContent = data.bestScore;
+
+        facebookLink.href =
+          `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+
+        xLink.href =
+          `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
+
+        feedback.textContent = navigator.share
+          ? "Choose a platform or use your device share menu."
+          : "Choose a platform or copy the game link.";
+      }
+
+      function openDialog() {
+        lastFocusedElement =
+          document.activeElement instanceof HTMLElement
+            ? document.activeElement
+            : null;
+
+        /*
+          In mobile immersive mode the browser fullscreen element is
+          .game-player. Fullscreen browsers only render descendants of that
+          element, so move the share dialog inside it before opening.
+        */
+        const fullscreenHost = document.fullscreenElement;
+        const mobileGameHost = document.querySelector(".game-player");
+        const preferredHost = fullscreenHost || mobileGameHost || document.body;
+
+        if (!preferredHost.contains(dialog)) {
+          preferredHost.appendChild(dialog);
+        }
+
+        const mobileMenu = document.getElementById("mobileGameMenu");
+        const mobileMenuButton = document.getElementById("mobileMenuButton");
+
+        if (mobileMenu) {
+          mobileMenu.classList.add("hidden");
+          mobileMenu.setAttribute("aria-hidden", "true");
+        }
+
+        if (mobileMenuButton) {
+          mobileMenuButton.setAttribute("aria-expanded", "false");
+        }
+
+        document.body.classList.remove("mobile-menu-open");
+
+        refreshShareLinks();
+        dialog.hidden = false;
+        document.body.classList.add("fm-share-open");
+
+        window.requestAnimationFrame(() => {
+          closeButton.focus();
+        });
+      }
+
+      function closeDialog() {
+        dialog.hidden = true;
+        document.body.classList.remove("fm-share-open");
+        feedback.textContent = "";
+
+        if (lastFocusedElement) {
+          lastFocusedElement.focus();
+        }
+      }
+
+      async function copyShareText() {
+        const data = getShareData();
+        const value = `${data.text} ${data.url}`;
+
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(value);
+          } else {
+            const textarea = document.createElement("textarea");
+            textarea.value = value;
+            textarea.setAttribute("readonly", "");
+            textarea.style.position = "fixed";
+            textarea.style.opacity = "0";
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            const copied = document.execCommand("copy");
+            textarea.remove();
+
+            if (!copied) {
+              throw new Error("Copy command failed");
+            }
+          }
+
+          feedback.textContent = "Score and game link copied.";
+          copyButton.textContent = "Copied ✓";
+
+          window.setTimeout(() => {
+            copyButton.textContent = "Copy Link";
+          }, 1600);
+        } catch (error) {
+          feedback.textContent =
+            "Copy was blocked. Select the address from your browser to share it.";
+        }
+      }
+
+      async function nativeShare() {
+        const data = getShareData();
+
+        if (!navigator.share) {
+          await copyShareText();
+          return;
+        }
+
+        try {
+          await navigator.share({
+            title: data.title,
+            text: data.text,
+            url: data.url
+          });
+
+          feedback.textContent = "Share completed.";
+        } catch (error) {
+          if (error && error.name !== "AbortError") {
+            feedback.textContent =
+              "The system share menu could not open. Try Copy Link instead.";
+          }
+        }
+      }
+
+      /*
+        Capture the four existing share buttons before any older game.js
+        handlers can cancel or replace their behavior.
+      */
+      document.addEventListener(
+        "click",
+        (event) => {
+          const button = event.target.closest("button");
+
+          if (!button || !triggerIds.has(button.id)) return;
+
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          openDialog();
+        },
+        true
+      );
+
+      /*
+        Keep the existing mobile share choices functional too.
+      */
+      document.addEventListener(
+        "click",
+        async (event) => {
+          const platformButton = event.target.closest("[data-share-platform]");
+
+          if (!platformButton) return;
+
+          event.preventDefault();
+          event.stopImmediatePropagation();
+
+          const platform = platformButton.dataset.sharePlatform;
+          const data = getShareData();
+          const encodedUrl = encodeURIComponent(data.url);
+          const encodedText = encodeURIComponent(data.text);
+
+          if (platform === "facebook") {
+            window.open(
+              `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+              "_blank",
+              "noopener,noreferrer"
+            );
+            return;
+          }
+
+          if (platform === "instagram" || platform === "copy") {
+            await copyShareText();
+          }
+
+          if (platform === "x" || platform === "twitter") {
+            window.open(
+              `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
+              "_blank",
+              "noopener,noreferrer"
+            );
+          }
+        },
+        true
+      );
+
+      closeButton.addEventListener("click", closeDialog);
+      nativeButton.addEventListener("click", nativeShare);
+      copyButton.addEventListener("click", copyShareText);
+
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) {
+          closeDialog();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !dialog.hidden) {
+          closeDialog();
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>
