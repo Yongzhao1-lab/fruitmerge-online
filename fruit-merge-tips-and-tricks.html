@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Fruit Merge Tips and Tricks: 15 Ways to Score Higher</title>
+
+  <meta
+    name="description"
+    content="Use these Fruit Merge tips and tricks to keep the board low, plan with the next-fruit preview, create safer chain merges, recover near the danger line, and score higher."
+  />
+  <meta
+    name="keywords"
+    content="fruit merge tips, fruit merge tricks, fruit merge tips and tricks, fruit merge high score, fruit merge strategy, fruit merge game tips"
+  />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+
+  <link
+    rel="canonical"
+    href="https://fruitmerge.online/fruit-merge-tips-and-tricks.html"
+  />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Fruit Merge Online" />
+  <meta
+    property="og:title"
+    content="Fruit Merge Tips and Tricks: 15 Ways to Score Higher"
+  />
+  <meta
+    property="og:description"
+    content="Practical Fruit Merge tips for cleaner boards, smarter drops, safer chains, and better danger-line recovery."
+  />
+  <meta
+    property="og:url"
+    content="https://fruitmerge.online/fruit-merge-tips-and-tricks.html"
+  />
+  <meta
+    property="og:image"
+    content="https://fruitmerge.online/og-image.svg"
+  />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta
+    name="twitter:title"
+    content="Fruit Merge Tips and Tricks"
+  />
+  <meta
+    name="twitter:description"
+    content="15 practical ways to improve your Fruit Merge board control and score."
+  />
+  <meta
+    name="twitter:image"
+    content="https://fruitmerge.online/og-image.svg"
+  />
+
+  <meta name="theme-color" content="#071221" />
+
+  <style>
+    :root {
+      --navy-950: #071221;
+      --navy-900: #0d1c31;
+      --navy-800: #152a47;
+      --navy-700: #24466f;
+      --text: #1b2d46;
+      --muted: #607087;
+      --line: #dbe5ee;
+      --white: #ffffff;
+      --cream: #fff9e8;
+      --yellow: #ffd65c;
+      --orange: #ff7450;
+      --green: #78de4a;
+      --mint: #eafbf4;
+      --blue-soft: #edf6ff;
+      --red-soft: #fff0ed;
+      --shadow: 0 18px 55px rgba(18, 43, 71, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 9% 0%, rgba(255, 214, 92, 0.2), transparent 27%),
+        radial-gradient(circle at 93% 11%, rgba(120, 222, 74, 0.13), transparent 24%),
+        linear-gradient(180deg, #f7fbff 0%, #fffdf5 100%);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.68;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    button,
+    select {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    h1,
+    h2,
+    h3 {
+      color: var(--navy-900);
+      line-height: 1.15;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(7, 18, 33, 0.96);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+    }
+
+    .header-inner,
+    .page-shell,
+    .footer-inner {
+      width: min(1160px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .header-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: linear-gradient(145deg, #a8ff6a, #49df55);
+      box-shadow: 0 8px 24px rgba(88, 237, 90, 0.28);
+    }
+
+    .brand strong {
+      color: #8cf05c;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .header-nav a {
+      color: #e9f0fa;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .header-nav a:hover,
+    .header-nav a:focus-visible {
+      color: #a4f66f;
+    }
+
+    .header-play {
+      min-height: 42px;
+      padding: 0 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff8d5d, #ff654b);
+      color: var(--white) !important;
+      box-shadow: 0 10px 28px rgba(255, 104, 73, 0.3);
+    }
+
+    .breadcrumbs {
+      padding: 24px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .breadcrumbs a {
+      color: var(--navy-700);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .hero {
+      padding: 42px 0 54px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: #d95f3f;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 980px;
+      margin: 0 auto;
+      font-size: clamp(40px, 6vw, 68px);
+      letter-spacing: -0.055em;
+      overflow-wrap: anywhere;
+    }
+
+    .hero-lead {
+      max-width: 790px;
+      margin: 22px auto 0;
+      color: #4d6078;
+      font-size: 18px;
+    }
+
+    .hero-actions {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .button {
+      min-height: 50px;
+      padding: 0 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border: 0;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .button-primary {
+      color: var(--white);
+      background: linear-gradient(135deg, #ff8a57, #ff654b);
+      box-shadow: 0 12px 30px rgba(255, 101, 75, 0.28);
+    }
+
+    .button-secondary {
+      color: var(--navy-800);
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+
+    .hero-board {
+      max-width: 1030px;
+      margin: 38px auto 0;
+      padding: 24px;
+      border: 1px solid rgba(255, 198, 64, 0.55);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.72), transparent 24%),
+        linear-gradient(145deg, #fff7cf, #ffe49c);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-board-grid {
+      display: grid;
+      grid-template-columns: 1fr 90px 1fr;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .board-example {
+      min-height: 250px;
+      padding: 20px;
+      border: 1px solid rgba(111, 80, 27, 0.14);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.84);
+      text-align: left;
+    }
+
+    .board-example.good {
+      box-shadow: inset 0 0 0 3px rgba(120, 222, 74, 0.18);
+    }
+
+    .board-example.bad {
+      box-shadow: inset 0 0 0 3px rgba(255, 116, 80, 0.16);
+    }
+
+    .example-label {
+      display: inline-flex;
+      align-items: center;
+      min-height: 29px;
+      padding: 0 11px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .good .example-label {
+      color: #2d6b1e;
+      background: #e9fbdc;
+    }
+
+    .bad .example-label {
+      color: #9c3926;
+      background: #ffe6df;
+    }
+
+    .fruit-layout {
+      min-height: 120px;
+      margin: 22px 0 16px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 3px;
+    }
+
+    .fruit-layout.good-layout img:nth-child(1) { width: 68px; }
+    .fruit-layout.good-layout img:nth-child(2) { width: 83px; }
+    .fruit-layout.good-layout img:nth-child(3) { width: 102px; }
+    .fruit-layout.good-layout img:nth-child(4) { width: 83px; }
+    .fruit-layout.good-layout img:nth-child(5) { width: 68px; }
+
+    .fruit-layout.bad-layout {
+      align-items: center;
+      gap: 0;
+    }
+
+    .fruit-layout.bad-layout img:nth-child(1) { width: 58px; transform: translate(20px, 35px); }
+    .fruit-layout.bad-layout img:nth-child(2) { width: 100px; transform: translate(5px, -8px); }
+    .fruit-layout.bad-layout img:nth-child(3) { width: 76px; transform: translate(-12px, -48px); }
+    .fruit-layout.bad-layout img:nth-child(4) { width: 92px; transform: translate(-26px, 15px); }
+
+    .board-example h2 {
+      margin: 0 0 7px;
+      font-size: 21px;
+    }
+
+    .board-example p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .versus {
+      width: 70px;
+      height: 70px;
+      display: grid;
+      place-items: center;
+      margin: auto;
+      border-radius: 50%;
+      background: var(--navy-900);
+      color: var(--white);
+      font-weight: 950;
+      box-shadow: 0 12px 28px rgba(13, 28, 49, 0.2);
+    }
+
+    .quick-summary {
+      margin: 0 0 68px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .summary-card {
+      min-height: 160px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 10px 30px rgba(28, 57, 91, 0.06);
+    }
+
+    .summary-card b {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 14px;
+      border-radius: 13px;
+      color: var(--navy-900);
+      background: linear-gradient(145deg, #fff2a9, #ffd45d);
+      font-size: 18px;
+    }
+
+    .summary-card h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .summary-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .content-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      align-items: start;
+      gap: 34px;
+    }
+
+    .article {
+      min-width: 0;
+    }
+
+    .article-section {
+      margin-bottom: 28px;
+      padding: 36px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 12px 38px rgba(24, 52, 83, 0.07);
+    }
+
+    .section-label {
+      margin: 0 0 9px;
+      color: #df633f;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .article-section h2 {
+      margin: 0 0 16px;
+      font-size: clamp(28px, 4vw, 38px);
+      letter-spacing: -0.035em;
+    }
+
+    .article-section h3 {
+      margin: 0 0 8px;
+      font-size: 21px;
+    }
+
+    .article-section p,
+    .article-section li {
+      color: #4e6178;
+    }
+
+    .tip-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .tip-card {
+      position: relative;
+      min-height: 240px;
+      padding: 25px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fbfdff;
+    }
+
+    .tip-number {
+      width: 39px;
+      height: 39px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 17px;
+      border-radius: 12px;
+      background: var(--navy-900);
+      color: var(--white);
+      font-weight: 900;
+    }
+
+    .tip-card p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .tip-card .tip-result {
+      margin-top: 15px;
+      padding-top: 14px;
+      border-top: 1px solid #e5ecf2;
+      color: #2f6840;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .tip-fruit {
+      position: absolute;
+      right: -12px;
+      bottom: -13px;
+      width: 92px;
+      height: 92px;
+      opacity: 0.13;
+      pointer-events: none;
+    }
+
+    .drop-checklist {
+      margin: 22px 0 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .check-row {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: #fbfdff;
+    }
+
+    .check-row b {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: #286019;
+      background: #e9fbdc;
+    }
+
+    .check-row h3 {
+      margin-top: 2px;
+    }
+
+    .check-row p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .callout {
+      margin: 24px 0 0;
+      padding: 20px 22px;
+      border-left: 5px solid #ff7751;
+      border-radius: 0 16px 16px 0;
+      background: #fff7ef;
+    }
+
+    .callout strong {
+      color: var(--navy-900);
+    }
+
+    .decision-tool {
+      margin-top: 24px;
+      padding: 26px;
+      border: 1px solid #cfe2f5;
+      border-radius: 21px;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(120, 222, 74, 0.13), transparent 30%),
+        var(--blue-soft);
+    }
+
+    .decision-fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      color: var(--navy-800);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .field select {
+      width: 100%;
+      min-height: 50px;
+      padding: 0 14px;
+      border: 1px solid #bfd4e8;
+      border-radius: 13px;
+      outline: none;
+      color: var(--navy-900);
+      background: var(--white);
+      font-weight: 750;
+    }
+
+    .field select:focus {
+      border-color: var(--navy-700);
+      box-shadow: 0 0 0 4px rgba(36, 70, 111, 0.1);
+    }
+
+    .decision-result {
+      margin-top: 18px;
+      padding: 22px;
+      border: 1px solid rgba(36, 70, 111, 0.13);
+      border-radius: 17px;
+      background: var(--white);
+    }
+
+    .decision-result small {
+      display: block;
+      margin-bottom: 5px;
+      color: #d95f3f;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .decision-result strong {
+      display: block;
+      color: var(--navy-900);
+      font-size: 21px;
+    }
+
+    .decision-result p {
+      margin: 7px 0 0;
+      font-size: 14px;
+    }
+
+    .danger-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+      margin-top: 22px;
+    }
+
+    .danger-card {
+      padding: 22px;
+      border: 1px solid #f0d2cb;
+      border-radius: 19px;
+      background: var(--red-soft);
+    }
+
+    .danger-card b {
+      display: block;
+      margin-bottom: 10px;
+      color: #c24d36;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .danger-card h3 {
+      font-size: 18px;
+    }
+
+    .danger-card p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .advanced-list {
+      display: grid;
+      gap: 13px;
+      margin-top: 22px;
+    }
+
+    .advanced-item {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: 16px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fbfdff;
+    }
+
+    .advanced-item img {
+      width: 54px;
+      height: 54px;
+    }
+
+    .advanced-item p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .faq-list details {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fbfdff;
+    }
+
+    .faq-list summary {
+      padding: 18px 20px;
+      cursor: pointer;
+      color: var(--navy-900);
+      font-weight: 850;
+    }
+
+    .faq-list details p {
+      margin: 0;
+      padding: 0 20px 20px;
+      font-size: 14px;
+    }
+
+    .related-guides {
+      margin-top: 26px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .related-guides a {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      color: var(--navy-900);
+      background: #fbfdff;
+      text-decoration: none;
+      font-weight: 900;
+    }
+
+    .related-guides a:hover {
+      border-color: #a9c4dc;
+      transform: translateY(-2px);
+    }
+
+    .related-guides span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 96px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 21px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 12px 38px rgba(24, 52, 83, 0.07);
+    }
+
+    .sidebar h2 {
+      margin: 0 0 14px;
+      font-size: 17px;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 9px 0;
+      border-bottom: 1px solid #edf1f5;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .sidebar a:last-child {
+      border-bottom: 0;
+    }
+
+    .sidebar a:hover,
+    .sidebar a:focus-visible {
+      color: #d95f3f;
+    }
+
+    .final-cta {
+      margin: 54px 0 72px;
+      padding: 46px;
+      border-radius: 28px;
+      color: var(--white);
+      background:
+        radial-gradient(circle at 85% 10%, rgba(139, 240, 92, 0.21), transparent 28%),
+        linear-gradient(135deg, #0c2038, #183b61);
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .final-cta h2 {
+      margin: 0;
+      color: var(--white);
+      font-size: clamp(30px, 4vw, 43px);
+    }
+
+    .final-cta p {
+      max-width: 700px;
+      margin: 15px auto 24px;
+      color: #cbd8e7;
+    }
+
+    .site-footer {
+      background: var(--navy-950);
+      color: #9fb0c3;
+    }
+
+    .footer-inner {
+      min-height: 118px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 26px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .footer-links a {
+      color: #e6edf6;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    :focus-visible {
+      outline: 3px solid #8aec59;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 980px) {
+      .quick-summary {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .content-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .danger-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .header-inner {
+        min-height: 64px;
+      }
+
+      .header-nav a:not(.header-play) {
+        display: none;
+      }
+
+      .brand {
+        font-size: 19px;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+      }
+
+      .hero {
+        padding-top: 28px;
+      }
+
+      .hero-board-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .versus {
+        width: 56px;
+        height: 56px;
+      }
+
+      .tip-grid,
+      .related-guides,
+      .decision-fields {
+        grid-template-columns: 1fr;
+      }
+
+      .article-section {
+        padding: 25px 20px;
+        border-radius: 20px;
+      }
+
+      .final-cta {
+        padding: 34px 22px;
+      }
+
+      .footer-inner {
+        display: block;
+        padding: 28px 0;
+      }
+
+      .footer-links {
+        margin-bottom: 18px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page-shell,
+      .header-inner,
+      .footer-inner {
+        width: min(100% - 22px, 1160px);
+      }
+
+      h1 {
+        font-size: 41px;
+      }
+
+      .hero-lead {
+        font-size: 16px;
+      }
+
+      .hero-actions {
+        display: grid;
+      }
+
+      .hero-board {
+        padding: 14px;
+        border-radius: 21px;
+      }
+
+      .board-example {
+        min-height: 0;
+        padding: 17px;
+      }
+
+      .quick-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-card {
+        min-height: 0;
+      }
+
+      .article-section h2 {
+        font-size: 29px;
+      }
+
+      .advanced-item {
+        grid-template-columns: 44px minmax(0, 1fr);
+      }
+
+      .advanced-item img {
+        width: 44px;
+        height: 44px;
+      }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Fruit Merge Tips and Tricks: 15 Ways to Score Higher",
+    "description": "Practical Fruit Merge tips covering next-fruit planning, board height, safer merges, chain reactions, danger-line recovery, and mobile controls.",
+    "image": "https://fruitmerge.online/og-image.svg",
+    "author": {
+      "@type": "Organization",
+      "name": "Fruit Merge Online"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Fruit Merge Online"
+    },
+    "mainEntityOfPage": "https://fruitmerge.online/fruit-merge-tips-and-tricks.html"
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the best Fruit Merge tip for beginners?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Check the next-fruit preview before every drop and keep the center lane open. These two habits reduce random placements and make future merges easier."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should large fruits go in the center or near the sides?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Large fruits are usually safer near a side as part of a low base. The center should remain available as a flexible landing lane."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I recover near the danger line?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Stop building upward, identify the tallest section, use the preview to find the fastest reachable merge, and prioritize lowering the board over creating a high-value fruit."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are chain merges always good?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Chain merges are useful when the resulting larger fruit has room to settle. A forced chain can be harmful if it creates a tall or unstable stack."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do Fruit Merge tips change on mobile?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The core strategy is the same, but mobile players should tap deliberately, avoid repeated inputs while fruits are moving, and check the compact next-fruit display before every drop."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Fruit Merge Online",
+        "item": "https://fruitmerge.online/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Fruit Merge Tips and Tricks",
+        "item": "https://fruitmerge.online/fruit-merge-tips-and-tricks.html"
+      }
+    ]
+  }
+  </script>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="Fruit Merge Online home">
+        <span class="brand-mark" aria-hidden="true">🍓</span>
+        <span>Fruit<strong>Merge</strong></span>
+      </a>
+
+      <nav class="header-nav" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/how-to-play-fruit-merge.html">How to Play</a>
+        <a href="/fruit-merge-strategy.html">Strategy</a>
+        <a href="/fruit-evolution-guide.html">Evolution</a>
+        <a class="header-play" href="/#game">Play Now</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Fruit Merge Online</a>
+      <span aria-hidden="true"> / </span>
+      <span>Tips and Tricks</span>
+    </nav>
+
+    <section class="hero">
+      <p class="eyebrow">Fast improvements for every run</p>
+
+      <h1>Fruit Merge Tips and Tricks</h1>
+
+      <p class="hero-lead">
+        Use these 15 practical tips to make safer drops, keep the board lower,
+        turn the next-fruit preview into a plan, create controlled chain merges,
+        and recover before the stack reaches the danger line.
+      </p>
+
+      <div class="hero-actions">
+        <a class="button button-primary" href="/#game">
+          <span aria-hidden="true">▶</span>
+          Play Fruit Merge Online
+        </a>
+
+        <a class="button button-secondary" href="#best-tips">
+          View all 15 tips
+        </a>
+      </div>
+
+      <div class="hero-board" aria-label="Comparison of a controlled Fruit Merge board and a risky board">
+        <div class="hero-board-grid">
+          <article class="board-example good">
+            <span class="example-label">Better setup</span>
+            <div class="fruit-layout good-layout" aria-hidden="true">
+              <img src="/assets/fruits/grape.png" alt="" />
+              <img src="/assets/fruits/orange.png" alt="" />
+              <img src="/assets/fruits/apple.png" alt="" />
+              <img src="/assets/fruits/orange.png" alt="" />
+              <img src="/assets/fruits/grape.png" alt="" />
+            </div>
+            <h2>Low, connected and predictable</h2>
+            <p>Matching levels stay reachable and the center remains available for the next drop.</p>
+          </article>
+
+          <div class="versus" aria-hidden="true">VS</div>
+
+          <article class="board-example bad">
+            <span class="example-label">Risky setup</span>
+            <div class="fruit-layout bad-layout" aria-hidden="true">
+              <img src="/assets/fruits/strawberry.png" alt="" />
+              <img src="/assets/fruits/watermelon.png" alt="" />
+              <img src="/assets/fruits/grape.png" alt="" />
+              <img src="/assets/fruits/peach.png" alt="" />
+            </div>
+            <h2>Tall, mixed and difficult to repair</h2>
+            <p>Small fruits become trapped while large fruits block future landing routes.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="quick-summary" aria-label="Four essential Fruit Merge tips">
+      <article class="summary-card">
+        <b>1</b>
+        <h2>Read the preview</h2>
+        <p>Plan the current drop around the next fruits instead of reacting one move at a time.</p>
+      </article>
+
+      <article class="summary-card">
+        <b>2</b>
+        <h2>Keep the board low</h2>
+        <p>A wide, stable base gives larger fruits room to roll, settle, and merge safely.</p>
+      </article>
+
+      <article class="summary-card">
+        <b>3</b>
+        <h2>Protect the center</h2>
+        <p>Use the middle as a flexible landing lane rather than a permanent storage column.</p>
+      </article>
+
+      <article class="summary-card">
+        <b>4</b>
+        <h2>Lower before scoring</h2>
+        <p>Near the danger line, a small merge that reduces height is better than a risky high-value plan.</p>
+      </article>
+    </section>
+
+    <div class="content-layout">
+      <article class="article">
+        <section class="article-section" id="before-every-drop">
+          <p class="section-label">Three-second habit</p>
+          <h2>What to Check Before Every Drop</h2>
+
+          <p>
+            Strong Fruit Merge runs are built from small, repeatable decisions.
+            Before releasing a fruit, pause briefly and answer these four
+            questions.
+          </p>
+
+          <div class="drop-checklist">
+            <article class="check-row">
+              <b>1</b>
+              <div>
+                <h3>What is coming next?</h3>
+                <p>Check the preview and look for a two- or three-move sequence, not only the current fruit.</p>
+              </div>
+            </article>
+
+            <article class="check-row">
+              <b>2</b>
+              <div>
+                <h3>Can this fruit reach its match later?</h3>
+                <p>Do not place a fruit where a larger piece will permanently cover or isolate it.</p>
+              </div>
+            </article>
+
+            <article class="check-row">
+              <b>3</b>
+              <div>
+                <h3>Will the new fruit have room?</h3>
+                <p>Remember that a merge creates a larger fruit that may roll, lift nearby pieces, or block a lane.</p>
+              </div>
+            </article>
+
+            <article class="check-row">
+              <b>4</b>
+              <div>
+                <h3>Does this lower or raise the danger?</h3>
+                <p>If the stack is already high, choose the move that reduces the tallest area first.</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="callout">
+            <strong>Simple rule:</strong> when two placements appear equally
+            good, choose the one that keeps more future routes open.
+          </div>
+        </section>
+
+        <section class="article-section" id="best-tips">
+          <p class="section-label">Complete practical list</p>
+          <h2>15 Fruit Merge Tips and Tricks</h2>
+
+          <div class="tip-grid">
+            <article class="tip-card">
+              <span class="tip-number">1</span>
+              <h3>Use the full next-fruit preview</h3>
+              <p>Build a short sequence from the visible queue. A safe current drop can prepare a pair for the following fruit and prevent a random holding pile.</p>
+              <div class="tip-result">Best result: fewer emergency placements.</div>
+              <img class="tip-fruit" src="/assets/fruits/cherry.png" alt="" />
+            </article>
+
+            <article class="tip-card">
+              <span class="tip-number">2</span>
+              <h3>Build outward, not upward</h3>
+              <p>Use the available width of the container. A broad base is easier to control than one narrow tower reaching toward the danger line.</p>
+              <div class="tip-result">Best result: more time for late-game merges.</div>
+              <img class="tip-fruit" src="/assets/fruits/strawberry.png" alt="" />
+            </article>
+
+            <article class="tip-card">
+              <span class="tip-number">3</span>
+              <h3>Keep one central landing lane open</h3>
+              <p>The middle gives you the most flexible access to both sides. Avoid locking it with an isolated Watermelon, Grapefruit, or Melon.</p>
+              <div class="tip-result">Best result: easier redirection of awkward queue fruits.</div>
+              <img class="tip-fruit" src="/assets/fruits/grape.png" alt="" />
+            </article>
+
+            <article class="tip-card">
+              <span class="tip-number">4</span>
+              <h3>Group matching and adjacent levels</h3>
+              <p>Keep identical fruits close, but also keep neighboring levels nearby. A Grape pair can create an Orange beside another Orange and continue the chain.</p>
+              <div class="tip-result">Best result: more natural chain merges.</div>
+              <img class="tip-fruit" src="/assets/fruits/orange.png" alt="" />
+            </article>
+
+            <article class="tip-card">
+              <span class="tip-number">5</span>
+              <h3>Use the walls as guides</h3>
+              <p>Side drops can help fruits roll into a low merge zone. Use this deliberately, but do not depend on an exact bounce when the board is crowded.</p>
+              <div class="tip-result">Best result: safer edge placement without blocking the center.</div>
+              <img class="tip-fruit" src="/assets/fruits/apple.png" alt="" />
+            </article>
+
+            <article class="tip-card">
+              <span class="tip-number">6</span>
+              <h3>Do not bury small fruits</h3>
+              <p>A Cherry or Strawberry trapped beneath a large fruit can remain unusable for the rest of the run. Keep early levels visible and reachable.</p>
+              <div class="tip-result">Best result: less permanent board clutter.</div>
+              <img class="tip-fruit" src="/assets/fruits/peach.png" alt="" />
+            </article>
+
+            <article class="tip-card">
+              <span class="tip-number">7</span>
+              <h3>Let moving fruits settle</h3>
+              <p>Wait a moment after a collision or merge. A rolling fruit may create a better route, while a rushed next drop can interrupt the movement and produce a pile.</p>
+              <div class="tip-result">Best result: fewer accidental towers.</div>
+              <img class="tip-fruit" src="/assets/fruits/pineapple.png" alt="" />
+            </article>
+
+            <article class="tip-card">
+              <span class="tip-number">8</span>
+              <h3>Reserve space for the larger result</h3>
+              <p>Two medium fruits may fit in a gap that the new larger fruit cannot. Plan the landing area before completing a valuable merge.</p>
+              <div class="tip-result">Best result: high-level fruits settle instead of lifting the stack.</div>
+              <img class="tip-fruit" src="/assets/fruits/watermelon.png" alt="" />
+            </article>
+
+            <article class="tip-card">
+              <span class="tip-number">9</span>
+              <h3>Choose a primary merge side</h3>
+              <p>Use one side for your main evolution route and the other as temporary storage. This is more predictable than building several unrelated towers.</p>
+              <div class="tip-result">Best result: clearer long-term board structure.</div>
+              <img class="tip-fruit" src="/assets/fruits/grapefruit.png" alt="" />
+            </article>
+
+            <article class="tip-card">
+              <span class="tip-number">10</span>
+              <h3>Do not force every available merge</h3>
+              <p>An immediate merge is not always the best move. Delaying it may preserve a useful support shape or prevent the new fruit from blocking your main lane.</p>
+              <div class="tip-result">Best result: better control after the merge.</div>
+              <img class="tip-fruit" src="/assets/fruits/melon.png" alt="" />
+            </article>
+
+            <article class="tip-card">
+              <span class="tip-number">11</span>
+              <h3>Prepare chains from the bottom</h3>
+              <p>Place the highest planned pair low, then arrange smaller levels above or beside it. The chain should finish by reducing the stack, not by pushing upward.</p>
+              <div class="tip-result">Best result: score bursts that also improve board height.</div>
+              <img class="tip-fruit" src="/assets/fruits/dragonfruit.png" alt="" />
+            </article>
+
+            <article class="tip-card">
+              <span class="tip-number">12</span>
+              <h3>Fix the tallest section first</h3>
+              <p>When the board becomes dangerous, stop expanding your long-term plan. Find the quickest reachable pair in the highest area and lower it.</p>
+              <div class="tip-result">Best result: more recoveries before game over.</div>
+              <img class="tip-fruit" src="/assets/fruits/apple.png" alt="" />
+            </article>
+
+            <article class="tip-card">
+              <span class="tip-number">13</span>
+              <h3>Accept temporary imperfect placements</h3>
+              <p>A safe holding position is sometimes better than chasing the perfect pair. Preserve open space and wait for the queue to provide the missing fruit.</p>
+              <div class="tip-result">Best result: fewer desperate, low-percentage drops.</div>
+              <img class="tip-fruit" src="/assets/fruits/orange.png" alt="" />
+            </article>
+
+            <article class="tip-card">
+              <span class="tip-number">14</span>
+              <h3>Plan the final two Melons early</h3>
+              <p>Before creating your first Melon, decide where the second can approach it. Dragon Fruit attempts fail when the two final fruits are separated by mixed clutter.</p>
+              <div class="tip-result">Best result: a clear final merge route.</div>
+              <img class="tip-fruit" src="/assets/fruits/melon.png" alt="" />
+            </article>
+
+            <article class="tip-card">
+              <span class="tip-number">15</span>
+              <h3>Tap deliberately on mobile</h3>
+              <p>Use one controlled tap per drop and avoid repeated input while the current fruit is moving. Check the next-fruit display before touching the board again.</p>
+              <div class="tip-result">Best result: fewer unintended mobile drops.</div>
+              <img class="tip-fruit" src="/assets/fruits/strawberry.png" alt="" />
+            </article>
+          </div>
+        </section>
+
+        <section class="article-section" id="decision-tool">
+          <p class="section-label">Interactive next-move helper</p>
+          <h2>What Should You Prioritize Right Now?</h2>
+
+          <p>
+            Select your current board height and the type of fruit in the
+            preview. The tool gives you the safest general priority for the next
+            move.
+          </p>
+
+          <div class="decision-tool">
+            <div class="decision-fields">
+              <div class="field">
+                <label for="boardHeight">Current board height</label>
+                <select id="boardHeight">
+                  <option value="low">Low — plenty of open space</option>
+                  <option value="medium" selected>Medium — board is getting busy</option>
+                  <option value="high">High — close to the danger line</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="queueType">Next fruit situation</label>
+                <select id="queueType">
+                  <option value="match">It can match something now</option>
+                  <option value="near" selected>It is one level away from a useful pair</option>
+                  <option value="awkward">It has no clear match</option>
+                  <option value="large">It is a large fruit</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="decision-result" aria-live="polite">
+              <small>Your priority</small>
+              <strong id="priorityTitle">Prepare a controlled two-move route</strong>
+              <p id="priorityText">
+                Place the current fruit near its next evolution level without
+                blocking the center. Keep enough room for the larger result.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="article-section" id="danger-line">
+          <p class="section-label">Emergency recovery</p>
+          <h2>Three Rules When You Are Near the Danger Line</h2>
+
+          <div class="danger-grid">
+            <article class="danger-card">
+              <b>01</b>
+              <h3>Stop building the long chain</h3>
+              <p>Survival comes first. Pause the Dragon Fruit plan until the tallest area has been reduced.</p>
+            </article>
+
+            <article class="danger-card">
+              <b>02</b>
+              <h3>Merge where the height is</h3>
+              <p>A low merge on the opposite side may add points, but it does not solve the immediate danger.</p>
+            </article>
+
+            <article class="danger-card">
+              <b>03</b>
+              <h3>Avoid large unstable drops</h3>
+              <p>Place large fruits only where they can settle immediately without rolling onto the top of the stack.</p>
+            </article>
+          </div>
+
+          <div class="callout">
+            <strong>Recovery mindset:</strong> one safe small merge is more
+            valuable than a high-scoring move that ends the run.
+          </div>
+        </section>
+
+        <section class="article-section" id="advanced-tricks">
+          <p class="section-label">For consistent high scores</p>
+          <h2>Advanced Fruit Merge Tricks</h2>
+
+          <div class="advanced-list">
+            <article class="advanced-item">
+              <img src="/assets/fruits/grape.png" alt="Grape" />
+              <div>
+                <h3>Create a merge pocket</h3>
+                <p>Maintain one low area where small and medium fruits can repeatedly meet. Do not fill every flat space with permanent storage.</p>
+              </div>
+            </article>
+
+            <article class="advanced-item">
+              <img src="/assets/fruits/pineapple.png" alt="Pineapple" />
+              <div>
+                <h3>Use supports that can disappear</h3>
+                <p>When a fruit supports another piece, prefer a support that already has a reachable match. Its future merge can open space instead of becoming permanent clutter.</p>
+              </div>
+            </article>
+
+            <article class="advanced-item">
+              <img src="/assets/fruits/watermelon.png" alt="Watermelon" />
+              <div>
+                <h3>Think about the post-merge roll</h3>
+                <p>The new fruit may move after it forms. Consider which direction it is likely to roll and whether that movement helps or blocks your next route.</p>
+              </div>
+            </article>
+
+            <article class="advanced-item">
+              <img
+                src="/assets/fruits/grapefruit.png"
+                data-fallbacks="/assets/fruits/pomelo.png,/assets/fruits/yuzu.png,/assets/fruits/lemon.png"
+                alt="Grapefruit"
+              />
+              <div>
+                <h3>Separate storage from production</h3>
+                <p>Keep awkward queue fruits in a temporary zone and protect a different area for active merging. Mixing both functions usually creates a tall, uneven board.</p>
+              </div>
+            </article>
+
+            <article class="advanced-item">
+              <img
+                src="/assets/fruits/dragonfruit.png"
+                data-fallbacks="/assets/fruits/dragon-fruit.png,/assets/fruits/dragon_fruit.png,/assets/fruits/pitaya.png"
+                alt="Dragon Fruit"
+              />
+              <div>
+                <h3>Score is a result, not the first objective</h3>
+                <p>High scores come from keeping the run alive long enough to repeat valuable merges. Board control creates the score—not the other way around.</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="article-section" id="faq">
+          <p class="section-label">Questions and answers</p>
+          <h2>Fruit Merge Tips FAQ</h2>
+
+          <div class="faq-list">
+            <details>
+              <summary>What is the best Fruit Merge tip for beginners?</summary>
+              <p>
+                Check the next-fruit preview before every drop and keep the
+                center lane open. These two habits immediately reduce random
+                placements and make later merges easier.
+              </p>
+            </details>
+
+            <details>
+              <summary>Should I put large fruits in the center?</summary>
+              <p>
+                Usually no. Large fruits are easier to manage near a side as
+                part of a stable base. The center should remain flexible for
+                future drops and chain routes.
+              </p>
+            </details>
+
+            <details>
+              <summary>Should I merge fruits as soon as possible?</summary>
+              <p>
+                Not always. Merge when the new larger fruit has a safe place to
+                settle. Delaying a merge can preserve a useful board shape or
+                prevent the new fruit from blocking an important lane.
+              </p>
+            </details>
+
+            <details>
+              <summary>How can I create more chain merges?</summary>
+              <p>
+                Keep matching and adjacent fruit levels close together, use the
+                preview to prepare two or three moves, and build the chain from
+                a low part of the board.
+              </p>
+            </details>
+
+            <details>
+              <summary>How do I recover when the board is almost full?</summary>
+              <p>
+                Stop building upward, identify the tallest section, and use the
+                preview to complete the fastest reachable merge in that area.
+                Lowering the board is more important than chasing a large score.
+              </p>
+            </details>
+
+            <details>
+              <summary>Are the tips different on mobile?</summary>
+              <p>
+                The strategy is the same, but mobile players should tap once
+                deliberately, wait for movement to settle, and check the
+                compact preview before the next input.
+              </p>
+            </details>
+          </div>
+
+          <div class="related-guides">
+            <a href="/how-to-play-fruit-merge.html">
+              How to Play Fruit Merge
+              <span>Learn the controls, merge rules, preview, and danger-line system.</span>
+            </a>
+
+            <a href="/fruit-merge-strategy.html">
+              Fruit Merge Strategy Guide
+              <span>Study deeper board planning, chain routes, and recovery decisions.</span>
+            </a>
+
+            <a href="/fruit-merge-scoring-guide.html">
+              Fruit Merge Scoring Guide
+              <span>Compare every point value and calculate the score from merge chains.</span>
+            </a>
+
+            <a href="/how-to-get-dragon-fruit.html">
+              How to Get Dragon Fruit
+              <span>Plan the final two Melons and complete the highest-level merge.</span>
+            </a>
+          </div>
+        </section>
+      </article>
+
+      <aside class="sidebar" aria-label="Tips and tricks page navigation">
+        <h2>On this page</h2>
+        <a href="#before-every-drop">Before every drop</a>
+        <a href="#best-tips">15 tips and tricks</a>
+        <a href="#decision-tool">Next-move helper</a>
+        <a href="#danger-line">Danger-line recovery</a>
+        <a href="#advanced-tricks">Advanced tricks</a>
+        <a href="#faq">Tips FAQ</a>
+      </aside>
+    </div>
+
+    <section class="final-cta">
+      <h2>Use One New Tip in Your Next Run</h2>
+      <p>
+        Start with the simplest habit: check the preview, keep the center open,
+        and choose the placement that leaves the most future options.
+      </p>
+      <a class="button button-primary" href="/#game">Play Fruit Merge Online</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="/">Play Game</a>
+        <a href="/how-to-play-fruit-merge.html">How to Play</a>
+        <a href="/fruit-merge-tips-and-tricks.html">Tips</a>
+        <a href="/fruit-merge-strategy.html">Strategy</a>
+        <a href="/fruit-evolution-guide.html">Evolution</a>
+        <a href="/fruit-merge-scoring-guide.html">Scoring</a>
+        <a href="/how-to-get-dragon-fruit.html">Dragon Fruit</a>
+        <a href="/fruit-merge-faq.html">FAQ</a>
+        <a href="/about.html">About</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+
+      <p>© 2026 Fruit Merge Online.</p>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const boardHeight = document.getElementById("boardHeight");
+      const queueType = document.getElementById("queueType");
+      const priorityTitle = document.getElementById("priorityTitle");
+      const priorityText = document.getElementById("priorityText");
+
+      const recommendations = {
+        low: {
+          match: {
+            title: "Complete the match in a low production zone",
+            text: "Use the open space to place the merge where the new larger fruit will remain reachable. Avoid using the center as permanent storage."
+          },
+          near: {
+            title: "Prepare a controlled two-move route",
+            text: "Place the current fruit near its next evolution level without blocking the center. Keep enough room for the larger result."
+          },
+          awkward: {
+            title: "Create a temporary holding position",
+            text: "Store the fruit near an edge where it remains visible and reachable. Do not mix it into your main merge pocket."
+          },
+          large: {
+            title: "Start the large fruit near a stable side",
+            text: "Use the open board to establish a low base. Leave a clear approach route for its future matching fruit."
+          }
+        },
+        medium: {
+          match: {
+            title: "Take the merge only if it improves the shape",
+            text: "Complete the pair when the larger result will settle lower or open space. Delay it if the new fruit would block the central lane."
+          },
+          near: {
+            title: "Prepare a controlled two-move route",
+            text: "Place the current fruit near its next evolution level without blocking the center. Keep enough room for the larger result."
+          },
+          awkward: {
+            title: "Use the safer storage side",
+            text: "Choose the side with fewer active pairs. Keep the fruit accessible and avoid starting a second tall tower."
+          },
+          large: {
+            title: "Place the large fruit only on a stable base",
+            text: "Avoid gaps and steep slopes. A rolling large fruit can lift smaller pieces and quickly increase the board height."
+          }
+        },
+        high: {
+          match: {
+            title: "Merge the tallest reachable area now",
+            text: "Prioritize reducing height. Ignore a lower high-value opportunity if it does not solve the section closest to the danger line."
+          },
+          near: {
+            title: "Do not wait for the perfect chain",
+            text: "Use the safest immediate placement and preserve a path to the next merge. Survival is more important than chain efficiency."
+          },
+          awkward: {
+            title: "Choose the lowest guaranteed landing spot",
+            text: "Avoid edges or slopes that may roll the fruit upward. Place it where it cannot create a new peak."
+          },
+          large: {
+            title: "Find a flat landing area before dropping",
+            text: "A large fruit near the danger line is dangerous. Use the lowest stable space and avoid any position that can lift the existing stack."
+          }
+        }
+      };
+
+      function updateRecommendation() {
+        const result = recommendations[boardHeight.value][queueType.value];
+        priorityTitle.textContent = result.title;
+        priorityText.textContent = result.text;
+      }
+
+      boardHeight.addEventListener("change", updateRecommendation);
+      queueType.addEventListener("change", updateRecommendation);
+      updateRecommendation();
+
+      document.querySelectorAll("img[data-fallbacks]").forEach((img) => {
+        const fallbacks = img.dataset.fallbacks
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean);
+
+        img.addEventListener("error", () => {
+          const next = fallbacks.shift();
+
+          if (next) {
+            img.src = next;
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
